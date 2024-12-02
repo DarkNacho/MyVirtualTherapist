@@ -90,7 +90,7 @@ export default function PatientList({
       <List
         sx={{
           flex: 1,
-          overflow: "auto",
+          overflow: "hidden",
           height: "100%",
           "& .MuiListItem-root": {
             "& ::after": {

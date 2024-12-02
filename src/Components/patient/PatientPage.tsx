@@ -85,7 +85,14 @@ const PatientPage = () => {
         <Grid item xs={4}>
           <WelcomeComponent userName="Jhon Doe" />
         </Grid>
-        <Grid item xs>
+        <Grid
+          item
+          xs
+          sx={{
+            height: "410px !important",
+            overflow: "auto",
+          }}
+        >
           <Grid container gap={0.5}>
             <Grid width="100%">
               <PatientSearchComponent handleAddPatient={handleOpen} />
