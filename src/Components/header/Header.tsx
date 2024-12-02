@@ -14,6 +14,9 @@ import {
 import LanguageIcon from "@mui/icons-material/Language";
 import LogoSVG from "../../assets/logo.svg";
 import styles from "./Header.module.css";
+import { Patient, Practitioner } from "fhir/r4";
+import { loadUserRoleFromLocalStorage } from "../../Services/Utils/RolUser";
+import FhirResourceService from "../../Services/FhirService";
 
 interface HeaderProps {
   onLanguageChange?: () => void;
@@ -40,6 +43,35 @@ const handleLogOut = () => {
 const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
   const [language, setLanguage] = useState<"ES" | "EN">("ES");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [user, setUser] = useState<Patient | Practitioner>();
+
+  const getUser = async () => {
+    const id = localStorage.getItem("id");
+    console.log("id", id);
+    if (!id) return;
+    let user: Patient | Practitioner | undefined;
+    const role = loadUserRoleFromLocalStorage();
+    if (role === "Patient") {
+      const fhirResource = new FhirResourceService<Patient>("Patient");
+      const response = await fhirResource.getById(id);
+      console.log("response", response);
+      if (response.success) user = response.data;
+    } else {
+      const fhirResource = new FhirResourceService<Practitioner>(
+        "Practitioner"
+      );
+
+      const response = await fhirResource.getById(id);
+      console.log("response", response);
+      if (response.success) user = response.data;
+    }
+    setUser(user);
+    localStorage.setItem("user", JSON.stringify(user));
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -99,7 +131,7 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
       onClick={() => setSelectedItem(text)}
       sx={{
         cursor: "pointer",
-        color: selectedItem === text ? "blue" : "black",
+        color: selectedItem === text ? "#4864cc" : "#2c427e",
         textDecoration: selectedItem === text ? "underline" : "none",
         textDecorationThickness: "0.1em",
         textUnderlineOffset: "0.2em",
@@ -160,7 +192,11 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
             <Grid item xs={1}>
               <ListItemAvatar className={styles.avatarWrapper}>
                 <Avatar
-                  src={`https://robohash.org/1.png`}
+                  src={
+                    user?.photo?.[0]?.data
+                      ? `data:${user?.photo[0].contentType};base64,${user?.photo[0].data}`
+                      : user?.photo?.[0]?.url || undefined
+                  }
                   className={styles.circularContainer}
                   onClick={handleClick}
                 />

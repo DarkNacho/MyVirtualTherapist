@@ -15,8 +15,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import HandleResult from "../Services/HandleResult";
 import { jwtDecode } from "jwt-decode";
 //import PersonForgotPasswordComponent from "../Components/Person/PersonForgotPasswordComponent";
-import backgroundLogin from "../../public/fondo-login.jpg";
-import logoBlue from "../../public/logo-azul.png";
+import backgroundLogin from "../assets/fondo-login.jpg";
+import logoBlue from "../assets/logo-azul.png";
 //import PractitionerCreateComponent from "../Components/Practitioner/PractitionerCreateComponent";
 function Copyright(props: any) {
   return (

@@ -52,7 +52,7 @@ export default function PatientPersonalDetailsForm({
           <Typography
             variant="h5"
             sx={{
-              color: "blue",
+              color: "#354495",
               textDecoration: "underline",
               textDecorationThickness: "0.1em",
               textUnderlineOffset: "0.2em",

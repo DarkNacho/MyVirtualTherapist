@@ -55,7 +55,7 @@ export default function PatientCreateForm({
       <Typography
         variant="h5"
         sx={{
-          color: "blue",
+          color: "#354495",
           textDecoration: "underline",
           textDecorationThickness: "0.1em",
           textUnderlineOffset: "0.2em",
@@ -66,7 +66,7 @@ export default function PatientCreateForm({
       <Typography
         variant="h6"
         sx={{
-          color: "blue",
+          color: "#354495",
         }}
       >
         {patient?.nombre} {patient?.segundoNombre} {patient?.apellidoPaterno}{" "}
@@ -92,22 +92,35 @@ export default function PatientCreateForm({
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          border: "2px dashed #3D5AFE",
+          border: "2px solid #2d7dfc",
           borderRadius: "32px",
           width: "100%",
           height: "100%",
           position: "relative",
-          backgroundColor: "#f0f0f0",
+          backgroundColor: "#f0f4fc",
         }}
       >
         <label htmlFor="avatar-upload">
           {avatar ? (
             <Avatar
               src={URL.createObjectURL(avatar)}
-              sx={{ width: 150, height: 150, cursor: "pointer" }}
+              sx={{
+                width: 150,
+                height: 150,
+                cursor: "pointer",
+              }}
             />
           ) : (
-            <Avatar sx={{ width: 150, height: 150, cursor: "pointer" }} />
+            <Avatar
+              sx={{
+                width: 150,
+                height: 150,
+                cursor: "pointer",
+                color: "#2d7dfc",
+                backgroundColor: "#f0f4fc",
+                border: "2px solid #2d7dfc",
+              }}
+            />
           )}
         </label>
         <input
@@ -133,7 +146,7 @@ export default function PatientCreateForm({
       <DialogTitle>
         <Box sx={{ position: "relative" }}>
           <IconButton
-            sx={{ position: "absolute", top: 8, right: 8, color: "blue" }}
+            sx={{ position: "absolute", top: 8, right: 8, color: "#247cfc" }}
             onClick={handleClose}
           >
             <CloseIcon />

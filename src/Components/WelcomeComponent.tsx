@@ -2,14 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
+import img1 from "../assets/PLACEHOLDERS/1.png";
+import img2 from "../assets/PLACEHOLDERS/2.png";
+import img3 from "../assets/PLACEHOLDERS/3.png";
+import img4 from "../assets/PLACEHOLDERS/4.png";
+import img5 from "../assets/PLACEHOLDERS/5.png";
 interface WelcomeComponentProps {
   userName: string;
 }
 
-const images = [
-  "https://www.firstbenefits.org/wp-content/uploads/2017/10/placeholder-1024x1024.png",
-  "https://t4.ftcdn.net/jpg/05/71/83/47/360_F_571834789_ujYbUnH190iUokdDhZq7GXeTBRgqYVwa.jpg",
-];
+const images = [img1, img2, img3, img4, img5];
 
 const WelcomeComponent: React.FC<WelcomeComponentProps> = ({ userName }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -67,17 +69,18 @@ const WelcomeComponent: React.FC<WelcomeComponentProps> = ({ userName }) => {
       <Box
         sx={{
           position: "absolute",
-          top: 16,
-          right: 16,
-          backgroundColor: "rgba(255, 255, 255, 0.8)",
-          borderRadius: 1,
+          top: 0,
+          right: 0,
+          backgroundColor: "#287cfc",
+          borderTopRightRadius: 2,
+          borderBottomLeftRadius: 15,
           padding: "4px 8px",
           cursor: "pointer",
         }}
         onClick={handleTextClick}
       >
-        <Typography variant="body1" color="primary">
-          BIENVENIDO, <span style={{ fontWeight: "bold" }}>{userName}</span>
+        <Typography variant="body1" color="white">
+          BIENVENIDO, <span>{userName}</span>
         </Typography>
       </Box>
     </Paper>

@@ -24,6 +24,7 @@ import PersonUtil from "../../../Services/Utils/PersonUtils";
 import { SearchParams } from "fhir-kit-client";
 import HandleResult from "../../../Services/HandleResult";
 import FhirResourceService from "../../../Services/FhirService";
+import Tooltip from "@mui/material/Tooltip";
 
 interface PatientListProps {
   searchParam?: SearchParams;
@@ -163,14 +164,16 @@ export default function PatientList({
               </Box>
               <Box sx={{ display: "flex", gap: 1 }}>
                 {onDetailsClick && (
-                  <IconButton
-                    className={styles.circularContainer}
-                    color="primary"
-                    aria-label="details"
-                    onClick={() => onDetailsClick(resource)}
-                  >
-                    <ArrowForward />
-                  </IconButton>
+                  <Tooltip title="Derivar paciente">
+                    <IconButton
+                      className={styles.circularContainer}
+                      color="primary"
+                      aria-label="derive"
+                      onClick={() => onDetailsClick(resource)}
+                    >
+                      <ArrowForward />
+                    </IconButton>
+                  </Tooltip>
                 )}
                 {onEditClick && (
                   <IconButton

@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
     <footer className={styles.footer}>
       <div className={styles.content}>
         <Typography variant="body2" className={styles.copyright}>
-          © Lab Control Motor Humano - My Virtual Therapist - Smart Mesck
+          © Lab Control Motor Humano - © My Virtual Therapist - © Smart Mesck
         </Typography>
         <Link href="#" className={styles.privacyLink}>
           Políticas de privacidad
