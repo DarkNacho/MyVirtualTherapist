@@ -115,7 +115,7 @@ export default function PatientList({
                   src={
                     resource.photo?.[0]?.data
                       ? `data:${resource.photo[0].contentType};base64,${resource.photo[0].data}`
-                      : undefined
+                      : resource.photo?.[0]?.url || undefined
                   }
                 />
               </ListItemAvatar>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -8,6 +8,8 @@ import {
   Typography,
   ListItemAvatar,
   Avatar,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import LanguageIcon from "@mui/icons-material/Language";
 import LogoSVG from "../../assets/logo.svg";
@@ -18,8 +20,48 @@ interface HeaderProps {
   onMenuClick?: () => void;
 }
 
+const isTokenExpired = () => {
+  const expirationTime = localStorage.getItem("tokenExpiration");
+  if (!expirationTime) {
+    return true;
+  }
+
+  const currentTime = new Date().getTime();
+  console.log("current", currentTime);
+  console.log("expiration", parseInt(expirationTime, 10));
+  return parseInt(expirationTime, 10) * 1000 < currentTime;
+};
+
+const handleLogOut = () => {
+  localStorage.clear();
+  window.location.href = "/";
+};
+
 const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
   const [language, setLanguage] = useState<"ES" | "EN">("ES");
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleProfileClick = () => {
+    // Handle profile click
+    alert("Profile clicked");
+    console.log("Profile clicked");
+    handleClose();
+  };
+
+  const handleSignOutClick = () => {
+    // Handle sign out click
+    handleLogOut();
+    console.log("Sign out clicked");
+    handleClose();
+  };
 
   const handleLanguageToggle = () => {
     const newLang = language === "ES" ? "EN" : "ES";
@@ -30,6 +72,26 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
   };
 
   const [selectedItem, setSelectedItem] = useState<string>("PACIENTES");
+  useEffect(() => {
+    const checkTokenExpiration = () => {
+      if (isTokenExpired()) {
+        alert("Su sesión ha expirado, por favor inicie sesión nuevamente.");
+        console.log("token expired...");
+        handleLogOut();
+      } else {
+        console.log("token not expired...");
+      }
+    };
+
+    // Check token expiration immediately
+    checkTokenExpiration();
+
+    // Set up an interval to check token expiration every minute
+    const intervalId = setInterval(checkTokenExpiration, 60000); // 60000 ms = 1 minute
+
+    // Clear the interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
 
   const NavItem = ({ text }: { text: string }) => (
     <Typography
@@ -100,7 +162,16 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
                 <Avatar
                   src={`https://robohash.org/1.png`}
                   className={styles.circularContainer}
+                  onClick={handleClick}
                 />
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={handleProfileClick}>My Profile</MenuItem>
+                  <MenuItem onClick={handleSignOutClick}>Sign Out</MenuItem>
+                </Menu>
               </ListItemAvatar>
             </Grid>
           </Grid>
