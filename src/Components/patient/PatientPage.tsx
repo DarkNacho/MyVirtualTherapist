@@ -11,6 +11,7 @@ import { useState } from "react";
 import PersonUtil from "../../Services/Utils/PersonUtils";
 import HandleResult from "../../Utils/HandleResult";
 import FhirResourceService from "../../Services/FhirService";
+import { SearchParams } from "fhir-kit-client";
 
 let patientFormData: PatientFormData;
 
@@ -30,6 +31,8 @@ const PatientPage = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [avatar, setAvatar] = useState<File | null>(null);
   const [isPosting, setIsPosting] = useState(false);
+
+  const [searchParam, setSearchParam] = useState<SearchParams | undefined>();
 
   const handleOpen = () => {
     setOpen(true);
@@ -56,34 +59,82 @@ const PatientPage = () => {
     if (activeStep < 1) {
       setActiveStep((prev) => prev + 1);
     } else {
-      await postPatient(patientFormData);
+      //await postPatient(patientFormData);
+      await HandleResult.handleOperation(
+        () => postPatient(patientFormData),
+        "El paciente ha sido creado exitosamente",
+        "Enviando..."
+      );
+
       setActiveStep((prev) => prev + 1);
     }
     setIsPosting(false);
   };
 
-  const postPatient = async (data: PatientFormData) => {
+  const postPatient = async (
+    data: PatientFormData
+  ): Promise<Result<Patient>> => {
     const patient = await PersonUtil.PatientFormToPatient(data);
     if (!patient)
-      return HandleResult.showErrorMessage(
-        "Error al convertir el formulario a paciente"
-      );
+      return {
+        success: false,
+        error: "Error al convertir el formulario a paciente",
+      };
 
-    const fhirService = new FhirResourceService("Patient");
-    const response = await HandleResult.handleOperation(
-      () => fhirService.sendResource(patient),
-      "Observación guardada de forma exitosa",
-      "Enviando..."
-    );
-    console.log("response:", response);
-    return response;
+    // send to server
+    const user = {
+      email: data.email,
+      rut: data.rut,
+      phone_number: data.numeroTelefonico,
+      name: `${data.nombre} ${data.segundoNombre} ${data.apellidoPaterno} ${data.apellidoMaterno}`,
+      role: "Patient",
+      fhir_id: "",
+    };
+    let url = `${import.meta.env.VITE_SERVER_URL}/auth/register`;
+    let response_api = await fetch(url, {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    if (response_api.status === 409)
+      return { success: false, error: "El usuario ya existe" };
+    if (response_api.status !== 201)
+      return { success: false, error: response_api.statusText };
+    // end sending api
+
+    //send to hapi fhir
+    const fhirService = FhirResourceService.getInstance<Patient>("Patient");
+    const responseFhir = await fhirService.sendResource(patient);
+    if (!responseFhir.success) return responseFhir;
+
+    //update user with fhir_id
+    url = `${import.meta.env.VITE_SERVER_URL}/auth/update`;
+    user.fhir_id = responseFhir.data.id!;
+
+    response_api = await fetch(url, {
+      method: "PUT",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+
+    if (response_api.status !== 200)
+      return { success: false, error: response_api.statusText };
+
+    console.log("response:", response_api);
+    return responseFhir;
   };
 
   return (
     <Box>
       <Grid container spacing={2}>
         <Grid item xs={4}>
-          <WelcomeComponent userName="Jhon Doe" />
+          <WelcomeComponent userName={localStorage.getItem("name")!} />
         </Grid>
         <Grid
           item
@@ -95,13 +146,17 @@ const PatientPage = () => {
         >
           <Grid container gap={0.5}>
             <Grid width="100%">
-              <PatientSearchComponent handleAddPatient={handleOpen} />
+              <PatientSearchComponent
+                handleAddPatient={handleOpen}
+                setSearchParam={setSearchParam}
+              />
             </Grid>
             <Grid item width="100%">
               <PatientList
                 onDetailsClick={handleDetailsClick}
                 onEditClick={handleEditClick}
                 onDeleteClick={handleDeleteClick}
+                searchParam={searchParam}
               />
             </Grid>
           </Grid>

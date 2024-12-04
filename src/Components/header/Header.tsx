@@ -32,6 +32,7 @@ const isTokenExpired = () => {
 };
 
 const handleLogOut = () => {
+  FhirResourceService.clearInstances();
   localStorage.clear();
   window.location.href = "/";
 };
@@ -50,14 +51,13 @@ const Header = () => {
     let user: Patient | Practitioner | undefined;
     const role = loadUserRoleFromLocalStorage();
     if (role === "Patient") {
-      const fhirResource = new FhirResourceService<Patient>("Patient");
+      const fhirResource = FhirResourceService.getInstance<Patient>("Patient");
       const response = await fhirResource.getById(id);
       console.log("response", response);
       if (response.success) user = response.data;
     } else {
-      const fhirResource = new FhirResourceService<Practitioner>(
-        "Practitioner"
-      );
+      const fhirResource =
+        FhirResourceService.getInstance<Practitioner>("Practitioner");
 
       const response = await fhirResource.getById(id);
       console.log("response", response);

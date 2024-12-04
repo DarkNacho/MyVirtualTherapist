@@ -9,12 +9,15 @@ import {
   CodeableConcept,
 } from "fhir/r4";
 import { OpPatch } from "fhir-kit-client/types/externals";
+import { CacheUtils } from "../Utils/Cache";
 
 /**
  * Represents a service for interacting with FHIR resources.
  * @template T - The type of FHIR resource.
  */
 export default class FhirResourceService<T extends FhirResource> {
+  private static instances: Map<FhirType, FhirResourceService<any>> = new Map();
+
   public resourceTypeName: string;
 
   public apiUrl: string;
@@ -29,7 +32,7 @@ export default class FhirResourceService<T extends FhirResource> {
    * Creates an instance of ResourceService.
    * @param {FhirType} type - The FHIR resource type.
    */
-  public constructor(type: FhirType) {
+  protected constructor(type: FhirType) {
     this.apiUrl =
       import.meta.env.VITE_API_URL || "https://hapi.fhir.org/baseR4"; //TODO: Forzar a que el env esté o si no enviar error.
     const jwtToken = localStorage.getItem("access_token");
@@ -41,6 +44,23 @@ export default class FhirResourceService<T extends FhirResource> {
     this.resourceTypeName = type;
   }
 
+  public static getInstance<T extends FhirResource>(
+    resourceTypeName: FhirType
+  ): FhirResourceService<T> {
+    if (!this.instances.has(resourceTypeName)) {
+      this.instances.set(
+        resourceTypeName,
+        new FhirResourceService<T>(resourceTypeName)
+      );
+    }
+    return this.instances.get(resourceTypeName) as FhirResourceService<T>;
+  }
+
+  public static clearInstances(): void {
+    this.instances.clear();
+    CacheUtils.clearCache();
+  }
+
   /**
    * Handles the result of a FHIR operation.
    * @private
@@ -48,10 +68,26 @@ export default class FhirResourceService<T extends FhirResource> {
    * @param {Promise<T>} result - The result of the FHIR operation.
    * @returns {Promise<Result<T>>} - The handled result.
    */
-  private handleResult<T>(result: Promise<T>): Promise<Result<T>> {
+  private async handleResult<T>(
+    result: Promise<T>,
+    cacheKey?: string
+  ): Promise<Result<T>> {
+    if (cacheKey) {
+      const cachedData = CacheUtils.loadFromCache<Result<T>>(cacheKey);
+      if (cachedData) {
+        console.log("Cache hit:", cacheKey);
+        return cachedData;
+      }
+    }
+
     return result
       .then((data: T) => {
-        return { success: true, data } as Result<T>;
+        const result = { success: true, data } as Result<T>;
+        if (cacheKey) {
+          console.log("Cache miss:", cacheKey);
+          CacheUtils.saveToCache(cacheKey, result);
+        }
+        return result;
       })
       .catch((error: any) => {
         console.error("handleResult:", error);
@@ -65,7 +101,6 @@ export default class FhirResourceService<T extends FhirResource> {
         } as Result<T>;
       });
   }
-
   /**
    * Sets the flags indicating whether there is a next or previous page of resources.
    * @private
@@ -85,11 +120,13 @@ export default class FhirResourceService<T extends FhirResource> {
    * @returns {Promise<Result<T>>} - The result of the operation.
    */
   public async getById(id: string): Promise<Result<T>> {
+    const cacheKey = `${this.resourceTypeName}-${id}`;
     return this.handleResult<T>(
       this.fhirClient.read({
         resourceType: this.resourceTypeName,
         id: id,
-      }) as Promise<T>
+      }) as Promise<T>,
+      cacheKey
     );
   }
 
@@ -296,6 +333,10 @@ export default class FhirResourceService<T extends FhirResource> {
    * @returns {Promise<Result<T[]>>} - The result of the operation.
    */
   public async getResources(params?: SearchParams): Promise<Result<T[]>> {
+    const initialCacheKey = `${
+      this.resourceTypeName
+    }-resources-${JSON.stringify(params)}`;
+
     const result = await this.handleResult<Bundle>(
       this.fhirClient.search({
         resourceType: this.resourceTypeName,
@@ -304,15 +345,26 @@ export default class FhirResourceService<T extends FhirResource> {
           ...params,
           _sort: "-_lastUpdated",
         },
-      }) as Promise<Bundle>
+      }) as Promise<Bundle>,
+      initialCacheKey
     );
 
     if (result.success) {
       const response = result.data;
       this._resourceBundle = response;
+      this._resourceBundle = this.ensureHttpsInUrls(this._resourceBundle);
+
       this.setNewPages(response);
       const resources =
         response.entry?.map((entry) => entry.resource as T) || [];
+
+      const selfLink = response.link?.find(
+        (link) => link.relation === "self"
+      )?.url;
+      if (selfLink) {
+        CacheUtils.saveToCache(selfLink, { success: true, data: resources });
+      }
+
       return { success: true, data: resources };
     } else {
       return { success: false, error: result.error };
@@ -337,10 +389,20 @@ export default class FhirResourceService<T extends FhirResource> {
    * @returns {Promise<Result<T[]>>} - The result of the operation.
    */
   public async getNewResources(
-    direction: "next" | "prev"
+    direction: "next" | "previous"
   ): Promise<Result<T[]>> {
-    console.log(this._resourceBundle);
+    console.log("Current resource bundle:", this._resourceBundle);
+
+    // Ensure the URLs in the bundle are using HTTPS if necessary
     this._resourceBundle = this.ensureHttpsInUrls(this._resourceBundle);
+
+    // Get the cache key for the requested direction
+    const cacheKey = this._resourceBundle.link?.find(
+      (link) => link.relation === direction
+    )?.url;
+
+    console.log("Cache key for direction", direction, ":", cacheKey);
+
     const response = await this.handleResult<Bundle>(
       direction === "next"
         ? (this.fhirClient.nextPage({
@@ -348,7 +410,8 @@ export default class FhirResourceService<T extends FhirResource> {
           }) as Promise<Bundle>)
         : (this.fhirClient.prevPage({
             bundle: this._resourceBundle,
-          }) as Promise<Bundle>)
+          }) as Promise<Bundle>),
+      cacheKey
     );
 
     console.log(response);

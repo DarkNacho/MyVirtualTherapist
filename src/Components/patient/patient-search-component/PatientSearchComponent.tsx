@@ -11,11 +11,16 @@ import {
 } from "@mui/material";
 import { Search, Add, FilterList } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
+import { SearchParams } from "fhir-kit-client";
 
 export default function PatientSearchComponent({
   handleAddPatient,
+  setSearchParam,
 }: {
   handleAddPatient: () => void;
+  setSearchParam: React.Dispatch<
+    React.SetStateAction<SearchParams | undefined>
+  >;
 }) {
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -37,6 +42,23 @@ export default function PatientSearchComponent({
     console.log("Buscar por teléfono:", phone);
     console.log("Buscar por RUT:", rut);
     console.log("Buscar por correo:", email);
+
+    const searchParams: SearchParams = {};
+
+    if (name) {
+      searchParams.name = name;
+    }
+    if (phone) {
+      searchParams.telecom = `phone|${phone}`;
+    }
+    if (rut) {
+      searchParams.identifier = `RUT|${rut}`;
+    }
+    if (email) {
+      searchParams.telecom = `email|${email}`;
+    }
+
+    setSearchParam(searchParams);
   };
 
   const open = Boolean(anchorEl);

@@ -44,7 +44,7 @@ function identifier(resource: Patient) {
   );
 }
 
-const fhirService = new FhirResourceService<Patient>("Patient");
+const fhirService = FhirResourceService.getInstance<Patient>("Patient");
 
 export default function PatientList({
   searchParam,
@@ -56,7 +56,7 @@ export default function PatientList({
   const [resources, setResources] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const handleNewResources = async (direction: "next" | "prev") => {
+  const handleNewResources = async (direction: "next" | "previous") => {
     setLoading(true);
     await HandleResult.handleOperation(
       () => fhirService.getNewResources(direction),
@@ -258,7 +258,7 @@ export default function PatientList({
           variant="contained"
           color="primary"
           startIcon={<ArrowLeft />}
-          onClick={() => handleNewResources("prev")}
+          onClick={() => handleNewResources("previous")}
           disabled={!fhirService.hasPrevPage}
         >
           {t("patientList.previous")}

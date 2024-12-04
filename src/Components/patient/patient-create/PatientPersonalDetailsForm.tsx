@@ -15,7 +15,7 @@ import { PatientFormData } from "../../../Models/Forms/PatientForm";
 import "react-phone-input-2/lib/material.css";
 import PersonUtils from "../../../Services/Utils/PersonUtils";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function PatientPersonalDetailsForm({
   formId,
@@ -28,6 +28,8 @@ export default function PatientPersonalDetailsForm({
 }) {
   const { t, i18n } = useTranslation();
   const currentLanguage = i18n.language;
+  const [localizedGeneroOptions, setLocalizedGeneroOptions] =
+    useState(generoOptions);
 
   useEffect(() => {
     // Update the display field when the language changes
@@ -38,13 +40,14 @@ export default function PatientPersonalDetailsForm({
         }) || option.display;
     });
 
-    // Update the display field for generoOptions when the language changes
-    generoOptions.forEach((option) => {
-      option.display =
+    const updatedGeneroOptions = generoOptions.map((option) => ({
+      ...option,
+      display:
         t(`terminology.generoOptions.${option.code}`, {
           lng: currentLanguage,
-        }) || option.display;
-    });
+        }) || option.display,
+    }));
+    setLocalizedGeneroOptions(updatedGeneroOptions);
   }, [t, currentLanguage]);
 
   const {
@@ -154,7 +157,7 @@ export default function PatientPersonalDetailsForm({
             error={Boolean(errors.genero)}
             helperText={errors.genero && errors.genero.message}
           >
-            {generoOptions.map((option) => (
+            {localizedGeneroOptions.map((option) => (
               <MenuItem key={option.code} value={option.code}>
                 {option.display}
               </MenuItem>

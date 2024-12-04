@@ -1,5 +1,9 @@
 {
   "welcome": "Welcome",
+  "footer": {
+    "copyright": "© Lab Control Motor Humano - © My Virtual Therapist - © Smart Mesck",
+    "privacyPolicy": "Privacy Policy"
+  },
   "signInSide": {
     "enter": "Enter",
     "signIn": "Sign In",
