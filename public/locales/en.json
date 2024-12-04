@@ -27,6 +27,7 @@
     "addPatient": "ADD PATIENT",
     "phoneNumberRequired": "Phone number required",
     "phoneNumber": "Phone Number",
+    "email": "Email",
     "emailRequired": "Email required",
     "invalidEmail": "Invalid email",
     "emergencyContact": "EMERGENCY CONTACT",
@@ -60,6 +61,12 @@
     "rut": "RUT",
     "rutRequired": "RUT is required",
     "invalidRut": "Invalid RUT"
+  },
+  "patientPage": {
+    "patientCreated": "The patient has been successfully created",
+    "sending": "Sending...",
+    "errorConvertingForm": "Error converting the form to patient",
+    "userExists": "The user already exists"
   },
   "patientList": {
     "receivedSuccessfully": "Received successfully",

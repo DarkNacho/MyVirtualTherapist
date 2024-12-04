@@ -27,6 +27,7 @@
     "addPatient": "AGREGAR PACIENTE",
     "phoneNumberRequired": "Número telefónico requerido",
     "phoneNumber": "Número Telefónico",
+    "email": "Correo Electrónico",
     "emailRequired": "Correo electrónico requerido",
     "invalidEmail": "Correo electrónico inválido",
     "emergencyContact": "CONTACTO DE EMERGENCIA",
@@ -60,6 +61,12 @@
     "rut": "Rut",
     "rutRequired": "El Rut es necesario",
     "invalidRut": "Rut inválido"
+  },
+  "patientPage": {
+    "patientCreated": "El paciente ha sido creado exitosamente",
+    "sending": "Enviando...",
+    "errorConvertingForm": "Error al convertir el formulario a paciente",
+    "userExists": "El usuario ya existe"
   },
   "patientList": {
     "receivedSuccessfully": "Recibidos exitosamente",

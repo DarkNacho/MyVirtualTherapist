@@ -12,6 +12,7 @@ import PersonUtil from "../../Services/Utils/PersonUtils";
 import HandleResult from "../../Utils/HandleResult";
 import FhirResourceService from "../../Services/FhirService";
 import { SearchParams } from "fhir-kit-client";
+import { useTranslation } from "react-i18next";
 
 let patientFormData: PatientFormData;
 
@@ -27,6 +28,7 @@ const handleDeleteClick = (person: Patient) => {
   console.log("Delete clicked for:", person);
 };
 const PatientPage = () => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [avatar, setAvatar] = useState<File | null>(null);
@@ -49,26 +51,28 @@ const PatientPage = () => {
   };
 
   const submitForm = async (data: PatientFormData) => {
-    setIsPosting(true);
-    patientFormData = { ...patientFormData, ...data };
-    if (avatar) {
-      patientFormData.avatar = avatar;
+    try {
+      setIsPosting(true);
+      patientFormData = { ...patientFormData, ...data };
+      if (avatar) {
+        patientFormData.avatar = avatar;
+      }
+      console.log("patientFormData:", patientFormData);
+      // Add any additional logic if needed
+      if (activeStep < 1) {
+        setActiveStep((prev) => prev + 1);
+      } else {
+        //await postPatient(patientFormData);
+        const response = await HandleResult.handleOperation(
+          () => postPatient(patientFormData),
+          t("patientPage.patientCreated"),
+          t("patientPage.sending")
+        );
+        if (response.success) setActiveStep((prev) => prev + 1);
+      }
+    } finally {
+      setIsPosting(false);
     }
-    console.log("patientFormData:", patientFormData);
-    // Add any additional logic if needed
-    if (activeStep < 1) {
-      setActiveStep((prev) => prev + 1);
-    } else {
-      //await postPatient(patientFormData);
-      await HandleResult.handleOperation(
-        () => postPatient(patientFormData),
-        "El paciente ha sido creado exitosamente",
-        "Enviando..."
-      );
-
-      setActiveStep((prev) => prev + 1);
-    }
-    setIsPosting(false);
   };
 
   const postPatient = async (
@@ -78,7 +82,7 @@ const PatientPage = () => {
     if (!patient)
       return {
         success: false,
-        error: "Error al convertir el formulario a paciente",
+        error: t("patientPage.errorConvertingForm"),
       };
 
     // send to server
@@ -100,7 +104,7 @@ const PatientPage = () => {
       body: JSON.stringify(user),
     });
     if (response_api.status === 409)
-      return { success: false, error: "El usuario ya existe" };
+      return { success: false, error: t("patientPage.userExists") };
     if (response_api.status !== 201)
       return { success: false, error: response_api.statusText };
     // end sending api
