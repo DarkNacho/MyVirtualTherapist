@@ -1,0 +1,98 @@
+{
+  "welcome": "Bienvenido",
+  "signInSide": {
+    "enter": "Ingresar",
+    "signIn": "Iniciar Sesión",
+    "rut": "Rut",
+    "password": "Contraseña",
+    "forgotPassword": "¿Olvidó su contraseña?",
+    "sessionStarted": "Sesión Iniciada",
+    "startingSession": "Iniciando Sesión"
+  },
+  "header": {
+    "getMVT": "CONSIGUE MVT Y SMART MESK",
+    "myProfile": "Mi Perfil",
+    "signOut": "Cerrar Sesión",
+    "patients": "PACIENTES",
+    "practitioners": "PROFESIONALES",
+    "encounters": "ENCUENTROS",
+    "contact": "CONTACTO",
+    "sessionExpired": "Su sesión ha expirado, por favor inicie sesión nuevamente."
+  },
+  "patientContactDetailForm": {
+    "addPatient": "AGREGAR PACIENTE",
+    "phoneNumberRequired": "Número telefónico requerido",
+    "phoneNumber": "Número Telefónico",
+    "emailRequired": "Correo electrónico requerido",
+    "invalidEmail": "Correo electrónico inválido",
+    "emergencyContact": "CONTACTO DE EMERGENCIA",
+    "nameRequired": "El Nombre es necesario",
+    "name": "Nombre",
+    "relation": "Relación",
+    "submit": "Enviar"
+  },
+  "patientCreateForm": {
+    "personalDetails": "Datos Personales",
+    "contactDetails": "Datos de Contacto",
+    "patientCreated": "PACIENTE CREADO CON ÉXITO",
+    "verifyEmail": "Verifique el correo del paciente para confirmar clave de acceso.",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "submit": "Enviar",
+    "viewProfile": "Ver Perfil"
+  },
+  "patientPersonalDetailsForm": {
+    "addPatient": "AGREGAR PACIENTE",
+    "name": "Nombre",
+    "nameRequired": "El Nombre es necesario",
+    "secondName": "Segundo Nombre",
+    "lastName": "Apellido Paterno",
+    "lastNameRequired": "El Apellido Paterno es necesario",
+    "motherLastName": "Apellido Materno",
+    "birthDate": "Fecha de Nacimiento",
+    "gender": "Género",
+    "genderRequired": "El Género es necesario",
+    "maritalStatus": "Estado Civil",
+    "rut": "Rut",
+    "rutRequired": "El Rut es necesario",
+    "invalidRut": "Rut inválido"
+  },
+  "patientList": {
+    "receivedSuccessfully": "Recibidos exitosamente",
+    "obtaining": "Obteniendo...",
+    "age": "Edad",
+    "phone": "Teléfono",
+    "derivePatient": "Derivar paciente",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "previous": "Anterior",
+    "next": "Siguiente"
+  },
+  "patientSearchComponent": {
+    "patients": "PACIENTES",
+    "searchPatient": "Buscar un paciente",
+    "addPatient": "Agregar\nPaciente",
+    "searchByPhone": "Buscar por teléfono",
+    "searchByRut": "Buscar por RUT",
+    "searchByEmail": "Buscar por correo",
+    "search": "Buscar"
+  },
+  "terminology": {
+    "maritalOptions": {
+      "S": "Nunca Casado",
+      "A": "Anulado",
+      "D": "Divorciado",
+      "I": "Interlocutorio",
+      "L": "Legalmente Separado",
+      "M": "Casado",
+      "C": "Unión de Hecho",
+      "UNK": "Desconocido"
+    },
+    "generoOptions": {
+      "unknown": "No especificado",
+      "male": "Masculino",
+      "female": "Femenino",
+      "other": "Otro"
+    }
+  }
+}

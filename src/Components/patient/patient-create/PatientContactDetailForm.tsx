@@ -7,11 +7,11 @@ import {
   Typography,
 } from "@mui/material";
 import { contactTypes } from "../../../Models/Terminology";
-
 import { PatientFormData } from "../../../Models/Forms/PatientForm";
 import "react-phone-input-2/lib/material.css";
 import PhoneInput from "react-phone-input-2";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function PatientContactDetailForm({
   formId,
@@ -22,6 +22,7 @@ export default function PatientContactDetailForm({
   patient?: PatientFormData;
   submitForm: SubmitHandler<PatientFormData>;
 }) {
+  const { t } = useTranslation();
   const {
     control,
     register,
@@ -49,23 +50,23 @@ export default function PatientContactDetailForm({
     if (errors.numeroTelefonico) {
       setError("numeroTelefonico", {
         type: "required",
-        message: "Número telefónico requerido",
+        message: t("patientContactDetailForm.phoneNumberRequired"),
       });
     } else {
       clearErrors("numeroTelefonico");
     }
-  }, [errors.numeroTelefonico, setError, clearErrors]);
+  }, [errors.numeroTelefonico, setError, clearErrors, t]);
 
   useEffect(() => {
     if (errors.contact?.[0]?.numeroTelefonico) {
       setError("contact.0.numeroTelefonico", {
         type: "required",
-        message: "Número telefónico requerido",
+        message: t("patientContactDetailForm.phoneNumberRequired"),
       });
     } else {
       clearErrors("contact.0.numeroTelefonico");
     }
-  }, [errors.contact?.[0]?.numeroTelefonico, setError, clearErrors]);
+  }, [errors.contact?.[0]?.numeroTelefonico, setError, clearErrors, t]);
 
   return (
     <form id={formId} onSubmit={handleSubmit(submitForm)}>
@@ -80,7 +81,7 @@ export default function PatientContactDetailForm({
               textUnderlineOffset: "0.2em",
             }}
           >
-            AGREGAR PACIENTE
+            {t("patientContactDetailForm.addPatient")}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -88,9 +89,11 @@ export default function PatientContactDetailForm({
             name="numeroTelefonico"
             control={control}
             rules={{
-              required: "Número telefónico requerido",
+              required: t("patientContactDetailForm.phoneNumberRequired"),
               validate: (value) =>
-                value ? true : "Número telefónico requerido",
+                value
+                  ? true
+                  : t("patientContactDetailForm.phoneNumberRequired"),
             }}
             render={({ field }) => (
               <PhoneInput
@@ -110,7 +113,7 @@ export default function PatientContactDetailForm({
                 }}
                 isValid={(value) => !!value}
                 enableSearch
-                specialLabel="Número Telefónico"
+                specialLabel={t("patientContactDetailForm.phoneNumber")}
               />
             )}
           />
@@ -123,12 +126,12 @@ export default function PatientContactDetailForm({
         <Grid item xs={12} sm={6}>
           <TextField
             type="email"
-            label="Email"
+            label={t("patientContactDetailForm.email")}
             {...register("email", {
-              required: "Correo electrónico requerido",
+              required: t("patientContactDetailForm.emailRequired"),
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Correo electrónico inválido",
+                message: t("patientContactDetailForm.invalidEmail"),
               },
             })}
             error={Boolean(errors.email)}
@@ -146,14 +149,14 @@ export default function PatientContactDetailForm({
               textUnderlineOffset: "0.2em",
             }}
           >
-            CONTACTO DE EMERGENCIA
+            {t("patientContactDetailForm.emergencyContact")}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            label="Nombre"
+            label={t("patientContactDetailForm.name")}
             {...register("contact.0.nombre", {
-              required: "El Nombre es necesario",
+              required: t("patientContactDetailForm.nameRequired"),
             })}
             fullWidth
             error={Boolean(errors.contact?.[0]?.nombre)}
@@ -165,12 +168,12 @@ export default function PatientContactDetailForm({
         <Grid item xs={12} sm={6}>
           <TextField
             type="email"
-            label="Email"
+            label={t("patientContactDetailForm.email")}
             {...register("contact.0.email", {
-              required: "Correo electrónico requerido",
+              required: t("patientContactDetailForm.emailRequired"),
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Correo electrónico inválido",
+                message: t("patientContactDetailForm.invalidEmail"),
               },
             })}
             error={Boolean(errors.contact?.[0]?.email)}
@@ -185,9 +188,11 @@ export default function PatientContactDetailForm({
             name="contact.0.numeroTelefonico"
             control={control}
             rules={{
-              required: "Número telefónico requerido",
+              required: t("patientContactDetailForm.phoneNumberRequired"),
               validate: (value) =>
-                value ? true : "Número telefónico requerido",
+                value
+                  ? true
+                  : t("patientContactDetailForm.phoneNumberRequired"),
             }}
             render={({ field }) => (
               <PhoneInput
@@ -209,7 +214,7 @@ export default function PatientContactDetailForm({
                 }}
                 isValid={(value) => !!value}
                 enableSearch
-                specialLabel="Número Telefónico"
+                specialLabel={t("patientContactDetailForm.phoneNumber")}
               />
             )}
           />
@@ -222,7 +227,7 @@ export default function PatientContactDetailForm({
         <Grid item xs={12} sm={6}>
           <TextField
             select
-            label="Relación"
+            label={t("patientContactDetailForm.relation")}
             defaultValue="N"
             {...register(`contact.0.contactType`)}
             fullWidth

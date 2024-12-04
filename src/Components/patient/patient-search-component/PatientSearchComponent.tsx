@@ -10,12 +10,14 @@ import {
   Popover,
 } from "@mui/material";
 import { Search, Add, FilterList } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 export default function PatientSearchComponent({
   handleAddPatient,
 }: {
   handleAddPatient: () => void;
 }) {
+  const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -50,13 +52,10 @@ export default function PatientSearchComponent({
         justifyContent: "space-between",
         flexDirection: "row",
         borderRadius: 2,
-
         margin: "auto",
       }}
     >
-      {/* Contenedor para las filas de contenido */}
       <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 1 }}>
-        {/* Primera fila: título y filtro */}
         <Box
           sx={{
             display: "flex",
@@ -71,20 +70,19 @@ export default function PatientSearchComponent({
               fontWeight: "bold",
               textDecoration: "underline",
               textDecorationThickness: "0.1em",
-              textUnderlineOffset: "0.2em", // Ajusta el offset según sea necesario
+              textUnderlineOffset: "0.2em",
             }}
           >
-            PACIENTES
+            {t("patientSearchComponent.patients")}
           </Typography>
           <IconButton color="primary" onClick={handleFilterClick}>
             <FilterList />
           </IconButton>
         </Box>
 
-        {/* Segunda fila: campo de búsqueda */}
         <TextField
           variant="outlined"
-          placeholder="Buscar un paciente"
+          placeholder={t("patientSearchComponent.searchPatient")}
           size="small"
           fullWidth
           value={name}
@@ -101,7 +99,6 @@ export default function PatientSearchComponent({
         />
       </Box>
 
-      {/* Botón para agregar paciente, ocupa ambas filas */}
       <Box
         sx={{
           display: "flex",
@@ -117,39 +114,38 @@ export default function PatientSearchComponent({
             textTransform: "none",
             borderRadius: 2,
             paddingLeft: 3,
-            paddingRight: 0, // Eliminar padding derecho para que el icono esté al final
+            paddingRight: 0,
             fontWeight: "bold",
             height: "70px",
             marginLeft: 2,
             whiteSpace: "pre-line",
-            backgroundColor: "white", // Color del botón en blanco
-            color: "primary.main", // Color del texto en azul
+            backgroundColor: "white",
+            color: "primary.main",
             display: "flex",
-            justifyContent: "space-between", // Distribuir contenido
-            alignItems: "center", // Alinear verticalmente
-            border: "2px solid", // Borde de 2px
-            borderColor: "primary.main", // Color del borde azul
+            justifyContent: "space-between",
+            alignItems: "center",
+            border: "2px solid",
+            borderColor: "primary.main",
           }}
         >
-          Agregar{"\n"}Paciente
+          {t("patientSearchComponent.addPatient")}
           <Box
             sx={{
-              backgroundColor: "primary.main", // Fondo azul
-              height: "70px", // Ocupa todo el alto del botón
+              backgroundColor: "primary.main",
+              height: "70px",
               borderRadius: 2,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               padding: 1,
-              marginLeft: 2, // Espacio entre texto e icono
+              marginLeft: 2,
             }}
           >
-            <Add sx={{ color: "white" }} /> {/* Icono en blanco */}
+            <Add sx={{ color: "white" }} />
           </Box>
         </Button>
       </Box>
 
-      {/* Popover para opciones adicionales de búsqueda */}
       <Popover
         id={id}
         open={open}
@@ -163,7 +159,7 @@ export default function PatientSearchComponent({
         <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 1 }}>
           <TextField
             variant="outlined"
-            placeholder="Buscar por teléfono"
+            placeholder={t("patientSearchComponent.searchByPhone")}
             size="small"
             fullWidth
             value={phone}
@@ -171,7 +167,7 @@ export default function PatientSearchComponent({
           />
           <TextField
             variant="outlined"
-            placeholder="Buscar por RUT"
+            placeholder={t("patientSearchComponent.searchByRut")}
             size="small"
             fullWidth
             value={rut}
@@ -179,14 +175,14 @@ export default function PatientSearchComponent({
           />
           <TextField
             variant="outlined"
-            placeholder="Buscar por correo"
+            placeholder={t("patientSearchComponent.searchByEmail")}
             size="small"
             fullWidth
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <Button variant="contained" color="primary" onClick={handleSearch}>
-            Buscar
+            {t("patientSearchComponent.search")}
           </Button>
         </Box>
       </Popover>

@@ -9,7 +9,7 @@ import PatientCreateForm from "./patient-create/PatientCreateForm";
 import { PatientFormData } from "../../Models/Forms/PatientForm";
 import { useState } from "react";
 import PersonUtil from "../../Services/Utils/PersonUtils";
-import HandleResult from "../../Services/HandleResult";
+import HandleResult from "../../Utils/HandleResult";
 import FhirResourceService from "../../Services/FhirService";
 
 let patientFormData: PatientFormData;

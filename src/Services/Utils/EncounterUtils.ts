@@ -1,5 +1,5 @@
 import { Encounter, Period, Reference } from "fhir/r4";
-import { loadUserRoleFromLocalStorage } from "../../Models/RolUser";
+import { loadUserRoleFromLocalStorage } from "../../Utils/RolUser";
 
 /**
  * Utility class for working with Encounter objects.

@@ -1,5 +1,4 @@
 import { SubmitHandler } from "react-hook-form";
-
 import {
   Grid,
   Stepper,
@@ -12,16 +11,15 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  IconButton,
 } from "@mui/material";
-
-import { PatientFormData } from "../../../Models/Forms/PatientForm";
-import "react-phone-input-2/lib/material.css";
-import { IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { useTranslation } from "react-i18next";
 import PatientContactDetailForm from "./PatientContactDetailForm";
 import PatientPersonalDetailsForm from "./PatientPersonalDetailsForm";
+import { PatientFormData } from "../../../Models/Forms/PatientForm";
 
-const steps = ["Datos Personales", "Datos de Contacto"];
+const steps = ["personalDetails", "contactDetails"];
 
 export default function PatientCreateForm({
   formId,
@@ -46,6 +44,8 @@ export default function PatientCreateForm({
   handleAvatarChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isPosting: boolean;
 }) {
+  const { t } = useTranslation();
+
   const handleBack = () => {
     setActiveStep((prevStep) => prevStep - 1);
   };
@@ -61,7 +61,7 @@ export default function PatientCreateForm({
           textUnderlineOffset: "0.2em",
         }}
       >
-        PACIENTE CREADO CON ÉXITO
+        {t("patientCreateForm.patientCreated")}
       </Typography>
       <Typography
         variant="h6"
@@ -72,7 +72,7 @@ export default function PatientCreateForm({
         {patient?.nombre} {patient?.segundoNombre} {patient?.apellidoPaterno}{" "}
         {patient?.apellidoMaterno}
       </Typography>
-      Verifique el correo del paciente para confirmar clave de acceso.
+      {t("patientCreateForm.verifyEmail")}
     </>
   );
 
@@ -133,6 +133,7 @@ export default function PatientCreateForm({
       </Box>
     </Box>
   );
+
   return (
     <Dialog
       open={open}
@@ -140,7 +141,7 @@ export default function PatientCreateForm({
       fullWidth
       maxWidth="md"
       PaperProps={{
-        sx: { borderRadius: "18px" }, // Add this line
+        sx: { borderRadius: "18px" },
       }}
     >
       <DialogTitle>
@@ -164,7 +165,7 @@ export default function PatientCreateForm({
                 patient={patient}
                 formId={`${formId}-0`}
                 submitForm={submitForm}
-              ></PatientPersonalDetailsForm>
+              />
             )}
 
             {activeStep === 1 && (
@@ -186,9 +187,7 @@ export default function PatientCreateForm({
               <Stepper activeStep={activeStep} alternativeLabel>
                 {steps.map((label) => (
                   <Step key={label}>
-                    <StepLabel>
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    </StepLabel>
+                    <StepLabel>{t(`patientCreateForm.${label}`)}</StepLabel>
                   </Step>
                 ))}
               </Stepper>
@@ -199,7 +198,7 @@ export default function PatientCreateForm({
                   disabled={activeStep === 0}
                   onClick={handleBack}
                 >
-                  Atrás
+                  {t("patientCreateForm.back")}
                 </Button>
                 {activeStep < steps.length ? (
                   <Button
@@ -209,7 +208,9 @@ export default function PatientCreateForm({
                     form={`${formId}-${activeStep}`}
                     disabled={isPosting}
                   >
-                    {activeStep === steps.length - 1 ? "Enviar" : "Siguiente"}
+                    {activeStep === steps.length - 1
+                      ? t("patientCreateForm.submit")
+                      : t("patientCreateForm.next")}
                   </Button>
                 ) : (
                   <Button
@@ -220,7 +221,7 @@ export default function PatientCreateForm({
                       window.location.href = `/patient/${patient?.id}`;
                     }}
                   >
-                    Ver Perfil
+                    {t("patientCreateForm.viewProfile")}
                   </Button>
                 )}
               </Box>

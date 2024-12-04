@@ -14,6 +14,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { PatientFormData } from "../../../Models/Forms/PatientForm";
 import "react-phone-input-2/lib/material.css";
 import PersonUtils from "../../../Services/Utils/PersonUtils";
+import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 
 export default function PatientPersonalDetailsForm({
   formId,
@@ -24,6 +26,27 @@ export default function PatientPersonalDetailsForm({
   patient?: PatientFormData;
   submitForm: SubmitHandler<PatientFormData>;
 }) {
+  const { t, i18n } = useTranslation();
+  const currentLanguage = i18n.language;
+
+  useEffect(() => {
+    // Update the display field when the language changes
+    maritalOptions.forEach((option) => {
+      option.display =
+        t(`terminology.maritalOptions.${option.code}`, {
+          lng: currentLanguage,
+        }) || option.display;
+    });
+
+    // Update the display field for generoOptions when the language changes
+    generoOptions.forEach((option) => {
+      option.display =
+        t(`terminology.generoOptions.${option.code}`, {
+          lng: currentLanguage,
+        }) || option.display;
+    });
+  }, [t, currentLanguage]);
+
   const {
     control,
     register,
@@ -58,14 +81,14 @@ export default function PatientPersonalDetailsForm({
               textUnderlineOffset: "0.2em",
             }}
           >
-            AGREGAR PACIENTE
+            {t("patientPersonalDetailsForm.addPatient")}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            label="Nombre"
+            label={t("patientPersonalDetailsForm.name")}
             {...register("nombre", {
-              required: "El Nombre es necesario",
+              required: t("patientPersonalDetailsForm.nameRequired"),
             })}
             fullWidth
             error={Boolean(errors.nombre)}
@@ -74,16 +97,16 @@ export default function PatientPersonalDetailsForm({
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            label="Segundo Nombre"
+            label={t("patientPersonalDetailsForm.secondName")}
             {...register("segundoNombre")}
             fullWidth
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            label="Apellido Paterno"
+            label={t("patientPersonalDetailsForm.lastName")}
             {...register("apellidoPaterno", {
-              required: "El Apellido Paterno es necesario",
+              required: t("patientPersonalDetailsForm.lastNameRequired"),
             })}
             fullWidth
             error={Boolean(errors.apellidoPaterno)}
@@ -94,7 +117,7 @@ export default function PatientPersonalDetailsForm({
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            label="Apellido Materno"
+            label={t("patientPersonalDetailsForm.motherLastName")}
             {...register("apellidoMaterno")}
             fullWidth
           />
@@ -109,7 +132,7 @@ export default function PatientPersonalDetailsForm({
                   format="DD-MM-YYYY"
                   views={["year", "month", "day"]}
                   maxDate={dayjs()}
-                  label="Fecha de Nacimiento"
+                  label={t("patientPersonalDetailsForm.birthDate")}
                   onChange={onChange}
                   value={value}
                   inputRef={ref}
@@ -122,10 +145,10 @@ export default function PatientPersonalDetailsForm({
         <Grid item xs={12} sm={6}>
           <TextField
             select
-            label="Género"
+            label={t("patientPersonalDetailsForm.gender")}
             defaultValue="unknown"
             {...register("genero", {
-              required: "El Género es necesario",
+              required: t("patientPersonalDetailsForm.genderRequired"),
             })}
             fullWidth
             error={Boolean(errors.genero)}
@@ -163,7 +186,7 @@ export default function PatientPersonalDetailsForm({
                   <TextField
                     {...params}
                     fullWidth
-                    label="Estado Civil"
+                    label={t("patientPersonalDetailsForm.maritalStatus")}
                     variant="outlined"
                   />
                 )}
@@ -173,9 +196,9 @@ export default function PatientPersonalDetailsForm({
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            label="Rut"
+            label={t("patientPersonalDetailsForm.rut")}
             {...register("rut", {
-              required: "El Rut es necesario", //TODO: Ver como validarlo aquí ya que falla.
+              required: t("patientPersonalDetailsForm.rutRequired"), //TODO: Ver como validarlo aquí ya que falla.
             })}
             fullWidth
             error={Boolean(errors.rut)}
@@ -185,7 +208,7 @@ export default function PatientPersonalDetailsForm({
               if (!isValid) {
                 setError("rut", {
                   type: "manual",
-                  message: "Rut inválido",
+                  message: t("patientPersonalDetailsForm.invalidRut"),
                 });
               } else {
                 clearErrors("rut");

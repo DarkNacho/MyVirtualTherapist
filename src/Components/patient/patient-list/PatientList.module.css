@@ -2,7 +2,8 @@
     display: inline-block !important;
     border-radius: 50% !important;
     overflow: hidden !important;
-    padding: 5px !important;
+    width: 50px !important;
+    height: 50px !important;
     border: 2px solid darkblue !important;
 }
 

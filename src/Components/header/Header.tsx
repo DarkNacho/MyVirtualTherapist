@@ -15,13 +15,9 @@ import LanguageIcon from "@mui/icons-material/Language";
 import LogoSVG from "../../assets/logo.svg";
 import styles from "./Header.module.css";
 import { Patient, Practitioner } from "fhir/r4";
-import { loadUserRoleFromLocalStorage } from "../../Services/Utils/RolUser";
+import { loadUserRoleFromLocalStorage } from "../../Utils/RolUser";
 import FhirResourceService from "../../Services/FhirService";
-
-interface HeaderProps {
-  onLanguageChange?: () => void;
-  onMenuClick?: () => void;
-}
+import { useTranslation } from "react-i18next";
 
 const isTokenExpired = () => {
   const expirationTime = localStorage.getItem("tokenExpiration");
@@ -40,10 +36,12 @@ const handleLogOut = () => {
   window.location.href = "/";
 };
 
-const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
-  const [language, setLanguage] = useState<"ES" | "EN">("ES");
+const Header = () => {
+  const { t, i18n } = useTranslation();
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [user, setUser] = useState<Patient | Practitioner>();
+  const [selectedItem, setSelectedItem] = useState<string>();
 
   const getUser = async () => {
     const id = localStorage.getItem("id");
@@ -73,6 +71,10 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
     getUser();
   }, []);
 
+  useEffect(() => {
+    setSelectedItem(t("header.patients"));
+  }, [i18n.language, t]);
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -96,18 +98,14 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
   };
 
   const handleLanguageToggle = () => {
-    const newLang = language === "ES" ? "EN" : "ES";
-    setLanguage(newLang);
-    if (onLanguageChange) {
-      onLanguageChange();
-    }
+    const newLang = i18n.language === "es" ? "en" : "es";
+    i18n.changeLanguage(newLang);
   };
 
-  const [selectedItem, setSelectedItem] = useState<string>("PACIENTES");
   useEffect(() => {
     const checkTokenExpiration = () => {
       if (isTokenExpired()) {
-        alert("Su sesión ha expirado, por favor inicie sesión nuevamente.");
+        alert(t("header.sessionExpired"));
         console.log("token expired...");
         handleLogOut();
       } else {
@@ -167,14 +165,14 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
               {/* Top Row - Actions */}
               <Toolbar className={styles.actionsRow}>
                 <Box className={styles.actionButtons}>
-                  <Button variant="contained">CONSIGUE MVT Y SMART MESK</Button>
+                  <Button variant="contained">{t("header.getMVT")}</Button>
                   <Button
                     variant="contained"
                     onClick={handleLanguageToggle}
                     startIcon={<LanguageIcon />}
                     className={styles.languageButton}
                   >
-                    {language}
+                    {i18n.language.toUpperCase()}
                   </Button>
                 </Box>
               </Toolbar>
@@ -182,10 +180,10 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
               {/* Bottom Row - Navigation */}
               <Toolbar className={styles.navigationRow}>
                 <Box className={styles.navLinks}>
-                  <NavItem text="PACIENTES" />
-                  <NavItem text="PROFESIONALES" />
-                  <NavItem text="ENCUENTROS" />
-                  <NavItem text="CONTACTO" />
+                  <NavItem text={t("header.patients")} />
+                  <NavItem text={t("header.practitioners")} />
+                  <NavItem text={t("header.encounters")} />
+                  <NavItem text={t("header.contact")} />
                 </Box>
               </Toolbar>
             </Grid>
@@ -205,8 +203,12 @@ const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
                   open={Boolean(anchorEl)}
                   onClose={handleClose}
                 >
-                  <MenuItem onClick={handleProfileClick}>My Profile</MenuItem>
-                  <MenuItem onClick={handleSignOutClick}>Sign Out</MenuItem>
+                  <MenuItem onClick={handleProfileClick}>
+                    {t("header.myProfile")}
+                  </MenuItem>
+                  <MenuItem onClick={handleSignOutClick}>
+                    {t("header.signOut")}
+                  </MenuItem>
                 </Menu>
               </ListItemAvatar>
             </Grid>

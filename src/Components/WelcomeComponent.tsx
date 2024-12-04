@@ -7,6 +7,7 @@ import img2 from "../assets/PLACEHOLDERS/2.png";
 import img3 from "../assets/PLACEHOLDERS/3.png";
 import img4 from "../assets/PLACEHOLDERS/4.png";
 import img5 from "../assets/PLACEHOLDERS/5.png";
+import { useTranslation } from "react-i18next";
 interface WelcomeComponentProps {
   userName: string;
 }
@@ -14,6 +15,7 @@ interface WelcomeComponentProps {
 const images = [img1, img2, img3, img4, img5];
 
 const WelcomeComponent: React.FC<WelcomeComponentProps> = ({ userName }) => {
+  const { t } = useTranslation();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const navigate = useNavigate();
 
@@ -80,7 +82,7 @@ const WelcomeComponent: React.FC<WelcomeComponentProps> = ({ userName }) => {
         onClick={handleTextClick}
       >
         <Typography variant="body1" color="white">
-          BIENVENIDO, <span>{userName}</span>
+          {t("welcome")} <span>{userName}</span>
         </Typography>
       </Box>
     </Paper>

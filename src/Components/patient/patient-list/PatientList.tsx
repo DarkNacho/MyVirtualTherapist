@@ -10,6 +10,7 @@ import {
   Typography,
   Paper,
   Button,
+  Skeleton,
 } from "@mui/material";
 import {
   ArrowForward,
@@ -22,9 +23,10 @@ import styles from "./PatientList.module.css";
 import { Patient } from "fhir/r4";
 import PersonUtil from "../../../Services/Utils/PersonUtils";
 import { SearchParams } from "fhir-kit-client";
-import HandleResult from "../../../Services/HandleResult";
+import HandleResult from "../../../Utils/HandleResult";
 import FhirResourceService from "../../../Services/FhirService";
 import Tooltip from "@mui/material/Tooltip";
+import { useTranslation } from "react-i18next";
 
 interface PatientListProps {
   searchParam?: SearchParams;
@@ -50,29 +52,63 @@ export default function PatientList({
   onEditClick,
   onDeleteClick,
 }: PatientListProps) {
+  const { t } = useTranslation();
   const [resources, setResources] = useState<Patient[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const handleNewResources = async (direction: "next" | "prev") => {
-    HandleResult.handleOperation(
+    setLoading(true);
+    await HandleResult.handleOperation(
       () => fhirService.getNewResources(direction),
-      "Recibidos exitosamente",
-      "Obteniendo...",
+      t("patientList.receivedSuccessfully"),
+      t("patientList.obtaining"),
       setResources
     );
+    setLoading(false);
   };
 
   const fetchResources = async () => {
-    HandleResult.handleOperation(
+    setLoading(true);
+    await HandleResult.handleOperation(
       () => fhirService.getResources(searchParam),
-      "Recibidos exitosamente",
-      "Obteniendo...",
+      t("patientList.receivedSuccessfully"),
+      t("patientList.obtaining"),
       setResources
     );
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchResources();
   }, [searchParam]);
+
+  const renderSkeleton = () => (
+    <ListItem className={styles.listItem}>
+      <ListItemAvatar
+        className={styles.circularContainer}
+        sx={{ marginRight: 2 }}
+      >
+        <Skeleton variant="circular" width={55} height={50} />
+      </ListItemAvatar>
+      <Box sx={{ flex: 1 }}>
+        <ListItemText
+          primary={<Skeleton variant="text" width="60%" />}
+          secondary={
+            <>
+              <Skeleton variant="text" width="40%" />
+              <Skeleton variant="text" width="30%" />
+              <Skeleton variant="text" width="50%" />
+            </>
+          }
+        />
+      </Box>
+      <Box sx={{ display: "flex", gap: 1 }}>
+        <Skeleton variant="circular" width={40} height={40} />
+        <Skeleton variant="circular" width={40} height={40} />
+        <Skeleton variant="circular" width={40} height={40} />
+      </Box>
+    </ListItem>
+  );
 
   return (
     <Paper
@@ -85,7 +121,7 @@ export default function PatientList({
         flexDirection: "column",
         border: "1px solid rgba(0, 0, 0, 0.12)",
         boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-        overflow: "hidden", // This ensures the content doesn't overflow
+        overflow: "hidden",
       }}
     >
       <List
@@ -98,113 +134,121 @@ export default function PatientList({
               content: '""',
               position: "absolute",
               bottom: 0,
-              left: 70, // Start border after padding
+              left: 70,
               right: 0,
               borderBottom: "1px solid darkblue",
             },
           },
         }}
       >
-        {resources.map((resource) => (
-          <React.Fragment key={resource.id}>
-            <ListItem className={styles.listItem}>
-              <ListItemAvatar
-                className={styles.circularContainer}
-                sx={{ marginRight: 2 }}
-              >
-                <Avatar
-                  src={
-                    resource.photo?.[0]?.data
-                      ? `data:${resource.photo[0].contentType};base64,${resource.photo[0].data}`
-                      : resource.photo?.[0]?.url || undefined
-                  }
-                />
-              </ListItemAvatar>
-              <Box sx={{ flex: 1 }}>
-                <ListItemText
-                  primary={
-                    <Typography
-                      variant="body1"
-                      color="textSecondary"
-                      component="span"
-                      sx={{ fontWeight: "bold", display: "block" }}
-                    >
-                      {resource.name?.[0]?.text}
-                    </Typography>
-                  }
-                  secondary={
-                    <>
-                      {identifier(resource)}
-                      <Box component="span" className={styles.block}>
+        {loading
+          ? Array.from(new Array(5)).map((_, index) => (
+              <React.Fragment key={index}>{renderSkeleton()}</React.Fragment>
+            ))
+          : resources.map((resource) => (
+              <React.Fragment key={resource.id}>
+                <ListItem className={styles.listItem}>
+                  <ListItemAvatar
+                    className={styles.circularContainer}
+                    sx={{ marginRight: 2 }}
+                  >
+                    <Avatar
+                      sx={{ width: "55px", height: "50px" }}
+                      src={
+                        resource.photo?.[0]?.data
+                          ? `data:${resource.photo[0].contentType};base64,${resource.photo[0].data}`
+                          : resource.photo?.[0]?.url || undefined
+                      }
+                    />
+                  </ListItemAvatar>
+                  <Box sx={{ flex: 1 }}>
+                    <ListItemText
+                      primary={
                         <Typography
-                          variant="body2"
+                          variant="body1"
                           color="textSecondary"
                           component="span"
+                          sx={{ fontWeight: "bold", display: "block" }}
                         >
-                          <strong>Edad:</strong>{" "}
-                          {PersonUtil.calcularEdad(resource.birthDate!)}
+                          {resource.name?.[0]?.text}
                         </Typography>
-                      </Box>
-                      <Box component="span" className={styles.block}>
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          component="span"
+                      }
+                      secondary={
+                        <>
+                          {identifier(resource)}
+                          <Box component="span" className={styles.block}>
+                            <Typography
+                              variant="body2"
+                              color="textSecondary"
+                              component="span"
+                            >
+                              <strong>{t("patientList.age")}:</strong>{" "}
+                              {PersonUtil.calcularEdad(resource.birthDate!)}
+                            </Typography>
+                          </Box>
+                          <Box component="span" className={styles.block}>
+                            <Typography
+                              variant="body2"
+                              color="textSecondary"
+                              component="span"
+                            >
+                              <strong>{t("patientList.phone")}:</strong>{" "}
+                              {PersonUtil.getContactPointFirstOrDefaultAsString(
+                                resource,
+                                "phone"
+                              )}
+                            </Typography>
+                          </Box>
+                        </>
+                      }
+                    />
+                  </Box>
+                  <Box sx={{ display: "flex", gap: 1 }}>
+                    {onDetailsClick && (
+                      <Tooltip title={t("patientList.derivePatient")}>
+                        <IconButton
+                          className={styles.circularContainer}
+                          color="primary"
+                          aria-label="derive"
+                          onClick={() => onDetailsClick(resource)}
                         >
-                          <strong>Teléfono:</strong>{" "}
-                          {PersonUtil.getContactPointFirstOrDefaultAsString(
-                            resource,
-                            "phone"
-                          )}
-                        </Typography>
-                      </Box>
-                    </>
-                  }
-                />
-              </Box>
-              <Box sx={{ display: "flex", gap: 1 }}>
-                {onDetailsClick && (
-                  <Tooltip title="Derivar paciente">
-                    <IconButton
-                      className={styles.circularContainer}
-                      color="primary"
-                      aria-label="derive"
-                      onClick={() => onDetailsClick(resource)}
-                    >
-                      <ArrowForward />
-                    </IconButton>
-                  </Tooltip>
-                )}
-                {onEditClick && (
-                  <IconButton
-                    className={styles.circularContainer}
-                    color="primary"
-                    aria-label="edit"
-                    onClick={() => onEditClick(resource)}
-                  >
-                    <Edit />
-                  </IconButton>
-                )}
-                {onDeleteClick && (
-                  <IconButton
-                    className={styles.circularContainer}
-                    color="error"
-                    aria-label="delete"
-                    onClick={() => onDeleteClick(resource)}
-                  >
-                    <Delete />
-                  </IconButton>
-                )}
-              </Box>
-            </ListItem>
-          </React.Fragment>
-        ))}
+                          <ArrowForward />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                    {onEditClick && (
+                      <Tooltip title={t("patientList.edit")}>
+                        <IconButton
+                          className={styles.circularContainer}
+                          color="primary"
+                          aria-label="edit"
+                          onClick={() => onEditClick(resource)}
+                        >
+                          <Edit />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                    {onDeleteClick && (
+                      <Tooltip title={t("patientList.delete")}>
+                        <IconButton
+                          className={styles.circularContainer}
+                          color="error"
+                          aria-label="delete"
+                          onClick={() => onDeleteClick(resource)}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  </Box>
+                </ListItem>
+              </React.Fragment>
+            ))}
       </List>
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
-
           borderTop: 1,
           borderColor: "divider",
           paddingTop: 1,
@@ -217,7 +261,7 @@ export default function PatientList({
           onClick={() => handleNewResources("prev")}
           disabled={!fhirService.hasPrevPage}
         >
-          Anterior
+          {t("patientList.previous")}
         </Button>
         <Button
           variant="contained"
@@ -226,7 +270,7 @@ export default function PatientList({
           onClick={() => handleNewResources("next")}
           disabled={!fhirService.hasNextPage}
         >
-          Siguiente
+          {t("patientList.next")}
         </Button>
       </Box>
     </Paper>

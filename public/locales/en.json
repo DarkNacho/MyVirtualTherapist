@@ -1,0 +1,98 @@
+{
+  "welcome": "Welcome",
+  "signInSide": {
+    "enter": "Enter",
+    "signIn": "Sign In",
+    "rut": "RUT",
+    "password": "Password",
+    "forgotPassword": "Forgot your password?",
+    "sessionStarted": "Session Started",
+    "startingSession": "Starting Session"
+  },
+  "header": {
+    "getMVT": "GET MVT AND SMART MESK",
+    "myProfile": "My Profile",
+    "signOut": "Sign Out",
+    "patients": "PATIENTS",
+    "practitioners": "PRACTITIONERS",
+    "encounters": "ENCOUNTERS",
+    "contact": "CONTACT",
+    "sessionExpired": "Your session has expired, please log in again."
+  },
+  "patientContactDetailForm": {
+    "addPatient": "ADD PATIENT",
+    "phoneNumberRequired": "Phone number required",
+    "phoneNumber": "Phone Number",
+    "emailRequired": "Email required",
+    "invalidEmail": "Invalid email",
+    "emergencyContact": "EMERGENCY CONTACT",
+    "nameRequired": "Name is required",
+    "name": "Name",
+    "relation": "Relation",
+    "submit": "Submit"
+  },
+  "patientCreateForm": {
+    "personalDetails": "Personal Details",
+    "contactDetails": "Contact Details",
+    "patientCreated": "PATIENT CREATED SUCCESSFULLY",
+    "verifyEmail": "Verify the patient's email to confirm the access key.",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "viewProfile": "View Profile"
+  },
+  "patientPersonalDetailsForm": {
+    "addPatient": "ADD PATIENT",
+    "name": "Name",
+    "nameRequired": "Name is required",
+    "secondName": "Second Name",
+    "lastName": "Last Name",
+    "lastNameRequired": "Last Name is required",
+    "motherLastName": "Mother's Last Name",
+    "birthDate": "Birth Date",
+    "gender": "Gender",
+    "genderRequired": "Gender is required",
+    "maritalStatus": "Marital Status",
+    "rut": "RUT",
+    "rutRequired": "RUT is required",
+    "invalidRut": "Invalid RUT"
+  },
+  "patientList": {
+    "receivedSuccessfully": "Received successfully",
+    "obtaining": "Obtaining...",
+    "age": "Age",
+    "phone": "Phone",
+    "derivePatient": "Derive patient",
+    "edit": "Edit",
+    "delete": "Delete",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "patientSearchComponent": {
+    "patients": "PATIENTS",
+    "searchPatient": "Search a patient",
+    "addPatient": "Add\nPatient",
+    "searchByPhone": "Search by phone",
+    "searchByRut": "Search by RUT",
+    "searchByEmail": "Search by email",
+    "search": "Search"
+  },
+  "terminology": {
+    "maritalOptions": {
+      "S": "Never Married",
+      "A": "Annulled",
+      "D": "Divorced",
+      "I": "Interlocutory",
+      "L": "Legally Separated",
+      "M": "Married",
+      "C": "Common Law",
+      "UNK": "Unknown"
+    },
+    "generoOptions": {
+      "unknown": "Unknown",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    }
+  }
+}

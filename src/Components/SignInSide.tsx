@@ -12,13 +12,16 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import HandleResult from "../Services/HandleResult";
+import HandleResult from "../Utils/HandleResult";
 import { jwtDecode } from "jwt-decode";
+import { useTranslation } from "react-i18next";
 //import PersonForgotPasswordComponent from "../Components/Person/PersonForgotPasswordComponent";
 import backgroundLogin from "../assets/fondo-login.jpg";
 import logoBlue from "../assets/logo-azul.png";
 //import PractitionerCreateComponent from "../Components/Practitioner/PractitionerCreateComponent";
+
 function Copyright(props: any) {
+  const { t } = useTranslation();
   return (
     <Typography
       variant="body2"
@@ -28,7 +31,7 @@ function Copyright(props: any) {
     >
       {"Copyright © "}
       <Link color="inherit" href="https://www.cttn.cl">
-        XXXXX Ingresar
+        {t("signInSide.enter")}
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -79,6 +82,7 @@ async function login(username: string, password: string): Promise<Result<any>> {
 }
 
 export default function SignInSide() {
+  const { t } = useTranslation();
   const dummyUse = () => {
     if (openDialog) {
       console.log("openDialog");
@@ -90,7 +94,7 @@ export default function SignInSide() {
       console.log("handleIsOpen");
     }
   };
-
+  const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogPractitioner, setOpenDialogPractitioner] = useState(false);
 
@@ -104,6 +108,7 @@ export default function SignInSide() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     dummyUse(); //TODO: remove this line
     event.preventDefault();
+    setLoading(true);
     const data = new FormData(event.currentTarget);
 
     const { rut, password } = {
@@ -119,10 +124,11 @@ export default function SignInSide() {
     console.log({ rut, password });
     const response = await HandleResult.handleOperation(
       () => login(rut, password),
-      "Sesión Iniciada",
-      "Iniciando Sesión"
+      t("signInSide.sessionStarted"),
+      t("signInSide.startingSession")
     );
 
+    setLoading(false);
     if (!response.success) return;
 
     console.log(response.data);
@@ -165,7 +171,7 @@ export default function SignInSide() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Iniciar Sesión
+              {t("signInSide.signIn")}
             </Typography>
             <Box
               component="form"
@@ -178,7 +184,7 @@ export default function SignInSide() {
                 required
                 fullWidth
                 id="rut"
-                label="Rut"
+                label={t("signInSide.rut")}
                 name="rut"
                 autoComplete="rut"
                 autoFocus
@@ -189,7 +195,7 @@ export default function SignInSide() {
                 required
                 fullWidth
                 name="password"
-                label="Contraseña"
+                label={t("signInSide.password")}
                 type="password"
                 id="password"
                 autoComplete="current-password"
@@ -200,8 +206,9 @@ export default function SignInSide() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                disabled={loading}
               >
-                Iniciar Sesión
+                {t("signInSide.signIn")}
               </Button>
               {/*<Button
                 onClick={() => handleIsOpenPractitioner(true)}
@@ -217,7 +224,7 @@ export default function SignInSide() {
                   variant="body2"
                   onClick={() => handleIsOpen(true)}
                 >
-                  {"¿Olvidó su contraseña?"}
+                  {t("signInSide.forgotPassword")}
                 </Link>
               </Box>
               <Box
@@ -254,7 +261,7 @@ export default function SignInSide() {
           }}
         />
       </Grid>
-      {/*
+      {/* 
       <PractitionerCreateComponent
         isOpen={openDialogPractitioner}
         onOpen={handleIsOpenPractitioner}
@@ -263,7 +270,7 @@ export default function SignInSide() {
         onOpen={handleIsOpen}
         isOpen={openDialog}
       ></PersonForgotPasswordComponent>
-    */}
+      */}
     </ThemeProvider>
   );
 }
