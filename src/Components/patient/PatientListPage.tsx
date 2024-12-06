@@ -69,9 +69,11 @@ export default function PatientListPage() {
           t("patientPage.sending")
         );
         if (response.success) setActiveStep((prev) => prev + 1);
+        else setActiveStep(0);
+
+        await new Promise((resolve) => setTimeout(resolve, 2000)); // wait for 1 second
       }
     } finally {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
       setIsPosting(false);
     }
   };
@@ -175,7 +177,6 @@ export default function PatientListPage() {
         handleClose={handleClose}
         open={open}
         activeStep={activeStep}
-        setActiveStep={setActiveStep}
         avatar={avatar}
         handleAvatarChange={handleAvatarChange}
         isPosting={isPosting}

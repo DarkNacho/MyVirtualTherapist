@@ -155,16 +155,18 @@ export default function PatientList({
             ))
           : resources.map((resource) => (
               <React.Fragment key={resource.id}>
-                <ListItem
-                  className={styles.listItem}
-                  onClick={() => handleItemClick(resource)}
-                >
+                <ListItem className={styles.listItem}>
                   <ListItemAvatar
                     className={styles.circularContainer}
                     sx={{ marginRight: 2 }}
                   >
                     <Avatar
-                      sx={{ width: "55px", height: "50px" }}
+                      onClick={() => handleItemClick(resource)}
+                      sx={{
+                        width: "55px",
+                        height: "50px",
+                        ":hover": { cursor: "pointer" },
+                      }}
                       src={
                         resource.photo?.[0]?.data
                           ? `data:${resource.photo[0].contentType};base64,${resource.photo[0].data}`
@@ -176,10 +178,15 @@ export default function PatientList({
                     <ListItemText
                       primary={
                         <Typography
+                          onClick={() => handleItemClick(resource)}
                           variant="body1"
                           color="textSecondary"
                           component="span"
-                          sx={{ fontWeight: "bold", display: "block" }}
+                          sx={{
+                            fontWeight: "bold",
+                            display: "block",
+                            ":hover": { cursor: "pointer" },
+                          }}
                         >
                           {resource.name?.[0]?.text}
                         </Typography>

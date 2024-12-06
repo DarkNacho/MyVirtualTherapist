@@ -28,7 +28,6 @@ export default function PatientCreateForm({
   handleClose,
   open,
   activeStep,
-  setActiveStep,
   avatar,
   handleAvatarChange,
   isPosting = false,
@@ -39,16 +38,12 @@ export default function PatientCreateForm({
   handleClose: () => void;
   open: boolean;
   activeStep: number;
-  setActiveStep: React.Dispatch<React.SetStateAction<number>>;
+
   avatar?: File | null;
   handleAvatarChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isPosting: boolean;
 }) {
   const { t } = useTranslation();
-
-  const handleBack = () => {
-    setActiveStep((prevStep) => prevStep - 1);
-  };
 
   const successView = () => (
     <>
@@ -181,25 +176,24 @@ export default function PatientCreateForm({
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                mt: 3,
+                mt: 2,
               }}
             >
-              <Stepper activeStep={activeStep} alternativeLabel>
-                {steps.map((label) => (
+              <Stepper sx={{}} activeStep={activeStep} alternativeLabel>
+                {steps.map((label, index) => (
                   <Step key={label}>
-                    <StepLabel>{t(`patientCreateForm.${label}`)}</StepLabel>
+                    <StepLabel
+                      sx={{
+                        whiteSpace: "nowrap",
+                        marginLeft: index === 0 ? "0" : "50px",
+                        marginRight: "50px", // Adjust the margin value as needed
+                      }}
+                    ></StepLabel>
                   </Step>
                 ))}
               </Stepper>
 
               <Box sx={{ display: "flex", alignItems: "center", mt: -5 }}>
-                <Button
-                  variant="outlined"
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                >
-                  {t("patientCreateForm.back")}
-                </Button>
                 {activeStep < steps.length ? (
                   <Button
                     variant="contained"
@@ -207,6 +201,14 @@ export default function PatientCreateForm({
                     type="submit"
                     form={`${formId}-${activeStep}`}
                     disabled={isPosting}
+                    sx={{
+                      bottom: 0,
+                      right: 0,
+                      width: 200,
+                      borderBottomRightRadius: 18,
+                      borderTopLeftRadius: 18,
+                      position: "absolute",
+                    }}
                   >
                     {activeStep === steps.length - 1
                       ? t("patientCreateForm.submit")
@@ -214,6 +216,14 @@ export default function PatientCreateForm({
                   </Button>
                 ) : (
                   <Button
+                    sx={{
+                      bottom: 0,
+                      right: 0,
+                      width: 200,
+                      borderBottomRightRadius: 18,
+                      borderTopLeftRadius: 18,
+                      position: "absolute",
+                    }}
                     variant="contained"
                     color="primary"
                     onClick={() => {
