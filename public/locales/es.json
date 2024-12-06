@@ -88,6 +88,81 @@
     "searchByEmail": "Buscar por correo",
     "search": "Buscar"
   },
+
+  "practitionerContactDetailForm": {
+    "addPractitioner": "AGREGAR PRACTICANTE",
+    "phoneNumberRequired": "Número telefónico requerido",
+    "phoneNumber": "Número Telefónico",
+    "email": "Correo Electrónico",
+    "emailRequired": "Correo electrónico requerido",
+    "invalidEmail": "Correo electrónico inválido",
+    "emergencyContact": "CONTACTO DE EMERGENCIA",
+    "nameRequired": "El Nombre es necesario",
+    "name": "Nombre",
+    "relation": "Relación",
+    "submit": "Enviar"
+  },
+  "practitionerCreateForm": {
+    "personalDetails": "Datos Personales",
+    "contactDetails": "Datos de Contacto",
+    "practitionerCreated": "PRACTICANTE CREADO CON ÉXITO",
+    "verifyEmail": "Verifique el correo del practicante para confirmar clave de acceso.",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "submit": "Enviar",
+    "viewProfile": "Ver Perfil"
+  },
+  "practitionerPersonalDetailsForm": {
+    "addPractitioner": "AGREGAR PRACTICANTE",
+    "name": "Nombre",
+    "nameRequired": "El Nombre es necesario",
+    "secondName": "Segundo Nombre",
+    "lastName": "Apellido Paterno",
+    "lastNameRequired": "El Apellido Paterno es necesario",
+    "motherLastName": "Apellido Materno",
+    "birthDate": "Fecha de Nacimiento",
+    "gender": "Género",
+    "genderRequired": "El Género es necesario",
+    "maritalStatus": "Estado Civil",
+    "rut": "Rut",
+    "rutRequired": "El Rut es necesario",
+    "invalidRut": "Rut inválido"
+  },
+  "practitionerPage": {
+    "practitionerCreated": "El practicante ha sido creado exitosamente",
+    "sending": "Enviando...",
+    "errorConvertingForm": "Error al convertir el formulario a practicante",
+    "userExists": "El usuario ya existe"
+  },
+  "practitionerList": {
+    "receivedSuccessfully": "Recibidos exitosamente",
+    "obtaining": "Obteniendo...",
+    "age": "Edad",
+    "phone": "Teléfono",
+    "derivePractitioner": "Derivar practicante",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "previous": "Anterior",
+    "next": "Siguiente"
+  },
+  "practitionerSearchComponent": {
+    "practitioners": "PRACTICANTES",
+    "searchPractitioner": "Buscar un practicante",
+    "addPractitioner": "Agregar\nPracticante",
+    "searchByPhone": "Buscar por teléfono",
+    "searchByRut": "Buscar por RUT",
+    "searchByEmail": "Buscar por correo",
+    "search": "Buscar"
+  },
+
+  "notFound": {
+    "sadFaceAlt": "Cara triste",
+    "error404": "¡Error 404!",
+    "nothingHere": "¡Aquí no hay nada!",
+    "linkNotCorrect": "El enlace no está correcto o aún no habilita está sección",
+    "backToHome": "Volver a la página de inicio."
+  },
+
   "terminology": {
     "maritalOptions": {
       "S": "Nunca Casado",

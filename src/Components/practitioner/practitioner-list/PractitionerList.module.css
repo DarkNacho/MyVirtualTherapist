@@ -1,0 +1,24 @@
+.circularContainer {
+    display: inline-block !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    width: 50px !important;
+    height: 50px !important;
+    border: 2px solid darkblue !important;
+}
+
+/* UserList.css */
+.listItem
+{
+    height: 90px;
+}
+
+.listItem:hover {
+    background-color: #f0f0f0;
+    /* Change this to your desired hover color */
+}
+
+/* PatientList.module.css */
+.block {
+    display: block;
+}

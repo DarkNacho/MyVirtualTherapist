@@ -210,16 +210,12 @@ export default class PersonUtil {
     });
   };
 
-  static patientPhotoToFile = (patient: Patient): File | undefined => {
-    if (!patient.photo || patient.photo.length === 0) {
+  static attachmentToFile = (attachment: Attachment): File | undefined => {
+    if (!attachment || !attachment.data) {
       return undefined;
     }
 
-    const photo = patient.photo[0];
-    if (!photo.data) {
-      return undefined;
-    }
-    const byteString = atob(photo.data);
+    const byteString = atob(attachment.data);
     const arrayBuffer = new ArrayBuffer(byteString.length);
     const uint8Array = new Uint8Array(arrayBuffer);
 
@@ -227,8 +223,10 @@ export default class PersonUtil {
       uint8Array[i] = byteString.charCodeAt(i);
     }
 
-    const blob = new Blob([uint8Array], { type: photo.contentType });
-    const file = new File([blob], "avatar", { type: photo.contentType });
+    const blob = new Blob([uint8Array], { type: attachment.contentType });
+    const file = new File([blob], "attachment", {
+      type: attachment.contentType,
+    });
 
     return file;
   };
@@ -285,7 +283,8 @@ export default class PersonUtil {
     const telecomEmail =
       patient.telecom?.find((t) => t.system === "email")?.value || "";
 
-    const avatar = this.patientPhotoToFile(patient);
+    const avatarAttachment = patient.photo?.[0];
+    const avatar = this.attachmentToFile(avatarAttachment!);
 
     return {
       id: patient.id,
@@ -307,11 +306,25 @@ export default class PersonUtil {
     };
   };
 
-  static PractitionerFormToPractitioner(data: PractitionerFormData): {
+  static async PractitionerFormToPractitioner(
+    data: PractitionerFormData
+  ): Promise<{
     practitioner: Practitioner;
     practitionerRole: PractitionerRole;
-  } {
+  }> {
     const rut = data.rut.replace(/\./g, "").replace(/-/g, "").toUpperCase();
+    let avatar: Attachment[] | undefined;
+
+    if (data.avatar) {
+      const avatarBase64 = await this.fileToBase64(data.avatar);
+      avatar = [
+        {
+          contentType: data.avatar.type, // MIME type of the file
+          data: avatarBase64,
+        },
+      ];
+    }
+
     const practitioner: Practitioner = {
       resourceType: "Practitioner",
       id: data.practitionerId,
@@ -334,7 +347,8 @@ export default class PersonUtil {
         { system: "email", value: data.email },
         { system: "url", use: "work", rank: 99, value: data.agendaUrl }, // rank: 99 is usado para especificar que corresponde a url de agenda.
       ],
-      photo: [{ url: data.photo }],
+      photo: avatar,
+      //photo: [{ url: data.photo }],
     };
 
     const practitionerRole: PractitionerRole = {
@@ -366,6 +380,9 @@ export default class PersonUtil {
     const role = practitionerRole?.code?.[0]?.coding || [];
     const specialty = practitionerRole?.specialty?.[0]?.coding || [];
 
+    const avatarAttachment = practitioner.photo?.[0];
+    const avatar = this.attachmentToFile(avatarAttachment!);
+
     return {
       practitionerId: practitioner.id || undefined,
       practitionerRoleId: practitionerRole?.id || undefined,
@@ -379,7 +396,8 @@ export default class PersonUtil {
         : dayjs().subtract(18, "years"),
       genero: practitioner.gender || "unknown",
       numeroTelefonico: telecomPhone,
-      photo: practitioner.photo?.[0].url || "",
+      avatar: avatar,
+      //photo: practitioner.photo?.[0].url || "",
       email: telecomEmail,
       specialty: specialty,
       role: role,

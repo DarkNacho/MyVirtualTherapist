@@ -123,8 +123,10 @@ const Header = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  const NavItem = ({ text }: { text: string }) => (
+  const NavItem = ({ text, to }: { text: string; to?: string }) => (
     <Typography
+      component={"a"}
+      href={to}
       variant="h6"
       onClick={() => setSelectedItem(text)}
       sx={{
@@ -180,10 +182,13 @@ const Header = () => {
               {/* Bottom Row - Navigation */}
               <Toolbar className={styles.navigationRow}>
                 <Box className={styles.navLinks}>
-                  <NavItem text={t("header.patients")} />
-                  <NavItem text={t("header.practitioners")} />
-                  <NavItem text={t("header.encounters")} />
-                  <NavItem text={t("header.contact")} />
+                  <NavItem text={t("header.patients")} to="/Patients" />
+                  <NavItem
+                    text={t("header.practitioners")}
+                    to="/Practitioners"
+                  />
+                  <NavItem text={t("header.encounters")} to="/Encounters" />
+                  <NavItem text={t("header.contact")} to="/Contact" />
                 </Box>
               </Toolbar>
             </Grid>

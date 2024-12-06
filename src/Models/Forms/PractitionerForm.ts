@@ -2,6 +2,8 @@ import { Dayjs } from "dayjs";
 import { Coding } from "fhir/r4";
 
 export interface PractitionerFormData {
+  id?: string;
+  avatar?: File;
   practitionerId?: string;
   nombre: string;
   segundoNombre: string;
@@ -12,7 +14,7 @@ export interface PractitionerFormData {
   rut: string;
   numeroTelefonico: string;
   email: string;
-  photo: string;
+  //photo: string;
   specialty: Coding[];
   role: Coding[];
   practitionerRoleId?: string;

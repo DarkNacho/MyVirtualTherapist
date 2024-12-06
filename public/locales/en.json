@@ -88,6 +88,80 @@
     "searchByEmail": "Search by email",
     "search": "Search"
   },
+
+  "practitionerContactDetailForm": {
+    "addPractitioner": "ADD PRACTITIONER",
+    "phoneNumberRequired": "Phone number required",
+    "phoneNumber": "Phone Number",
+    "email": "Email",
+    "emailRequired": "Email required",
+    "invalidEmail": "Invalid email",
+    "emergencyContact": "EMERGENCY CONTACT",
+    "nameRequired": "Name is required",
+    "name": "Name",
+    "relation": "Relation",
+    "submit": "Submit"
+  },
+  "practitionerCreateForm": {
+    "personalDetails": "Personal Details",
+    "contactDetails": "Contact Details",
+    "practitionerCreated": "PRACTITIONER CREATED SUCCESSFULLY",
+    "verifyEmail": "Verify the practitioner's email to confirm access key.",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "viewProfile": "View Profile"
+  },
+  "practitionerPersonalDetailsForm": {
+    "addPractitioner": "ADD PRACTITIONER",
+    "name": "Name",
+    "nameRequired": "Name is required",
+    "secondName": "Second Name",
+    "lastName": "Last Name",
+    "lastNameRequired": "Last Name is required",
+    "motherLastName": "Mother's Last Name",
+    "birthDate": "Birth Date",
+    "gender": "Gender",
+    "genderRequired": "Gender is required",
+    "maritalStatus": "Marital Status",
+    "rut": "Rut",
+    "rutRequired": "Rut is required",
+    "invalidRut": "Invalid Rut"
+  },
+  "practitionerPage": {
+    "practitionerCreated": "The practitioner has been created successfully",
+    "sending": "Sending...",
+    "errorConvertingForm": "Error converting form to practitioner",
+    "userExists": "The user already exists"
+  },
+  "practitionerList": {
+    "receivedSuccessfully": "Received successfully",
+    "obtaining": "Obtaining...",
+    "age": "Age",
+    "phone": "Phone",
+    "derivePractitioner": "Derive practitioner",
+    "edit": "Edit",
+    "delete": "Delete",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "practitionerSearchComponent": {
+    "practitioners": "PRACTITIONERS",
+    "searchPractitioner": "Search a practitioner",
+    "addPractitioner": "Add\nPractitioner",
+    "searchByPhone": "Search by phone",
+    "searchByRut": "Search by RUT",
+    "searchByEmail": "Search by email",
+    "search": "Search"
+  },
+  "notFound": {
+    "sadFaceAlt": "Sad face",
+    "error404": "Error 404!",
+    "nothingHere": "There's nothing here!",
+    "linkNotCorrect": "The link is incorrect or this section is not yet enabled",
+    "backToHome": "Back to the home page."
+  },
+
   "terminology": {
     "maritalOptions": {
       "S": "Never Married",

@@ -27,6 +27,7 @@ import HandleResult from "../../../Utils/HandleResult";
 import FhirResourceService from "../../../Services/FhirService";
 import Tooltip from "@mui/material/Tooltip";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 interface PatientListProps {
   searchParam?: SearchParams;
@@ -147,7 +148,11 @@ export default function PatientList({
             ))
           : resources.map((resource) => (
               <React.Fragment key={resource.id}>
-                <ListItem className={styles.listItem}>
+                <ListItem
+                  className={styles.listItem}
+                  component={Link}
+                  to={`/Patient/${resource.id}`}
+                >
                   <ListItemAvatar
                     className={styles.circularContainer}
                     sx={{ marginRight: 2 }}

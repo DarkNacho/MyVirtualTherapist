@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 
-import PatientPage from "./Components/patient/PatientPage";
+import PatientListPage from "./Components/patient/PatientListPage";
 import { Toaster } from "react-hot-toast";
 
 import Header from "./Components/header/Header";
@@ -13,15 +13,25 @@ import Footer from "./Components/footer/Footer";
 import styles from "./main.module.css";
 import { loadUserRoleFromLocalStorage } from "./Utils/RolUser";
 import SignInSide from "./Components/SignInSide";
+import NotFound from "./Components/not-found/NotFound";
+import PractitionerPage from "./Components/practitioner/PractitionerPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <PatientPage />,
+    element: <PatientListPage />,
   },
   {
-    path: "/Patient",
-    element: <PatientPage />,
+    path: "/Patients",
+    element: <PatientListPage />,
+  },
+  {
+    path: "/Practitioners",
+    element: <PractitionerPage />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 
