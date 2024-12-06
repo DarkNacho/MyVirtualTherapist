@@ -5,7 +5,6 @@
     "privacyPolicy": "Privacy Policy"
   },
   "signInSide": {
-    "enter": "Enter",
     "signIn": "Sign In",
     "rut": "RUT",
     "password": "Password",

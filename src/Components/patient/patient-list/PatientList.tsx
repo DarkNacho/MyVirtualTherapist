@@ -27,7 +27,8 @@ import HandleResult from "../../../Utils/HandleResult";
 import FhirResourceService from "../../../Services/FhirService";
 import Tooltip from "@mui/material/Tooltip";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { usePatient } from "../PatientContext"; // Import the context
 
 interface PatientListProps {
   searchParam?: SearchParams;
@@ -56,6 +57,8 @@ export default function PatientList({
   const { t } = useTranslation();
   const [resources, setResources] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
+  const { setPatient } = usePatient(); // Use the context
+  const navigate = useNavigate();
 
   const handleNewResources = async (direction: "next" | "previous") => {
     setLoading(true);
@@ -83,6 +86,10 @@ export default function PatientList({
     fetchResources();
   }, [searchParam]);
 
+  const handleItemClick = (resource: Patient) => {
+    setPatient(resource); // Store the selected patient in the context
+    navigate(`/Patient/${resource.id}`);
+  };
   const renderSkeleton = () => (
     <ListItem className={styles.listItem}>
       <ListItemAvatar
@@ -150,8 +157,7 @@ export default function PatientList({
               <React.Fragment key={resource.id}>
                 <ListItem
                   className={styles.listItem}
-                  component={Link}
-                  to={`/Patient/${resource.id}`}
+                  onClick={() => handleItemClick(resource)}
                 >
                   <ListItemAvatar
                     className={styles.circularContainer}

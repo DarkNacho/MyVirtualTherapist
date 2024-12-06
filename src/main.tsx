@@ -15,6 +15,8 @@ import { loadUserRoleFromLocalStorage } from "./Utils/RolUser";
 import SignInSide from "./Components/SignInSide";
 import NotFound from "./Components/not-found/NotFound";
 import PractitionerPage from "./Components/practitioner/PractitionerPage";
+import PatientPage from "./Components/patient/page/PatientPage";
+import { PatientProvider } from "./Components/patient/PatientContext";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/Patients",
     element: <PatientListPage />,
+  },
+  {
+    path: "/Patient/:id",
+    element: <PatientPage />,
   },
   {
     path: "/Practitioners",
@@ -51,6 +57,8 @@ const Layout = () =>
 createRoot(document.getElementById("root")!).render(
   <I18nextProvider i18n={i18n}>
     <Toaster />
-    <Layout />
+    <PatientProvider>
+      <Layout />
+    </PatientProvider>
   </I18nextProvider>
 );
