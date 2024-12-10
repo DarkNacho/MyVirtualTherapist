@@ -2,22 +2,27 @@ import { MedicationStatement } from "fhir/r4";
 import { MedicationFormData } from "../../Models/Forms/MedicationForm";
 
 export default class MedicationUtils {
-  public static extractMedicationInfo(
-    medications: MedicationStatement[]
-  ): { name: string; value: string }[] {
-    return medications.map((medication) => {
-      const name =
-        medication.medicationCodeableConcept?.coding?.[0]?.display ||
-        medication.medicationCodeableConcept?.text ||
-        (medication.medicationCodeableConcept?.coding?.[0]?.system &&
-        medication.medicationCodeableConcept?.coding?.[0]?.code
-          ? `${medication.medicationCodeableConcept.coding[0].system} - ${medication.medicationCodeableConcept.coding[0].code}`
-          : "Unknown Name");
+  public static getName(medication: MedicationStatement): string {
+    return (
+      medication.medicationCodeableConcept?.coding?.[0]?.display ||
+      medication.medicationCodeableConcept?.text ||
+      (medication.medicationCodeableConcept?.coding?.[0]?.system &&
+      medication.medicationCodeableConcept?.coding?.[0]?.code
+        ? `${medication.medicationCodeableConcept.coding[0].system} - ${medication.medicationCodeableConcept.coding[0].code}`
+        : "N/A")
+    );
+  }
 
-      const value = medication.dosage?.[0]?.text || "";
-
-      return { name, value };
-    });
+  public static getValue(medication: MedicationStatement): string {
+    return (
+      medication.status ||
+      medication.medicationCodeableConcept?.coding?.[0]?.display ||
+      medication.medicationCodeableConcept?.text ||
+      (medication.medicationCodeableConcept?.coding?.[0]?.system &&
+      medication.medicationCodeableConcept?.coding?.[0]?.code
+        ? `${medication.medicationCodeableConcept.coding[0].system} - ${medication.medicationCodeableConcept.coding[0].code}`
+        : "N/A")
+    );
   }
 
   public static MedicationFormDataToMedicationStatement(

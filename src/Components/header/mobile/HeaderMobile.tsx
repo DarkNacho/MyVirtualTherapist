@@ -67,7 +67,7 @@ const HeaderMobile: React.FC<HeaderMobileProps> = ({
       <Box className={styles.root}>
         <AppBar
           position="static"
-          sx={{ backgroundColor: "white", color: "black" }}
+          sx={{ backgroundColor: "white", color: "black", height: 64 }}
         >
           <Grid container sx={{ paddingLeft: 2, paddingRight: 2 }}>
             <Grid item xs={5} className={styles.logoContainer}>

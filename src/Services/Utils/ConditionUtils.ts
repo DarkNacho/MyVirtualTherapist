@@ -1,34 +1,28 @@
 import { Condition } from "fhir/r4";
-import { InfoListData } from "../../Models/InfoList";
+
 import { ConditionFormData } from "../../Models/Forms/ConditionForm";
 
 export default class ConditionUtils {
-  // Función para un solo item
-  public static extractSingleConditionName(condition: Condition): InfoListData {
-    const id = condition.id;
-    const name =
+  public static getName(condition: Condition): string {
+    return (
       condition.code?.coding?.[0]?.display ||
       condition.code?.text ||
       (condition.code?.coding?.[0]?.system && condition.code?.coding?.[0]?.code
         ? `${condition.code.coding[0].system} - ${condition.code.coding[0].code}`
-        : "Unknown Name");
+        : "N/A")
+    );
+  }
 
-    const value =
+  public static getValue(condition: Condition): string {
+    return (
       condition.clinicalStatus?.coding?.[0]?.display ||
       condition.clinicalStatus?.text ||
       condition.clinicalStatus?.coding?.[0]?.code ||
       condition.onsetString ||
-      "No value";
-
-    return { id, name, value };
-  }
-
-  // Función para un array de items
-  public static extractConditionNames(conditions: Condition[]): InfoListData[] {
-    return conditions.map((condition) =>
-      this.extractSingleConditionName(condition)
+      "N/A"
     );
   }
+  // Función para un array de items
 
   public static ConditionFormDataToCondition(
     data: ConditionFormData

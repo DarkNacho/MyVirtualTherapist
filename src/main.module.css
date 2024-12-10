@@ -1,10 +1,10 @@
 :root {
     --header-height: 120px;
     --footer-height: 50px;
-    --header-height-mobile: 50px;
+    --header-height-mobile: 64px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 960px) {
     :root {
         --header-height: var(--header-height-mobile);
         /* Override header height for mobile */

@@ -161,10 +161,9 @@ export default function PatientListPage() {
               item
               width="100%"
               sx={{
-                height: {
-                  xs: "calc(100vh - 295px)",
-                  sm: "calc(100vh - 335px)",
-                },
+                height: isMobile
+                  ? "calc(100vh - 275px)"
+                  : "calc(100vh - 340px)",
 
                 overflow: "auto",
               }}
