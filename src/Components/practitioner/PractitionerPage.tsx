@@ -143,14 +143,7 @@ const PractitionerPage = () => {
         <Grid item xs={4}>
           <WelcomeComponent userName={localStorage.getItem("name")!} />
         </Grid>
-        <Grid
-          item
-          xs
-          sx={{
-            height: "410px !important",
-            overflow: "auto",
-          }}
-        >
+        <Grid item xs>
           <Grid container gap={0.5}>
             <Grid width="100%">
               <PractitionerSearchComponent
@@ -158,7 +151,14 @@ const PractitionerPage = () => {
                 setSearchParam={setSearchParam}
               />
             </Grid>
-            <Grid item width="100%">
+            <Grid
+              item
+              width="100%"
+              sx={{
+                height: { xs: "calc(100vh - 335px)" },
+                overflow: "auto",
+              }}
+            >
               <PractitionerList
                 onDetailsClick={handleDetailsClick}
                 onEditClick={handleEditClick}

@@ -7,6 +7,8 @@ import {
   Grid,
   Box,
   Skeleton,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { Patient } from "fhir/r4";
 import PersonUtil from "../../../Services/Utils/PersonUtils";
@@ -32,6 +34,8 @@ export default function PatientCard({
   onRefer,
 }: PatientCardProps) {
   const isLoading = !patient;
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
     <Card
@@ -40,12 +44,18 @@ export default function PatientCard({
         alignItems: "center",
         borderRadius: 4,
         position: "relative",
+        flexDirection: isMobile ? "column" : "row",
+        textAlign: isMobile ? "center" : "left",
       }}
     >
       <CardContent sx={{ flex: 1 }}>
-        <Grid container spacing={2}>
+        <Grid
+          container
+          spacing={2}
+          justifyContent={isMobile ? "center" : "flex-start"}
+        >
           {/* Profile Picture */}
-          <Grid item xs={12} md={1.5}>
+          <Grid item xs={12} md={1.5} display="flex" justifyContent="center">
             {isLoading ? (
               <Skeleton variant="circular" width={150} height={150} />
             ) : (
@@ -157,16 +167,19 @@ export default function PatientCard({
       </CardContent>
 
       {/* Gradient Background */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-          bottom: 0,
-          width: "40%",
-          background: "linear-gradient(to right, white, blue)",
-        }}
-      />
+
+      {!isMobile && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            bottom: 0,
+            width: "40%",
+            background: "linear-gradient(to right, white, blue)",
+          }}
+        />
+      )}
     </Card>
   );
 }

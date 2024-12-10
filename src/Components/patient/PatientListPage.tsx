@@ -4,15 +4,15 @@ import PatientSearchComponent from "./patient-search-component/PatientSearchComp
 import WelcomeComponent from "../WelcomeComponent";
 
 import Grid from "@mui/material/Grid";
-import { Box } from "@mui/material";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
 import PatientCreateForm from "./patient-create/PatientCreateForm";
 import { PatientFormData } from "../../Models/Forms/PatientForm";
-import { useState } from "react";
 import PersonUtil from "../../Services/Utils/PersonUtils";
 import HandleResult from "../../Utils/HandleResult";
 import FhirResourceService from "../../Services/FhirService";
 import { SearchParams } from "fhir-kit-client";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
 let patientFormData: PatientFormData;
 
@@ -35,6 +35,9 @@ export default function PatientListPage() {
   const [isPosting, setIsPosting] = useState(false);
 
   const [searchParam, setSearchParam] = useState<SearchParams | undefined>();
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleOpen = () => {
     setOpen(true);
@@ -141,17 +144,12 @@ export default function PatientListPage() {
   return (
     <Box>
       <Grid container spacing={2}>
-        <Grid item xs={4}>
-          <WelcomeComponent userName={localStorage.getItem("name")!} />
-        </Grid>
-        <Grid
-          item
-          xs
-          sx={{
-            height: "410px !important",
-            overflow: "auto",
-          }}
-        >
+        {!isMobile && (
+          <Grid item xs={4}>
+            <WelcomeComponent userName={localStorage.getItem("name")!} />
+          </Grid>
+        )}
+        <Grid item xs>
           <Grid container gap={0.5}>
             <Grid width="100%">
               <PatientSearchComponent
@@ -159,7 +157,18 @@ export default function PatientListPage() {
                 setSearchParam={setSearchParam}
               />
             </Grid>
-            <Grid item width="100%">
+            <Grid
+              item
+              width="100%"
+              sx={{
+                height: {
+                  xs: "calc(100vh - 295px)",
+                  sm: "calc(100vh - 335px)",
+                },
+
+                overflow: "auto",
+              }}
+            >
               <PatientList
                 onDetailsClick={handleDetailsClick}
                 onEditClick={handleEditClick}

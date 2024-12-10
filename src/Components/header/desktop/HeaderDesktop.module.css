@@ -25,6 +25,7 @@
   height: 80px;
   width: auto;
   object-fit: contain;
+  cursor: pointer;
 }
 
 .actionsRow, .navigationRow {

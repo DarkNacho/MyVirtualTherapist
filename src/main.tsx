@@ -17,6 +17,7 @@ import NotFound from "./Components/not-found/NotFound";
 import PractitionerPage from "./Components/practitioner/PractitionerPage";
 import PatientPage from "./Components/patient/page/PatientPage";
 import { PatientProvider } from "./Components/patient/PatientContext";
+import ResourceListPage from "./Components/resource-list/ResourceListPage";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
   {
     path: "/Practitioners",
     element: <PractitionerPage />,
+  },
+  {
+    path: "/list",
+    element: <ResourceListPage />,
   },
   {
     path: "*",

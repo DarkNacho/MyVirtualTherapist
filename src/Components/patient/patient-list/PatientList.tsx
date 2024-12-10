@@ -124,7 +124,8 @@ export default function PatientList({
       sx={{
         padding: 2,
         borderRadius: 2,
-        height: "100%",
+        flexGrow: 1,
+
         display: "flex",
         flexDirection: "column",
         border: "1px solid rgba(0, 0, 0, 0.12)",
@@ -137,6 +138,7 @@ export default function PatientList({
           flex: 1,
           overflow: "hidden",
           height: "100%",
+
           "& .MuiListItem-root": {
             "& ::after": {
               content: '""',
@@ -186,6 +188,10 @@ export default function PatientList({
                             fontWeight: "bold",
                             display: "block",
                             ":hover": { cursor: "pointer" },
+                            whiteSpace: "nowrap",
+                            overflow: "visible",
+                            textOverflow: "ellipsis",
+                            width: "100%",
                           }}
                         >
                           {resource.name?.[0]?.text}
