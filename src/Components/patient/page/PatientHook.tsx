@@ -9,6 +9,9 @@ export function usePatientHook(patientId?: string) {
 
   useEffect(() => {
     const id = patientId || patient?.id;
+    console.log("usePatientHook - patientId:", patientId);
+    console.log("usePatientHook - patient?.id:", patient?.id);
+    console.log("usePatientHook - effectivePatientId:", id);
     if (id) {
       setEffectivePatientId(id);
     }

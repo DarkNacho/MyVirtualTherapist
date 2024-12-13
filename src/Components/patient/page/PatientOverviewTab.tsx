@@ -19,7 +19,7 @@ function getObservationDisplay(observation: Observation) {
   return {
     leftTitle: ObservationUtils.getName(observation),
     leftSubtitle: ObservationUtils.getValue(observation),
-    rightText: observation.effectiveDateTime || "N/A",
+    rightText: observation.issued || "N/A",
   };
 }
 
@@ -27,7 +27,7 @@ function getConditionDisplay(condition: Condition) {
   return {
     leftTitle: ConditionUtils.getName(condition),
     leftSubtitle: ConditionUtils.getValue(condition),
-    rightText: condition.onsetString || "N/A",
+    rightText: condition.recordedDate || "N/A",
   };
 }
 

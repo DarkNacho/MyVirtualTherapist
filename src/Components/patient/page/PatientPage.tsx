@@ -30,16 +30,13 @@ export default function PatientPage() {
       setPatient(response.data);
     } else {
       console.error("Patient not found or ", response.error);
-      //window.location.href = "/NotFound";
+      window.location.href = "/NotFound";
     }
   };
 
   useEffect(() => {
-    if (!effectivePatientId) {
-      console.error("No patient id provided");
-      //window.location.href = "/NotFound";
-    } else fetchPatient(effectivePatientId);
-  }, [id, patient, setPatient]);
+    if (effectivePatientId) fetchPatient(effectivePatientId);
+  }, [effectivePatientId, setPatient]);
 
   const handleDownloadReport = () => {
     console.log("Download report clicked");
