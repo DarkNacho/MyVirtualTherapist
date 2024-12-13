@@ -108,50 +108,54 @@ export default function SignInSide() {
     dummyUse(); //TODO: remove this line
     event.preventDefault();
     setLoading(true);
-    const data = new FormData(event.currentTarget);
+    try {
+      const data = new FormData(event.currentTarget);
 
-    const { rut, password } = {
-      rut: data
-        .get("rut")
-        ?.toString()
-        .replace(/\./g, "")
-        .replace(/-/g, "")
-        .toUpperCase(),
-      password: data.get("password")?.toString(),
-    };
-    if (!rut || !password) return;
-    console.log({ rut, password });
-    const response = await HandleResult.handleOperation(
-      () => login(rut, password),
-      t("signInSide.sessionStarted"),
-      t("signInSide.startingSession")
-    );
+      const { rut, password } = {
+        rut: data
+          .get("rut")
+          ?.toString()
+          .replace(/\./g, "")
+          .replace(/-/g, "")
+          .toUpperCase(),
+        password: data.get("password")?.toString(),
+      };
+      if (!rut || !password) return;
+      console.log({ rut, password });
+      const response = await HandleResult.handleOperation(
+        () => login(rut, password),
+        t("signInSide.sessionStarted"),
+        t("signInSide.startingSession")
+      );
 
-    setLoading(false);
-    if (!response.success) return;
+      if (!response.success) return;
 
-    console.log(response.data);
-    localStorage.setItem("access_token", response.data.access_token);
-    localStorage.setItem("token_type", response.data.token_type);
-    const jwtToken = response.data.access_token;
-    const decodedToken = jwtDecode(jwtToken) as { [key: string]: any };
-    console.log("Decoded Token:", decodedToken);
-    console.log("userRol:", decodedToken.role);
-    console.log("id:", decodedToken.id);
-    console.log("name:", decodedToken.name);
+      console.log(response.data);
+      localStorage.setItem("access_token", response.data.access_token);
+      localStorage.setItem("token_type", response.data.token_type);
+      const jwtToken = response.data.access_token;
+      const decodedToken = jwtDecode(jwtToken) as { [key: string]: any };
+      console.log("Decoded Token:", decodedToken);
+      console.log("userRol:", decodedToken.role);
+      console.log("id:", decodedToken.id);
+      console.log("name:", decodedToken.name);
 
-    localStorage.setItem("userRol", decodedToken.role);
-    localStorage.setItem("id", decodedToken.id);
-    localStorage.setItem("name", decodedToken.name);
-    localStorage.setItem("tokenExpiration", decodedToken.exp);
+      localStorage.setItem("userRol", decodedToken.role);
+      localStorage.setItem("id", decodedToken.id);
+      localStorage.setItem("name", decodedToken.name);
+      localStorage.setItem("tokenExpiration", decodedToken.exp);
 
-    //setLogoutTimer();
+      //setLogoutTimer();
 
-    if (decodedToken.role === "Patient")
-      window.location.href = `/Patient/${decodedToken.id}`;
-    else window.location.href = "/Patients";
+      if (decodedToken.role === "Patient")
+        window.location.href = `/Patient/${decodedToken.id}`;
+      else window.location.href = "/Patients";
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <Grid

@@ -33,7 +33,7 @@ body {
 }
 
 .main {
-    background-color: #5988ff;
+    background-color: rgb(89, 136, 255, 0.1);
     flex: 1;
     width: 100%;
     padding: 20px;

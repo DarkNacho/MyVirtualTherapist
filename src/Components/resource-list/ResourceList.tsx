@@ -10,6 +10,7 @@ import {
   Toolbar,
   IconButton,
   Skeleton,
+  Box,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { SvgIconComponent } from "@mui/icons-material";
@@ -35,7 +36,8 @@ export default function ResourceList<T>({
   getDisplay,
   onAddClick,
 }: ResourceListProps<T>) {
-  const loading = !resources || resources.length === 0;
+  const loading = resources === undefined;
+  const isEmpty = resources && resources.length === 0;
 
   return (
     <Card
@@ -70,48 +72,56 @@ export default function ResourceList<T>({
       {/* List of Resources */}
       <CardContent sx={{ flex: 1, overflowY: "auto" }}>
         <List>
-          {loading
-            ? Array.from(new Array(5)).map((_, index) => (
-                <ListItem key={index} disablePadding divider>
-                  <ListItemButton>
+          {loading ? (
+            Array.from(new Array(5)).map((_, index) => (
+              <ListItem key={index} disablePadding divider>
+                <ListItemButton>
+                  <ListItemText
+                    primary={<Skeleton variant="text" width="60%" />}
+                    secondary={<Skeleton variant="text" width="40%" />}
+                  />
+                  <Skeleton variant="text" width="20%" />
+                </ListItemButton>
+              </ListItem>
+            ))
+          ) : isEmpty ? (
+            <Box sx={{ textAlign: "center", padding: 2 }}>
+              <Typography variant="body1" color="textSecondary">
+                No resources available.
+              </Typography>
+            </Box>
+          ) : (
+            resources.map((resource, index) => {
+              const { leftTitle, leftSubtitle, rightText } =
+                getDisplay(resource);
+
+              return (
+                <ListItem
+                  key={index}
+                  disablePadding
+                  divider={index < resources.length - 1}
+                >
+                  <ListItemButton onClick={() => onClick(resource)}>
                     <ListItemText
-                      primary={<Skeleton variant="text" width="60%" />}
-                      secondary={<Skeleton variant="text" width="40%" />}
+                      primary={
+                        <Typography variant="body1" fontWeight="bold">
+                          {leftTitle}
+                        </Typography>
+                      }
+                      secondary={
+                        <Typography variant="body2" color="textSecondary">
+                          {leftSubtitle}
+                        </Typography>
+                      }
                     />
-                    <Skeleton variant="text" width="20%" />
+                    <Typography variant="body2" color="textSecondary">
+                      {rightText}
+                    </Typography>
                   </ListItemButton>
                 </ListItem>
-              ))
-            : resources.map((resource, index) => {
-                const { leftTitle, leftSubtitle, rightText } =
-                  getDisplay(resource);
-
-                return (
-                  <ListItem
-                    key={index}
-                    disablePadding
-                    divider={index < resources.length - 1}
-                  >
-                    <ListItemButton onClick={() => onClick(resource)}>
-                      <ListItemText
-                        primary={
-                          <Typography variant="body1" fontWeight="bold">
-                            {leftTitle}
-                          </Typography>
-                        }
-                        secondary={
-                          <Typography variant="body2" color="textSecondary">
-                            {leftSubtitle}
-                          </Typography>
-                        }
-                      />
-                      <Typography variant="body2" color="textSecondary">
-                        {rightText}
-                      </Typography>
-                    </ListItemButton>
-                  </ListItem>
-                );
-              })}
+              );
+            })
+          )}
         </List>
       </CardContent>
     </Card>

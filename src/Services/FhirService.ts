@@ -33,8 +33,7 @@ export default class FhirResourceService<T extends FhirResource> {
    * @param {FhirType} type - The FHIR resource type.
    */
   protected constructor(type: FhirType) {
-    this.apiUrl =
-      import.meta.env.VITE_API_URL || "https://hapi.fhir.org/baseR4"; //TODO: Forzar a que el env esté o si no enviar error.
+    this.apiUrl = import.meta.env.VITE_API_URL; //TODO: Forzar a que el env esté o si no enviar error.
     const jwtToken = localStorage.getItem("access_token");
     this.fhirClient = new Client({
       baseUrl: this.apiUrl,

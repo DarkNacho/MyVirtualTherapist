@@ -41,6 +41,10 @@ const router = createBrowserRouter([
     element: <ResourceListPage />,
   },
   {
+    path: "/NotFound",
+    element: <NotFound />,
+  },
+  {
     path: "*",
     element: <NotFound />,
   },
