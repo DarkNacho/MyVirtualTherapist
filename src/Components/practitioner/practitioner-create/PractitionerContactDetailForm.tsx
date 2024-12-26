@@ -150,7 +150,7 @@ export default function PractitionerContactDetailForm({
                   <TextField
                     {...params}
                     fullWidth
-                    label="Roles"
+                    label={t("practitionerContactDetailForm.role")}
                     variant="outlined"
                   />
                 )}

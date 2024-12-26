@@ -89,6 +89,7 @@
   },
 
   "practitionerContactDetailForm": {
+    "role": "Profession",
     "addPractitioner": "ADD PRACTITIONER",
     "phoneNumberRequired": "Phone number required",
     "phoneNumber": "Phone Number",

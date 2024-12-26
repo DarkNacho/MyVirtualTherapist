@@ -1,0 +1,15 @@
+.dialogTitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1B2455;
+    color: white;
+  }
+.dialogActions {
+    color: white;
+    background-color: #1B2455;
+  }
+.container
+{
+    padding-top: 20px;
+}

@@ -17,7 +17,16 @@ import { useTranslation } from "react-i18next";
 //import PersonForgotPasswordComponent from "../Components/Person/PersonForgotPasswordComponent";
 import backgroundLogin from "../assets/fondo-login.jpg";
 import logoBlue from "../assets/logo-azul.png";
+import { IconButton, InputAdornment } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 //import PractitionerCreateComponent from "../Components/Practitioner/PractitionerCreateComponent";
+import { Practitioner } from "fhir/r4";
+import PractitionerCreateForm from "./practitioner/practitioner-create/PractitionerCreateForm";
+import { PractitionerFormData } from "../Models/Forms/PractitionerForm";
+import PersonUtil from "../Services/Utils/PersonUtils";
+import FhirResourceService from "../Services/FhirService";
+import { CacheUtils } from "../Utils/Cache";
+import ForgotPasswordComponent from "./password/ForgotPasswordComponent";
 
 function Copyright(props: any) {
   const { t } = useTranslation();
@@ -80,32 +89,142 @@ async function login(username: string, password: string): Promise<Result<any>> {
   return { success: false, error: responseText.detail };
 }
 
+let practitionerFormData: PractitionerFormData;
+
 export default function SignInSide() {
   const { t } = useTranslation();
-  const dummyUse = () => {
-    if (openDialog) {
-      console.log("openDialog");
-    }
-    if (openDialogPractitioner) {
-      console.log("openDialogPractitioner");
-    }
-    if (!handleIsOpenPractitioner) {
-      console.log("handleIsOpen");
-    }
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
   };
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
   const [loading, setLoading] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openDialogForgotPassword, setOpenDialogForgotPassword] =
+    useState(false);
   const [openDialogPractitioner, setOpenDialogPractitioner] = useState(false);
+  const [avatar, setAvatar] = useState<File | null>(null);
+  const [isPosting, setIsPosting] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
 
-  const handleIsOpen = (isOpen: boolean) => {
-    setOpenDialog(isOpen);
-  };
-  const handleIsOpenPractitioner = (isOpen: boolean) => {
-    setOpenDialogPractitioner(isOpen);
+  const handleIsOpenForgotPassword = (isOpen: boolean) => {
+    setOpenDialogForgotPassword(isOpen);
   };
 
+  const handleClosePractitioner = () => {
+    setOpenDialogPractitioner(false);
+  };
+
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setAvatar(event.target.files[0]);
+    }
+  };
+
+  const submitFormPractitioner = async (data: PractitionerFormData) => {
+    try {
+      setIsPosting(true);
+      practitionerFormData = { ...practitionerFormData, ...data };
+      if (avatar) {
+        practitionerFormData.avatar = avatar;
+      }
+      console.log("practitionerFormData:", practitionerFormData);
+      // Add any additional logic if needed
+      if (activeStep < 1) {
+        setActiveStep((prev) => prev + 1);
+      } else {
+        const response = await HandleResult.handleOperation(
+          () => postPractitioner(practitionerFormData),
+          t("practitionerPage.practitionerCreated"),
+          t("practitionerPage.sending")
+        );
+        if (response.success) setActiveStep((prev) => prev + 1);
+      }
+    } finally {
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
+      setIsPosting(false);
+    }
+  };
+
+  const postPractitioner = async (
+    data: PractitionerFormData
+  ): Promise<Result<Practitioner>> => {
+    const rut = data.rut.replace(/\./g, "").replace(/-/g, "").toUpperCase();
+    data.rut = rut;
+    const { practitioner, practitionerRole } =
+      await PersonUtil.PractitionerFormToPractitioner(data);
+
+    console.log("practitionerRole:", practitionerRole);
+    if (!practitioner)
+      return {
+        success: false,
+        error: t("practitionerPage.errorConvertingForm"),
+      };
+
+    //check if user exists
+    let url = `${import.meta.env.VITE_SERVER_URL}/auth/find?rut=${data.rut}`;
+    let response_api = await fetch(url, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+    });
+
+    const dataRes = await response_api.json();
+
+    console.log("response:", dataRes);
+    if (dataRes.data)
+      return { success: false, error: t("practitionerPage.userExists") };
+
+    //send to hapi fhir
+    const fhirService =
+      FhirResourceService.getInstance<Practitioner>("Practitioner");
+    const responseFhir = await fhirService.sendResource(practitioner);
+    if (!responseFhir.success) return responseFhir;
+
+    // send to server
+    const user = {
+      email: data.email,
+      rut: data.rut,
+      phone_number: data.numeroTelefonico,
+      name: `${data.nombre} ${data.segundoNombre} ${data.apellidoPaterno} ${data.apellidoMaterno}`,
+      role: "Practitioner",
+      fhir_id: responseFhir.data.id,
+      secondaryRoles: data.role?.map((role) => role.code).join(","), //TODO: no guardó los roles.
+    };
+    practitionerFormData.id = responseFhir.data.id;
+    //TODO: add practitionerRole to user hapi fhir
+
+    url = `${import.meta.env.VITE_SERVER_URL}/auth/register`;
+    response_api = await fetch(url, {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    if (response_api.status === 409)
+      return { success: false, error: t("practitionerPage.userExists") };
+    if (response_api.status !== 201)
+      return { success: false, error: response_api.statusText };
+
+    console.log("response:", response_api);
+    CacheUtils.clearCache();
+    return responseFhir;
+  };
+
+  //Login
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    dummyUse(); //TODO: remove this line
     event.preventDefault();
     setLoading(true);
     try {
@@ -156,6 +275,7 @@ export default function SignInSide() {
       setLoading(false);
     }
   };
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Grid
@@ -205,9 +325,22 @@ export default function SignInSide() {
                 fullWidth
                 name="password"
                 label={t("signInSide.password")}
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 autoComplete="current-password"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
 
               <Button
@@ -219,19 +352,19 @@ export default function SignInSide() {
               >
                 {t("signInSide.signIn")}
               </Button>
-              {/*<Button
-                onClick={() => handleIsOpenPractitioner(true)}
+              <Button
+                onClick={() => setOpenDialogPractitioner(true)}
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
                 Registrar Profesional
-              </Button>*/}
+              </Button>
               <Box textAlign="right">
                 <Link
                   href="#"
                   variant="body2"
-                  onClick={() => handleIsOpen(true)}
+                  onClick={() => handleIsOpenForgotPassword(true)}
                 >
                   {t("signInSide.forgotPassword")}
                 </Link>
@@ -270,6 +403,22 @@ export default function SignInSide() {
           }}
         />
       </Grid>
+      <ForgotPasswordComponent
+        onOpen={handleIsOpenForgotPassword}
+        isOpen={openDialogForgotPassword}
+      />
+      <PractitionerCreateForm
+        formId="practitioner-create-form"
+        practitioner={practitionerFormData}
+        submitForm={submitFormPractitioner}
+        handleClose={handleClosePractitioner}
+        open={openDialogPractitioner}
+        activeStep={activeStep}
+        setActiveStep={setActiveStep}
+        avatar={avatar}
+        handleAvatarChange={handleAvatarChange}
+        isPosting={isPosting}
+      />
     </ThemeProvider>
   );
 }

@@ -17,7 +17,7 @@
     "myProfile": "Mi Perfil",
     "signOut": "Cerrar Sesión",
     "patients": "PACIENTES",
-    "practitioners": "PROFESIONALES",
+    "practitioners": "PRACTICANTES",
     "encounters": "ENCUENTROS",
     "contact": "CONTACTO",
     "sessionExpired": "Su sesión ha expirado, por favor inicie sesión nuevamente."
@@ -89,6 +89,7 @@
   },
 
   "practitionerContactDetailForm": {
+    "role": "Profesión",
     "addPractitioner": "AGREGAR PRACTICANTE",
     "phoneNumberRequired": "Número telefónico requerido",
     "phoneNumber": "Número Telefónico",
