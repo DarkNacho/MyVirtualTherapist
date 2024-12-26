@@ -4,7 +4,7 @@ import ResourceList from "../../resource-list/ResourceList";
 import NotesIcon from "@mui/icons-material/Notes";
 import ConditionIcon from "@mui/icons-material/MonitorHeartSharp";
 import MedicationIcon from "@mui/icons-material/Medication";
-import { Observation, Condition, MedicationStatement } from "fhir/r4";
+import { Observation, Condition, MedicationStatement, Patient } from "fhir/r4";
 import FhirResourceService from "../../../Services/FhirService";
 import HandleResult from "../../../Utils/HandleResult";
 import ObservationUtils from "../../../Services/Utils/ObservationUtils";
@@ -13,7 +13,7 @@ import MedicationUtils from "../../../Services/Utils/MedicationUtils";
 import ObservationCreateComponent from "../../observation/ObservationCreateComponent";
 import ConditionCreateComponent from "../../condition/ConditionCreateComponent";
 import MedicationCreateComponent from "../../medication/MedicationCreateComponent";
-import { usePatient } from "../PatientContext";
+import { useResource } from "../../ResourceContext";
 
 function getObservationDisplay(observation: Observation) {
   return {
@@ -57,7 +57,7 @@ export default function PatientOverviewTab({
   const [isConditionOpen, setIsConditionOpen] = useState(false);
   const [isMedicationOpen, setIsMedicationOpen] = useState(false);
   const [id, setId] = useState<string | undefined>(undefined);
-  const { patient } = usePatient();
+  const { resource } = useResource<Patient>();
 
   const fetchObservations = async (id: string) => {
     const fhirService =
@@ -99,14 +99,14 @@ export default function PatientOverviewTab({
   };
 
   useEffect(() => {
-    const id = patientId || patient?.id;
+    const id = patientId || resource?.id;
     if (id) {
       fetchObservations(id);
       fetchConditions(id);
       fetchMedications(id);
       setId(id);
     }
-  }, [patientId, patient]);
+  }, [patientId, resource]);
 
   const handleObservationClick = (observation: Observation) => {
     console.log("Observation clicked", observation);

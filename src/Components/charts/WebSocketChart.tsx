@@ -35,6 +35,9 @@ export default function WebSocketChart({
   patientId?: string;
   token?: string;
 }) {
+  console.log("WebSocketChart - patientId:", patientId);
+  console.log("WebSocketChart - token:", token);
+
   let webSocketUrl = `${
     import.meta.env.VITE_CHART_SERVER_URL
   }/dashboard_ws?token=${localStorage.getItem(

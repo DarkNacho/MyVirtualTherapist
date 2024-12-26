@@ -10,12 +10,13 @@ import PatientOverviewTab from "./PatientOverviewTab";
 import PatientAppointmentsTab from "./PatientAppointmentsTab";
 import PatientSensorTab from "./PatientSensorTab";
 import PatientFormsTab from "./PatientFormsTab";
-import { usePatientHook } from "./PatientHook";
+import { useResourceHook } from "../../ResourceHook";
 
 export default function PatientPage() {
   const { id } = useParams<{ id: string }>();
   //const { patient, setPatient } = usePatient();
-  const { patient, setPatient, effectivePatientId } = usePatientHook(id);
+  const { resource, setResource, effectiveResourceId } =
+    useResourceHook<Patient>(id);
 
   const [selectedTab, setSelectedTab] = useState(0);
 
@@ -27,7 +28,7 @@ export default function PatientPage() {
       "Fetching patient"
     );
     if (response.success) {
-      setPatient(response.data);
+      setResource(response.data);
     } else {
       console.error("Patient not found or ", response.error);
       window.location.href = "/NotFound";
@@ -35,16 +36,8 @@ export default function PatientPage() {
   };
 
   useEffect(() => {
-    if (effectivePatientId) fetchPatient(effectivePatientId);
-  }, [effectivePatientId, setPatient]);
-
-  const handleDownloadReport = () => {
-    console.log("Download report clicked");
-  };
-
-  const handleRefer = () => {
-    console.log("Refer clicked");
-  };
+    if (effectiveResourceId) fetchPatient(effectiveResourceId);
+  }, [effectiveResourceId, setResource]);
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
@@ -52,11 +45,7 @@ export default function PatientPage() {
 
   return (
     <Box sx={{ gap: 2, display: "flex", flexDirection: "column" }}>
-      <PatientCard
-        patient={patient}
-        onDownloadReport={handleDownloadReport}
-        onRefer={handleRefer}
-      />
+      <PatientCard patient={resource} />
       <Tabs
         value={selectedTab}
         onChange={handleTabChange}
@@ -70,7 +59,7 @@ export default function PatientPage() {
       </Tabs>
       {selectedTab === 0 && <PatientOverviewTab />}
       {selectedTab === 1 && <PatientAppointmentsTab />}
-      {selectedTab === 2 && <PatientSensorTab patientId={"5"} />}
+      {selectedTab === 2 && <PatientSensorTab patientId="7" />}
       {selectedTab === 3 && <PatientFormsTab />}
     </Box>
   );

@@ -39,12 +39,12 @@ const HeaderMobile: React.FC<HeaderMobileProps> = ({
   const { t, i18n } = useTranslation();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
-  const NavItem = ({ text, to }: { text: string; to?: string }) => (
+  const NavItem = ({ text }: { text: string }) => (
     <Typography
       component={"a"}
-      href={to}
+      href={`/#${text}`}
       variant="h6"
-      onClick={() => handleSetLocation(to!)}
+      onClick={() => handleSetLocation(text)}
       sx={{
         cursor: "pointer",
         color: selectedItem === text ? "#4864cc" : "#2c427e",
@@ -76,8 +76,8 @@ const HeaderMobile: React.FC<HeaderMobileProps> = ({
                 alt="My Virtual Therapist"
                 className={styles.logo}
                 onClick={() => {
-                  handleSetLocation("/Patients");
-                  window.location.href = "/Patients";
+                  handleSetLocation(t("header.patients"));
+                  window.location.href = "/";
                 }}
               />
             </Grid>
@@ -131,10 +131,10 @@ const HeaderMobile: React.FC<HeaderMobileProps> = ({
               </ListItem>
 
               <ListItem>
-                <NavItem text={t("header.patients")} to="/Patients" />
+                <NavItem text={t("header.patients")} />
               </ListItem>
               <ListItem>
-                <NavItem text={t("header.practitioners")} to="/Practitioners" />
+                <NavItem text={t("header.practitioners")} />
               </ListItem>
               <ListItem>
                 <NavItem text={t("header.encounters")} />

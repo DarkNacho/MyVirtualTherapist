@@ -12,13 +12,7 @@ import {
   Button,
   Skeleton,
 } from "@mui/material";
-import {
-  ArrowForward,
-  Edit,
-  Delete,
-  ArrowLeft,
-  ArrowRight,
-} from "@mui/icons-material";
+import { Edit, Delete, ArrowLeft, ArrowRight } from "@mui/icons-material";
 import styles from "./PractitionerList.module.css";
 import { Practitioner } from "fhir/r4";
 import PersonUtil from "../../../Services/Utils/PersonUtils";
@@ -30,7 +24,6 @@ import { useTranslation } from "react-i18next";
 
 interface PractitionerListProps {
   searchParam?: SearchParams;
-  onDetailsClick?: (resource: Practitioner) => void;
   onEditClick?: (resource: Practitioner) => void;
   onDeleteClick?: (resource: Practitioner) => void;
 }
@@ -39,7 +32,8 @@ function identifier(resource: Practitioner) {
   const identifier = PersonUtil.getIdentifierByCode(resource, "RUT");
   return (
     <Typography variant="body2" color="textSecondary" component="span">
-      <strong>{identifier.system}</strong> {identifier.value}
+      <strong>{identifier.system}</strong>{" "}
+      {PersonUtil.formatRut(identifier.value!)}
     </Typography>
   );
 }
@@ -49,7 +43,7 @@ const fhirService =
 
 export default function PractitionerList({
   searchParam,
-  onDetailsClick,
+
   onEditClick,
   onDeleteClick,
 }: PractitionerListProps) {
@@ -183,8 +177,7 @@ export default function PractitionerList({
                               color="textSecondary"
                               component="span"
                             >
-                              <strong>{t("practitionerList.age")}:</strong>{" "}
-                              {PersonUtil.calcularEdad(resource.birthDate!)}
+                              <strong>Especialidad:</strong> Especialidad aquí
                             </Typography>
                           </Box>
                           <Box component="span" className={styles.block}>
@@ -205,18 +198,6 @@ export default function PractitionerList({
                     />
                   </Box>
                   <Box sx={{ display: "flex", gap: 1 }}>
-                    {onDetailsClick && (
-                      <Tooltip title={t("practitionerList.derivePractitioner")}>
-                        <IconButton
-                          className={styles.circularContainer}
-                          color="primary"
-                          aria-label="derive"
-                          onClick={() => onDetailsClick(resource)}
-                        >
-                          <ArrowForward />
-                        </IconButton>
-                      </Tooltip>
-                    )}
                     {onEditClick && (
                       <Tooltip title={t("practitionerList.edit")}>
                         <IconButton

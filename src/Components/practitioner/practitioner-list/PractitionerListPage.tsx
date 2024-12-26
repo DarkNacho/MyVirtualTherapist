@@ -1,38 +1,37 @@
-import PractitionerList from "./practitioner-list/PractitionerList";
+import PractitionerList from "./PractitionerList";
 import { Practitioner } from "fhir/r4";
-import PractitionerSearchComponent from "./practitioner-search-component/PractitionerSearchComponent";
-import WelcomeComponent from "../WelcomeComponent";
+import PractitionerSearchComponent from "../practitioner-search-component/PractitionerSearchComponent";
 
 import Grid from "@mui/material/Grid";
-import { Box } from "@mui/material";
-import PractitionerCreateForm from "./practitioner-create/PractitionerCreateForm";
-import { PractitionerFormData } from "../../Models/Forms/PractitionerForm";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
+import PractitionerCreateForm from "../practitioner-create/PractitionerCreateForm";
+import { PractitionerFormData } from "../../../Models/Forms/PractitionerForm";
 import { useState } from "react";
-import PersonUtil from "../../Services/Utils/PersonUtils";
-import HandleResult from "../../Utils/HandleResult";
-import FhirResourceService from "../../Services/FhirService";
+import PersonUtil from "../../../Services/Utils/PersonUtils";
+import HandleResult from "../../../Utils/HandleResult";
+import FhirResourceService from "../../../Services/FhirService";
 import { SearchParams } from "fhir-kit-client";
 import { useTranslation } from "react-i18next";
+import { CacheUtils } from "../../../Utils/Cache";
 
 let practitionerFormData: PractitionerFormData;
 
-const handleDetailsClick = (person: Practitioner) => {
-  console.log("Details clicked for:", person);
-};
-
 const handleEditClick = (person: Practitioner) => {
-  console.log("Edit clicked for:", person);
+  alert(`Edit clicked for id: ${person.id}`);
 };
 
 const handleDeleteClick = (person: Practitioner) => {
-  console.log("Delete clicked for:", person);
+  console.log(`Delete clicked for id: ${person.id}`);
 };
-const PractitionerPage = () => {
+const PractitionerListPage = () => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [avatar, setAvatar] = useState<File | null>(null);
   const [isPosting, setIsPosting] = useState(false);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [searchParam, setSearchParam] = useState<SearchParams | undefined>();
 
@@ -78,12 +77,40 @@ const PractitionerPage = () => {
   const postPractitioner = async (
     data: PractitionerFormData
   ): Promise<Result<Practitioner>> => {
-    const practitioner = await PersonUtil.PractitionerFormToPractitioner(data);
+    const rut = data.rut.replace(/\./g, "").replace(/-/g, "").toUpperCase();
+    data.rut = rut;
+    const { practitioner, practitionerRole } =
+      await PersonUtil.PractitionerFormToPractitioner(data);
+
+    console.log("practitionerRole:", practitionerRole);
     if (!practitioner)
       return {
         success: false,
         error: t("practitionerPage.errorConvertingForm"),
       };
+
+    //check if user exists
+    let url = `${import.meta.env.VITE_SERVER_URL}/auth/find?rut=${data.rut}`;
+    let response_api = await fetch(url, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+    });
+
+    const dataRes = await response_api.json();
+
+    console.log("response:", dataRes);
+    if (dataRes.data)
+      return { success: false, error: t("practitionerPage.userExists") };
+
+    //send to hapi fhir
+    const fhirService =
+      FhirResourceService.getInstance<Practitioner>("Practitioner");
+    const responseFhir = await fhirService.sendResource(practitioner);
+    if (!responseFhir.success) return responseFhir;
 
     // send to server
     const user = {
@@ -92,10 +119,14 @@ const PractitionerPage = () => {
       phone_number: data.numeroTelefonico,
       name: `${data.nombre} ${data.segundoNombre} ${data.apellidoPaterno} ${data.apellidoMaterno}`,
       role: "Practitioner",
-      fhir_id: "",
+      fhir_id: responseFhir.data.id,
+      secondaryRoles: data.role?.map((role) => role.code).join(","), //TODO: no guardó los roles.
     };
-    let url = `${import.meta.env.VITE_SERVER_URL}/auth/register`;
-    let response_api = await fetch(url, {
+    practitionerFormData.id = responseFhir.data.id;
+    //TODO: add practitionerRole to user hapi fhir
+
+    url = `${import.meta.env.VITE_SERVER_URL}/auth/register`;
+    response_api = await fetch(url, {
       method: "POST",
       headers: {
         accept: "application/json",
@@ -107,42 +138,15 @@ const PractitionerPage = () => {
       return { success: false, error: t("practitionerPage.userExists") };
     if (response_api.status !== 201)
       return { success: false, error: response_api.statusText };
-    // end sending api
-
-    //send to hapi fhir
-    const fhirService =
-      FhirResourceService.getInstance<Practitioner>("Practitioner");
-    const responseFhir = await fhirService.sendResource(
-      practitioner.practitioner
-    );
-    if (!responseFhir.success) return responseFhir;
-
-    //update user with fhir_id
-    url = `${import.meta.env.VITE_SERVER_URL}/auth/update`;
-    user.fhir_id = responseFhir.data.id!;
-
-    response_api = await fetch(url, {
-      method: "PUT",
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
-
-    if (response_api.status !== 200)
-      return { success: false, error: response_api.statusText };
 
     console.log("response:", response_api);
+    CacheUtils.clearCache();
     return responseFhir;
   };
 
   return (
     <Box>
       <Grid container spacing={2}>
-        <Grid item xs={4}>
-          <WelcomeComponent userName={localStorage.getItem("name")!} />
-        </Grid>
         <Grid item xs>
           <Grid container gap={0.5}>
             <Grid width="100%">
@@ -155,12 +159,14 @@ const PractitionerPage = () => {
               item
               width="100%"
               sx={{
-                height: { xs: "calc(100vh - 335px)" },
+                height: isMobile
+                  ? "calc(100vh - 275px)"
+                  : "calc(100vh - 340px)",
+
                 overflow: "auto",
               }}
             >
               <PractitionerList
-                onDetailsClick={handleDetailsClick}
                 onEditClick={handleEditClick}
                 onDeleteClick={handleDeleteClick}
                 searchParam={searchParam}
@@ -185,4 +191,4 @@ const PractitionerPage = () => {
   );
 };
 
-export default PractitionerPage;
+export default PractitionerListPage;

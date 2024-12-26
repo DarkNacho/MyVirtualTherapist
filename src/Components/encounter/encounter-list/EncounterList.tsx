@@ -1,72 +1,75 @@
 import React, { useEffect, useState } from "react";
 import {
-  Avatar,
   Box,
   IconButton,
   List,
   ListItem,
-  ListItemAvatar,
   ListItemText,
   Typography,
   Paper,
   Button,
+  Tooltip,
   Skeleton,
 } from "@mui/material";
-import {
-  ArrowForward,
-  Edit,
-  Delete,
-  ArrowLeft,
-  ArrowRight,
-} from "@mui/icons-material";
-import styles from "./PatientList.module.css";
-import { Patient } from "fhir/r4";
-import PersonUtil from "../../../Services/Utils/PersonUtils";
+import { Edit, Delete, ArrowLeft, ArrowRight } from "@mui/icons-material";
+import styles from "./EncounterList.module.css";
+import { Encounter } from "fhir/r4";
+
 import { SearchParams } from "fhir-kit-client";
 import HandleResult from "../../../Utils/HandleResult";
 import FhirResourceService from "../../../Services/FhirService";
-import Tooltip from "@mui/material/Tooltip";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useResource } from "../../ResourceContext"; // Import the context
+import { loadUserRoleFromLocalStorage } from "../../../Utils/RolUser";
+import EncounterUtils from "../../../Services/Utils/EncounterUtils";
 
-interface PatientListProps {
+interface EncounterListProps {
   searchParam?: SearchParams;
-  onReferClick?: (resource: Patient) => void;
-  onEditClick?: (resource: Patient) => void;
-  onDeleteClick?: (resource: Patient) => void;
+  onEditClick?: (resource: Encounter) => void;
+  onDeleteClick?: (resource: Encounter) => void;
 }
 
-function identifier(resource: Patient) {
-  const identifier = PersonUtil.getIdentifierByCode(resource, "RUT");
-  return (
-    <Typography variant="body2" color="textSecondary" component="span">
-      <strong>{identifier.system}</strong>{" "}
-      {PersonUtil.formatRut(identifier.value!)}
-    </Typography>
-  );
+const fhirService = FhirResourceService.getInstance<Encounter>("Encounter");
+
+function getDisplay(resource: Encounter): string {
+  const roleUser = loadUserRoleFromLocalStorage();
+  let display = "";
+
+  if (roleUser === "Admin")
+    display = `Paciente: ${EncounterUtils.getSubjectDisplayOrID(
+      resource.subject!
+    )}
+  Profesional: ${EncounterUtils.getPrimaryPractitioner(resource)}`;
+
+  if (roleUser == "Patient")
+    display = `Profesional: ${EncounterUtils.getPrimaryPractitioner(resource)}`;
+  if (roleUser == "Practitioner")
+    display = `Paciente: ${EncounterUtils.getSubjectDisplayOrID(
+      resource.subject!
+    )}`;
+
+  return `  ${display}
+  ${EncounterUtils.getFormatPeriod(resource.period!)}`;
 }
 
-const fhirService = FhirResourceService.getInstance<Patient>("Patient");
-
-export default function PatientList({
+export default function EncounterList({
   searchParam,
-  onReferClick,
   onEditClick,
   onDeleteClick,
-}: PatientListProps) {
+}: EncounterListProps) {
   const { t } = useTranslation();
-  const [resources, setResources] = useState<Patient[]>([]);
+  const [resources, setResources] = useState<Encounter[]>([]);
   const [loading, setLoading] = useState(true);
-  const { setResource } = useResource<Patient>(); // Use the context
+  const { setResource } = useResource<Encounter>(); // Use the context
   const navigate = useNavigate();
 
   const handleNewResources = async (direction: "next" | "previous") => {
     setLoading(true);
     await HandleResult.handleOperation(
       () => fhirService.getNewResources(direction),
-      t("patientList.receivedSuccessfully"),
-      t("patientList.obtaining"),
+      t("encounterList.receivedSuccessfully"),
+      t("encounterList.obtaining"),
       setResources
     );
     setLoading(false);
@@ -76,8 +79,8 @@ export default function PatientList({
     setLoading(true);
     await HandleResult.handleOperation(
       () => fhirService.getResources(searchParam),
-      t("patientList.receivedSuccessfully"),
-      t("patientList.obtaining"),
+      t("encounterList.receivedSuccessfully"),
+      t("encounterList.obtaining"),
       setResources
     );
     setLoading(false);
@@ -87,18 +90,13 @@ export default function PatientList({
     fetchResources();
   }, [searchParam]);
 
-  const handleItemClick = (resource: Patient) => {
-    setResource(resource); // Store the selected patient in the context
-    navigate(`/Patient/${resource.id}`);
+  const handleItemClick = (resource: Encounter) => {
+    setResource(resource);
+    navigate(`/Encounter/${resource.id}`);
   };
+
   const renderSkeleton = () => (
     <ListItem className={styles.listItem}>
-      <ListItemAvatar
-        className={styles.circularContainer}
-        sx={{ marginRight: 2 }}
-      >
-        <Skeleton variant="circular" width={55} height={50} />
-      </ListItemAvatar>
       <Box sx={{ flex: 1 }}>
         <ListItemText
           primary={<Skeleton variant="text" width="60%" />}
@@ -111,11 +109,6 @@ export default function PatientList({
           }
         />
       </Box>
-      <Box sx={{ display: "flex", gap: 1 }}>
-        <Skeleton variant="circular" width={40} height={40} />
-        <Skeleton variant="circular" width={40} height={40} />
-        <Skeleton variant="circular" width={40} height={40} />
-      </Box>
     </ListItem>
   );
 
@@ -126,7 +119,6 @@ export default function PatientList({
         padding: 2,
         borderRadius: 2,
         flexGrow: 1,
-
         display: "flex",
         flexDirection: "column",
         border: "1px solid rgba(0, 0, 0, 0.12)",
@@ -139,7 +131,6 @@ export default function PatientList({
           flex: 1,
           overflow: "hidden",
           height: "100%",
-
           "& .MuiListItem-root": {
             "& ::after": {
               content: '""',
@@ -159,24 +150,6 @@ export default function PatientList({
           : resources.map((resource) => (
               <React.Fragment key={resource.id}>
                 <ListItem className={styles.listItem}>
-                  <ListItemAvatar
-                    className={styles.circularContainer}
-                    sx={{ marginRight: 2 }}
-                  >
-                    <Avatar
-                      onClick={() => handleItemClick(resource)}
-                      sx={{
-                        width: "55px",
-                        height: "50px",
-                        ":hover": { cursor: "pointer" },
-                      }}
-                      src={
-                        resource.photo?.[0]?.data
-                          ? `data:${resource.photo[0].contentType};base64,${resource.photo[0].data}`
-                          : resource.photo?.[0]?.url || undefined
-                      }
-                    />
-                  </ListItemAvatar>
                   <Box sx={{ flex: 1 }}>
                     <ListItemText
                       primary={
@@ -195,54 +168,23 @@ export default function PatientList({
                             width: "100%",
                           }}
                         >
-                          {resource.name?.[0]?.text}
+                          {resource.id}
                         </Typography>
                       }
                       secondary={
-                        <>
-                          {identifier(resource)}
-                          <Box component="span" className={styles.block}>
-                            <Typography
-                              variant="body2"
-                              color="textSecondary"
-                              component="span"
-                            >
-                              <strong>{t("patientList.age")}:</strong>{" "}
-                              {PersonUtil.calcularEdad(resource.birthDate!)}
-                            </Typography>
-                          </Box>
-                          <Box component="span" className={styles.block}>
-                            <Typography
-                              variant="body2"
-                              color="textSecondary"
-                              component="span"
-                            >
-                              <strong>{t("patientList.phone")}:</strong>{" "}
-                              {PersonUtil.getContactPointFirstOrDefaultAsString(
-                                resource,
-                                "phone"
-                              )}
-                            </Typography>
-                          </Box>
-                        </>
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          component="span"
+                        >
+                          {getDisplay(resource)}
+                        </Typography>
                       }
                     />
                   </Box>
                   <Box sx={{ display: "flex", gap: 1 }}>
-                    {onReferClick && (
-                      <Tooltip title={t("patientList.referPatient")}>
-                        <IconButton
-                          className={styles.circularContainer}
-                          color="primary"
-                          aria-label="derive"
-                          onClick={() => onReferClick(resource)}
-                        >
-                          <ArrowForward />
-                        </IconButton>
-                      </Tooltip>
-                    )}
                     {onEditClick && (
-                      <Tooltip title={t("patientList.edit")}>
+                      <Tooltip title={t("encounterList.edit")}>
                         <IconButton
                           className={styles.circularContainer}
                           color="primary"
@@ -254,7 +196,7 @@ export default function PatientList({
                       </Tooltip>
                     )}
                     {onDeleteClick && (
-                      <Tooltip title={t("patientList.delete")}>
+                      <Tooltip title={t("encounterList.delete")}>
                         <IconButton
                           className={styles.circularContainer}
                           color="error"
@@ -286,7 +228,7 @@ export default function PatientList({
           onClick={() => handleNewResources("previous")}
           disabled={!fhirService.hasPrevPage}
         >
-          {t("patientList.previous")}
+          {t("encounterList.previous")}
         </Button>
         <Button
           variant="contained"
@@ -295,7 +237,7 @@ export default function PatientList({
           onClick={() => handleNewResources("next")}
           disabled={!fhirService.hasNextPage}
         >
-          {t("patientList.next")}
+          {t("encounterList.next")}
         </Button>
       </Box>
     </Paper>

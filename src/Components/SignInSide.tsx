@@ -149,7 +149,7 @@ export default function SignInSide() {
 
       if (decodedToken.role === "Patient")
         window.location.href = `/Patient/${decodedToken.id}`;
-      else window.location.href = "/Patients";
+      else window.location.href = "/";
     } catch (error) {
       console.error(error);
     } finally {
@@ -270,16 +270,6 @@ export default function SignInSide() {
           }}
         />
       </Grid>
-      {/* 
-      <PractitionerCreateComponent
-        isOpen={openDialogPractitioner}
-        onOpen={handleIsOpenPractitioner}
-      ></PractitionerCreateComponent>
-      <PersonForgotPasswordComponent
-        onOpen={handleIsOpen}
-        isOpen={openDialog}
-      ></PersonForgotPasswordComponent>
-      */}
     </ThemeProvider>
   );
 }

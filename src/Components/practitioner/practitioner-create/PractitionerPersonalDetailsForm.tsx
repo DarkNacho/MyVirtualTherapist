@@ -1,6 +1,11 @@
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Grid, MenuItem, TextField, Typography } from "@mui/material";
-import { generoOptions } from "../../../Models/Terminology";
+import {
+  Grid,
+  TextField,
+  Typography,
+  Tooltip,
+  IconButton,
+} from "@mui/material";
 
 import dayjs from "dayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
@@ -9,7 +14,7 @@ import { PractitionerFormData } from "../../../Models/Forms/PractitionerForm";
 import "react-phone-input-2/lib/material.css";
 import PersonUtils from "../../../Services/Utils/PersonUtils";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 export default function PractitionerPersonalDetailsForm({
   formId,
@@ -20,21 +25,7 @@ export default function PractitionerPersonalDetailsForm({
   practitioner?: PractitionerFormData;
   submitForm: SubmitHandler<PractitionerFormData>;
 }) {
-  const { t, i18n } = useTranslation();
-  const currentLanguage = i18n.language;
-  const [localizedGeneroOptions, setLocalizedGeneroOptions] =
-    useState(generoOptions);
-
-  useEffect(() => {
-    const updatedGeneroOptions = generoOptions.map((option) => ({
-      ...option,
-      display:
-        t(`terminology.generoOptions.${option.code}`, {
-          lng: currentLanguage,
-        }) || option.display,
-    }));
-    setLocalizedGeneroOptions(updatedGeneroOptions);
-  }, [t, currentLanguage]);
+  const { t } = useTranslation();
 
   const {
     control,
@@ -49,7 +40,6 @@ export default function PractitionerPersonalDetailsForm({
       segundoNombre: practitioner?.segundoNombre || "",
       apellidoPaterno: practitioner?.apellidoPaterno || "",
       apellidoMaterno: practitioner?.apellidoMaterno || "",
-      genero: practitioner?.genero || "unknown",
       rut: practitioner?.rut || "",
       fechaNacimiento:
         practitioner?.fechaNacimiento || dayjs().subtract(18, "year"),
@@ -131,25 +121,6 @@ export default function PractitionerPersonalDetailsForm({
             )}
           ></Controller>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            select
-            label={t("practitionerPersonalDetailsForm.gender")}
-            defaultValue="unknown"
-            {...register("genero", {
-              required: t("practitionerPersonalDetailsForm.genderRequired"),
-            })}
-            fullWidth
-            error={Boolean(errors.genero)}
-            helperText={errors.genero && errors.genero.message}
-          >
-            {localizedGeneroOptions.map((option) => (
-              <MenuItem key={option.code} value={option.code}>
-                {option.display}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Grid>
 
         <Grid item xs={12} sm={6}>
           <TextField
@@ -170,6 +141,22 @@ export default function PractitionerPersonalDetailsForm({
               } else {
                 clearErrors("rut");
               }
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          <TextField
+            label="Agenda URL"
+            {...register("agendaUrl")}
+            fullWidth
+            InputProps={{
+              endAdornment: (
+                <Tooltip title="Ingrese la URL de su agenda personal">
+                  <IconButton>
+                    <HelpOutlineIcon />
+                  </IconButton>
+                </Tooltip>
+              ),
             }}
           />
         </Grid>

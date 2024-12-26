@@ -52,7 +52,12 @@ const Header = () => {
   };
 
   const handleSetLocation = (path: string) => {
-    localStorage.setItem("location", path);
+    if (window.location.pathname === "/") {
+      window.location.hash = path;
+    } else {
+      localStorage.setItem("location", path);
+    }
+
     setSelectedItem(path);
   };
 
@@ -61,17 +66,32 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    const location = localStorage.getItem("location");
+    let location;
+    if (window.location.pathname === "/") {
+      location = window.location.hash.substring(1);
+    } else {
+      location = localStorage.getItem("location");
+    }
+    //const location = localStorage.getItem("location");
+    //console.log("location", location);
+    //const location = window.location.hash.substring(1); // Remove the '#' from the hash
+    console.log("location", location);
     switch (location) {
-      case "/Patients":
-        setSelectedItem(t("header.patients"));
+      case t("header.patients"):
+        handleSetLocation(t("header.patients"));
         break;
-      case "/Practitioners":
-        setSelectedItem(t("header.practitioners"));
+      case t("header.practitioners"):
+        handleSetLocation(t("header.practitioners"));
+        break;
+      case t("header.encounters"):
+        handleSetLocation(t("header.encounters"));
+        break;
+      case t("header.contact"):
+        handleSetLocation(t("header.contact"));
         break;
       // Add more cases as needed for other tabs
       default:
-        setSelectedItem(t("header.patients"));
+        handleSetLocation(t("header.patients"));
     }
   }, [i18n.language, t]);
 

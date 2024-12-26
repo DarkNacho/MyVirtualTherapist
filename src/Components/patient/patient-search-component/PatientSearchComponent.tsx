@@ -14,9 +14,11 @@ import { useTranslation } from "react-i18next";
 import { SearchParams } from "fhir-kit-client";
 
 export default function PatientSearchComponent({
+  defaultSearchParam,
   handleAddPatient,
   setSearchParam,
 }: {
+  defaultSearchParam?: SearchParams;
   handleAddPatient: () => void;
   setSearchParam: React.Dispatch<
     React.SetStateAction<SearchParams | undefined>
@@ -43,7 +45,7 @@ export default function PatientSearchComponent({
     console.log("Buscar por RUT:", rut);
     console.log("Buscar por correo:", email);
 
-    const searchParams: SearchParams = {};
+    const searchParams: SearchParams = { ...defaultSearchParam };
 
     if (name) {
       searchParams.name = name;

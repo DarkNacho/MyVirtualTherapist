@@ -25,6 +25,17 @@ interface HeaderDesktopProps {
   handleLanguageToggle: () => void;
 }
 
+const handleOpenApp = () => {
+  const appUrl = "zoomus://"; // Replace with your custom URL scheme
+  //const fallbackUrl = "https://google.cl"; // Replace with your download page URL
+
+  const iframe = document.createElement("iframe");
+  iframe.style.display = "none";
+  iframe.src = appUrl;
+
+  document.body.appendChild(iframe);
+};
+
 const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
   user,
   selectedItem,
@@ -48,12 +59,12 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
     handleClose();
   };
 
-  const NavItem = ({ text, to }: { text: string; to?: string }) => (
+  const NavItem = ({ text }: { text: string }) => (
     <Typography
       component={"a"}
-      href={to}
+      href={`/#${text}`}
       variant="h6"
-      onClick={() => handleSetLocation(to!)}
+      onClick={() => handleSetLocation(text)}
       sx={{
         cursor: "pointer",
         color: selectedItem === text ? "#4864cc" : "#2c427e",
@@ -85,15 +96,17 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
                 alt="My Virtual Therapist"
                 className={styles.logo}
                 onClick={() => {
-                  handleSetLocation("/Patients");
-                  window.location.href = "/Patients";
+                  handleSetLocation(t("header.patients"));
+                  window.location.href = "/";
                 }}
               />
             </Grid>
             <Grid item xs={8}>
               <Toolbar className={styles.actionsRow}>
                 <Box className={styles.actionButtons}>
-                  <Button variant="contained">{t("header.getMVT")}</Button>
+                  <Button variant="contained" onClick={handleOpenApp}>
+                    {t("header.getMVT")}{" "}
+                  </Button>
                   <Button
                     variant="contained"
                     onClick={handleLanguageToggle}
@@ -106,13 +119,10 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
               </Toolbar>
               <Toolbar className={styles.navigationRow}>
                 <Box className={styles.navLinks}>
-                  <NavItem text={t("header.patients")} to="/Patients" />
-                  <NavItem
-                    text={t("header.practitioners")}
-                    to="/Practitioners"
-                  />
-                  <NavItem text={t("header.encounters")} to="/Encounters" />
-                  <NavItem text={t("header.contact")} to="/Contact" />
+                  <NavItem text={t("header.patients")} />
+                  <NavItem text={t("header.practitioners")} />
+                  <NavItem text={t("header.encounters")} />
+                  <NavItem text={t("header.contact")} />
                 </Box>
               </Toolbar>
             </Grid>

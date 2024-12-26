@@ -16,6 +16,26 @@ type FhirResourceType = Patient | Practitioner | Person;
  */
 export default class PersonUtil {
   /**
+   * Formats a Chilean RUT (Rol Único Tributario) number.
+   * @param rut - The RUT number to format.
+   * @returns The formatted RUT with dots and hyphen.
+   */
+  static formatRut(rut: string): string {
+    // Remove any existing dots or hyphens
+    rut = rut.replace(/\./g, "").replace(/-/g, "");
+
+    // Extract the verifier digit and the main number
+    const dv = rut.slice(-1);
+    const rutNumerico = rut.slice(0, -1);
+
+    // Add dots every three digits from the end
+    const rutConPuntos = rutNumerico.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+    // Return the formatted RUT with a hyphen before the verifier digit
+    return `${rutConPuntos}-${dv}`;
+  }
+
+  /**
    * Retrieves the person's name as a string.
    * @param resource - The FHIR resource representing a person.
    * @returns The person's name as a string.
@@ -345,7 +365,7 @@ export default class PersonUtil {
           value: data.numeroTelefonico,
         },
         { system: "email", value: data.email },
-        { system: "url", use: "work", rank: 99, value: data.agendaUrl }, // rank: 99 is usado para especificar que corresponde a url de agenda.
+        { system: "url", use: "work", rank: 99, value: data.agendaUrl }, //!WARNING: rank: 99 is usado para especificar que corresponde a url de agenda.
       ],
       photo: avatar,
       //photo: [{ url: data.photo }],

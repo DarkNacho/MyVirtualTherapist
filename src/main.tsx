@@ -5,7 +5,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 
-import PatientListPage from "./Components/patient/PatientListPage";
 import { Toaster } from "react-hot-toast";
 
 import Header from "./Components/header/Header";
@@ -14,28 +13,21 @@ import styles from "./main.module.css";
 import { loadUserRoleFromLocalStorage } from "./Utils/RolUser";
 import SignInSide from "./Components/SignInSide";
 import NotFound from "./Components/not-found/NotFound";
-import PractitionerPage from "./Components/practitioner/PractitionerPage";
 import PatientPage from "./Components/patient/page/PatientPage";
-import { PatientProvider } from "./Components/patient/PatientContext";
+import { ResourceProvider } from "./Components/ResourceContext";
 import ResourceListPage from "./Components/resource-list/ResourceListPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <PatientListPage />,
+    element: <ResourceListPage />,
   },
-  {
-    path: "/Patients",
-    element: <PatientListPage />,
-  },
+
   {
     path: "/Patient/:id",
     element: <PatientPage />,
   },
-  {
-    path: "/Practitioners",
-    element: <PractitionerPage />,
-  },
+
   {
     path: "/list",
     element: <ResourceListPage />,
@@ -66,8 +58,8 @@ const Layout = () =>
 createRoot(document.getElementById("root")!).render(
   <I18nextProvider i18n={i18n}>
     <Toaster />
-    <PatientProvider>
+    <ResourceProvider>
       <Layout />
-    </PatientProvider>
+    </ResourceProvider>
   </I18nextProvider>
 );

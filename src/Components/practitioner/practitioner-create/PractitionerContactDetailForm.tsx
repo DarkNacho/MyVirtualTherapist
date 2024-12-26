@@ -1,10 +1,20 @@
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { FormHelperText, Grid, TextField, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  FormHelperText,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { PractitionerFormData } from "../../../Models/Forms/PractitionerForm";
 import "react-phone-input-2/lib/material.css";
 import PhoneInput from "react-phone-input-2";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import {
+  practitionerRoles,
+  practitionerSpecialties,
+} from "../../../Models/Terminology";
 
 export default function PractitionerContactDetailForm({
   formId,
@@ -111,6 +121,75 @@ export default function PractitionerContactDetailForm({
             error={Boolean(errors.email)}
             helperText={errors.email && errors.email.message}
             fullWidth
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <Controller
+            name="role"
+            control={control}
+            render={({ field }) => (
+              <Autocomplete
+                id="Autocomplete-role"
+                multiple
+                options={practitionerRoles}
+                getOptionLabel={(option) =>
+                  option.display || option.code || "UNKNOWN"
+                }
+                isOptionEqualToValue={(option, value) =>
+                  option.code === value.code
+                }
+                value={field.value}
+                onChange={(_, newValue) => field.onChange(newValue)}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.code}>
+                    {option.display}
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    label="Roles"
+                    variant="outlined"
+                  />
+                )}
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          <Controller
+            name="specialty"
+            control={control}
+            render={({ field }) => (
+              <Autocomplete
+                id="Autocomplete-specialty"
+                multiple
+                options={practitionerSpecialties}
+                getOptionLabel={(option) =>
+                  option.display || option.code || "UNKNOWN"
+                }
+                isOptionEqualToValue={(option, value) =>
+                  option.code === value.code
+                }
+                onChange={(_, newValue) => field.onChange(newValue)}
+                value={field.value}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.code}>
+                    {option.display}
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    label="Especialidad"
+                    variant="outlined"
+                  />
+                )}
+              />
+            )}
           />
         </Grid>
       </Grid>

@@ -2,7 +2,8 @@ import { useParams } from "react-router-dom";
 import WebSocketChart from "../../charts/WebSocketChart";
 
 //import { usePatient } from "../PatientContext";
-import { usePatientHook } from "./PatientHook";
+import { useResourceHook } from "../../ResourceHook";
+import { Patient } from "fhir/r4";
 
 export default function PatientSensorTab({
   patientId,
@@ -10,7 +11,7 @@ export default function PatientSensorTab({
   patientId?: string;
 }) {
   const { token } = useParams();
-  const { effectivePatientId } = usePatientHook(patientId);
+  const { effectiveResourceId } = useResourceHook<Patient>(patientId);
 
   /*
   const [id, setId] = useState<string | undefined>(undefined);
@@ -28,10 +29,11 @@ export default function PatientSensorTab({
     <div
       style={{
         backgroundColor: "white",
-        marginTop: "100px",
       }}
     >
-      {!token && <WebSocketChart patientId={effectivePatientId} />}
+      {!token && effectiveResourceId && (
+        <WebSocketChart patientId={effectiveResourceId} />
+      )}
       {token && <WebSocketChart token={token} />}
     </div>
   );
