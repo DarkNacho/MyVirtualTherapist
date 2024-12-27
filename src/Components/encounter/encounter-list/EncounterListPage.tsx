@@ -5,6 +5,8 @@ import Grid from "@mui/material/Grid";
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 import { SearchParams } from "fhir-kit-client";
 import { useState } from "react";
+import EncounterSearchComponent from "../encounter-search-component/EncounterSearchComponent";
+import EncounterCreateComponent from "../encounter-create/EncounterCreateComponent";
 
 const handleEditClick = (person: Encounter) => {
   console.log("Edit clicked for:", person);
@@ -14,17 +16,27 @@ const handleDeleteClick = (person: Encounter) => {
   console.log("Delete clicked for:", person);
 };
 export default function PatientListPage() {
-  const [searchParam] = useState<SearchParams | undefined>();
+  const [searchParam, setSearchParam] = useState<SearchParams | undefined>();
+  const [openCreate, setOpenCreate] = useState(false);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  const handleOpenCreate = () => {
+    setOpenCreate(true);
+  };
 
   return (
     <Box>
       <Grid container spacing={2}>
         <Grid item xs>
           <Grid container gap={0.5}>
-            <Grid width="100%">{"search component here"}</Grid>
+            <Grid width="100%">
+              <EncounterSearchComponent
+                handleAdd={handleOpenCreate}
+                setSearchParam={setSearchParam}
+              />
+            </Grid>
             <Grid
               item
               width="100%"
@@ -45,6 +57,12 @@ export default function PatientListPage() {
           </Grid>
         </Grid>
       </Grid>
+      <EncounterCreateComponent
+        onOpen={function (isOpen: boolean): void {
+          setOpenCreate(isOpen);
+        }}
+        isOpen={openCreate}
+      />
     </Box>
   );
 }

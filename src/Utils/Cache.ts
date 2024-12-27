@@ -37,4 +37,13 @@ export class CacheUtils {
   public static clearCache(): void {
     localStorage.removeItem(this.storageKey);
   }
+
+  public static clearCacheByKeySubstring(substring: string): void {
+    const cache = this.getCache();
+    const keysToDelete = Object.keys(cache).filter((key) =>
+      key.includes(substring)
+    );
+    keysToDelete.forEach((key) => delete cache[key]);
+    this.saveCache(cache);
+  }
 }

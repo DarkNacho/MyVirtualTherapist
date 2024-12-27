@@ -17,8 +17,8 @@
     "myProfile": "Mi Perfil",
     "signOut": "Cerrar Sesión",
     "patients": "PACIENTES",
-    "practitioners": "PRACTICANTES",
-    "encounters": "ENCUENTROS",
+    "practitioners": "PROFESIONALES",
+    "encounters": "SESIONES",
     "contact": "CONTACTO",
     "sessionExpired": "Su sesión ha expirado, por favor inicie sesión nuevamente."
   },
@@ -90,7 +90,7 @@
 
   "practitionerContactDetailForm": {
     "role": "Profesión",
-    "addPractitioner": "AGREGAR PRACTICANTE",
+    "addPractitioner": "AGREGAR PROFESIONAL",
     "phoneNumberRequired": "Número telefónico requerido",
     "phoneNumber": "Número Telefónico",
     "email": "Correo Electrónico",
@@ -105,7 +105,7 @@
   "practitionerCreateForm": {
     "personalDetails": "Datos Personales",
     "contactDetails": "Datos de Contacto",
-    "practitionerCreated": "PRACTICANTE CREADO CON ÉXITO",
+    "practitionerCreated": "PROFESIONAL CREADO CON ÉXITO",
     "verifyEmail": "Verifique el correo del practicante para confirmar clave de acceso.",
     "back": "Atrás",
     "next": "Siguiente",
@@ -113,7 +113,7 @@
     "viewProfile": "Ver Perfil"
   },
   "practitionerPersonalDetailsForm": {
-    "addPractitioner": "AGREGAR PRACTICANTE",
+    "addPractitioner": "AGREGAR PROFESIONAL",
     "name": "Nombre",
     "nameRequired": "El Nombre es necesario",
     "secondName": "Segundo Nombre",
@@ -146,7 +146,7 @@
     "next": "Siguiente"
   },
   "practitionerSearchComponent": {
-    "practitioners": "PRACTICANTES",
+    "practitioners": "PROFESIONALES",
     "searchPractitioner": "Buscar un practicante",
     "addPractitioner": "Agregar\nPracticante",
     "searchByPhone": "Buscar por teléfono",

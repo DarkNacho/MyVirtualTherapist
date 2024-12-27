@@ -32,25 +32,63 @@ interface EncounterListProps {
 
 const fhirService = FhirResourceService.getInstance<Encounter>("Encounter");
 
-function getDisplay(resource: Encounter): string {
+function getDisplay(
+  resource: Encounter,
+  handleItemClick: (resource: Encounter) => void
+): JSX.Element {
   const roleUser = loadUserRoleFromLocalStorage();
-  let display = "";
+  let primaryText = "";
+  let secondaryText = "";
 
-  if (roleUser === "Admin")
-    display = `Paciente: ${EncounterUtils.getSubjectDisplayOrID(
-      resource.subject!
-    )}
-  Profesional: ${EncounterUtils.getPrimaryPractitioner(resource)}`;
-
-  if (roleUser == "Patient")
-    display = `Profesional: ${EncounterUtils.getPrimaryPractitioner(resource)}`;
-  if (roleUser == "Practitioner")
-    display = `Paciente: ${EncounterUtils.getSubjectDisplayOrID(
+  if (roleUser === "Admin") {
+    primaryText = `Paciente: ${EncounterUtils.getSubjectDisplayOrID(
       resource.subject!
     )}`;
+    secondaryText = `Profesional: ${EncounterUtils.getPrimaryPractitioner(
+      resource
+    )}`;
+  } else if (roleUser === "Patient") {
+    primaryText = `Profesional: ${EncounterUtils.getPrimaryPractitioner(
+      resource
+    )}`;
+  } else if (roleUser === "Practitioner") {
+    primaryText = `Paciente: ${EncounterUtils.getSubjectDisplayOrID(
+      resource.subject!
+    )}`;
+  }
 
-  return `  ${display}
-  ${EncounterUtils.getFormatPeriod(resource.period!)}`;
+  const periodText = EncounterUtils.getFormatPeriod(resource.period!);
+
+  return (
+    <ListItemText
+      primary={
+        <Typography
+          onClick={() => handleItemClick(resource)}
+          variant="body1"
+          color="textSecondary"
+          component="span"
+          sx={{
+            fontWeight: "bold",
+            display: "block",
+            ":hover": { cursor: "pointer" },
+            whiteSpace: "nowrap",
+            overflow: "visible",
+            textOverflow: "ellipsis",
+            width: "100%",
+          }}
+        >
+          {primaryText}
+        </Typography>
+      }
+      secondary={
+        <Typography variant="body2" color="textSecondary" component="span">
+          {secondaryText}
+          <br />
+          {periodText}
+        </Typography>
+      }
+    />
+  );
 }
 
 export default function EncounterList({
@@ -151,36 +189,7 @@ export default function EncounterList({
               <React.Fragment key={resource.id}>
                 <ListItem className={styles.listItem}>
                   <Box sx={{ flex: 1 }}>
-                    <ListItemText
-                      primary={
-                        <Typography
-                          onClick={() => handleItemClick(resource)}
-                          variant="body1"
-                          color="textSecondary"
-                          component="span"
-                          sx={{
-                            fontWeight: "bold",
-                            display: "block",
-                            ":hover": { cursor: "pointer" },
-                            whiteSpace: "nowrap",
-                            overflow: "visible",
-                            textOverflow: "ellipsis",
-                            width: "100%",
-                          }}
-                        >
-                          {resource.id}
-                        </Typography>
-                      }
-                      secondary={
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          component="span"
-                        >
-                          {getDisplay(resource)}
-                        </Typography>
-                      }
-                    />
+                    {getDisplay(resource, handleItemClick)}
                   </Box>
                   <Box sx={{ display: "flex", gap: 1 }}>
                     {onEditClick && (
