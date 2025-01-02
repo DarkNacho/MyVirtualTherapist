@@ -9,12 +9,13 @@ import {
 import { PractitionerFormData } from "../../../Models/Forms/PractitionerForm";
 import "react-phone-input-2/lib/material.css";
 import PhoneInput from "react-phone-input-2";
-import { useEffect } from "react";
+
 import { useTranslation } from "react-i18next";
 import {
   practitionerRoles,
   practitionerSpecialties,
 } from "../../../Models/Terminology";
+import { DevTool } from "@hookform/devtools";
 
 export default function PractitionerContactDetailForm({
   formId,
@@ -30,8 +31,7 @@ export default function PractitionerContactDetailForm({
     control,
     register,
     handleSubmit,
-    setError,
-    clearErrors,
+
     formState: { errors },
   } = useForm<PractitionerFormData>({
     defaultValues: {
@@ -40,17 +40,6 @@ export default function PractitionerContactDetailForm({
     },
     mode: "onBlur",
   });
-
-  useEffect(() => {
-    if (errors.numeroTelefonico) {
-      setError("numeroTelefonico", {
-        type: "required",
-        message: t("practitionerContactDetailForm.phoneNumberRequired"),
-      });
-    } else {
-      clearErrors("numeroTelefonico");
-    }
-  }, [errors.numeroTelefonico, setError, clearErrors, t]);
 
   return (
     <form id={formId} onSubmit={handleSubmit(submitForm)}>
@@ -73,11 +62,20 @@ export default function PractitionerContactDetailForm({
             name="numeroTelefonico"
             control={control}
             rules={{
-              required: t("practitionerContactDetailForm.phoneNumberRequired"),
-              validate: (value) =>
-                value
-                  ? true
-                  : t("practitionerContactDetailForm.phoneNumberRequired"),
+              required: "El número de teléfono es requerid",
+              validate: (value) => {
+                if (!value) {
+                  return "El número de teléfono es requerido";
+                }
+                const countryCode = value.slice(0, 2); // Assuming the country code is the first two characters
+                if (
+                  (countryCode === "56" && value.length < 11) ||
+                  value.length > 12
+                ) {
+                  return "El número de teléfono debe tener 9 dígitos";
+                }
+                return true;
+              },
             }}
             render={({ field }) => (
               <PhoneInput
@@ -85,7 +83,6 @@ export default function PractitionerContactDetailForm({
                 value={field.value}
                 onChange={(phone) => {
                   field.onChange(phone);
-                  console.log("phone:", phone);
                 }}
                 inputProps={{
                   required: true,
@@ -95,9 +92,6 @@ export default function PractitionerContactDetailForm({
                   width: "100%",
                   height: "56px",
                 }}
-                isValid={(value) => !!value}
-                enableSearch
-                specialLabel={t("practitionerContactDetailForm.phoneNumber")}
               />
             )}
           />
@@ -167,13 +161,30 @@ export default function PractitionerContactDetailForm({
                 id="Autocomplete-specialty"
                 multiple
                 options={practitionerSpecialties}
-                getOptionLabel={(option) =>
-                  option.display || option.code || "UNKNOWN"
-                }
+                getOptionLabel={(option) => {
+                  if (typeof option === "string") {
+                    return option;
+                  }
+                  return option.display || option.code || "UNKNOWN";
+                }}
                 isOptionEqualToValue={(option, value) =>
                   option.code === value.code
                 }
-                onChange={(_, newValue) => field.onChange(newValue)}
+                freeSolo
+                //onChange={(_, newValue) => field.onChange(newValue)}
+                onChange={(_, newValue) => {
+                  const transformedValue = newValue.map((item) => {
+                    if (typeof item === "string") {
+                      return {
+                        code: "OTHER",
+                        system: "cttn.cl",
+                        display: item,
+                      };
+                    }
+                    return item;
+                  });
+                  field.onChange(transformedValue);
+                }}
                 value={field.value}
                 renderOption={(props, option) => (
                   <li {...props} key={option.code}>
@@ -193,6 +204,7 @@ export default function PractitionerContactDetailForm({
           />
         </Grid>
       </Grid>
+      <DevTool control={control} />
     </form>
   );
 }

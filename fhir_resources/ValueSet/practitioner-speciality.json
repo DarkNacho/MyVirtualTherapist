@@ -1,0 +1,476 @@
+{
+  "resourceType": "ValueSet",
+  "url": "https://castudillo-hapi.darknacho.xyz/fhir/ValueSet/practitioner-specialty",
+  "title": "practitioner-specialty",
+  "status": "active",
+  "publisher": "Ignacio Martínez",
+  "compose": {
+    "include": [
+      {
+        "system": "http://snomed.info/sct",
+        "concept": [
+          {
+            "code": "408467006",
+            "display": "Enfermedad mental en adultos"
+          },
+          {
+            "code": "394577000",
+            "display": "Anestesiología"
+          },
+          {
+            "code": "394578005",
+            "display": "Medicina Audiológica"
+          },
+          {
+            "code": "421661004",
+            "display": "Banco de sangre y medicina de transfusión"
+          },
+          {
+            "code": "408462000",
+            "display": "Cuidado de quemaduras"
+          },
+          {
+            "code": "394579002",
+            "display": "Cardiología"
+          },
+          {
+            "code": "394804000",
+            "display": "Citogenética clínica y genética molecular"
+          },
+          {
+            "code": "394580004",
+            "display": "Genética clínica"
+          },
+          {
+            "code": "394803006",
+            "display": "Hematología clínica"
+          },
+          {
+            "code": "408480009",
+            "display": "Inmunología clínica"
+          },
+          {
+            "code": "408454008",
+            "display": "Microbiología clínica"
+          },
+          {
+            "code": "394809005",
+            "display": "Neurofisiología clínica"
+          },
+          {
+            "code": "394592004",
+            "display": "Oncología clínica"
+          },
+          {
+            "code": "394600006",
+            "display": "Farmacología clínica"
+          },
+          {
+            "code": "394601005",
+            "display": "Fisiología clínica"
+          },
+          {
+            "code": "394581000",
+            "display": "Medicina Comunitaria"
+          },
+          {
+            "code": "408478003",
+            "display": "Medicina de Cuidados Intensivos"
+          },
+          {
+            "code": "394812008",
+            "display": "Especialidades de Medicina Dental"
+          },
+          {
+            "code": "408444009",
+            "display": "Odontología General"
+          },
+          {
+            "code": "394582007",
+            "display": "Dermatología"
+          },
+          {
+            "code": "408475000",
+            "display": "Medicina Diabética"
+          },
+          {
+            "code": "410005002",
+            "display": "Medicina de Buceo"
+          },
+          {
+            "code": "394583002",
+            "display": "Endocrinología"
+          },
+          {
+            "code": "419772000",
+            "display": "Medicina Familiar"
+          },
+          {
+            "code": "394584008",
+            "display": "Gastroenterología"
+          },
+          {
+            "code": "408443003",
+            "display": "Práctica Médica General"
+          },
+          {
+            "code": "394802001",
+            "display": "Medicina General"
+          },
+          {
+            "code": "394915009",
+            "display": "Patología General"
+          },
+          {
+            "code": "394814009",
+            "display": "Práctica General"
+          },
+          {
+            "code": "394808002",
+            "display": "Medicina Genitourinaria"
+          },
+          {
+            "code": "394811001",
+            "display": "Geriatría"
+          },
+          {
+            "code": "408446006",
+            "display": "Oncología Ginecológica"
+          },
+          {
+            "code": "394586005",
+            "display": "Ginecología"
+          },
+          {
+            "code": "394916005",
+            "display": "Hematopatología"
+          },
+          {
+            "code": "408472002",
+            "display": "Hepatología"
+          },
+          {
+            "code": "394597005",
+            "display": "Histopatología"
+          },
+          {
+            "code": "394598000",
+            "display": "Inmunopatología"
+          },
+          {
+            "code": "394807007",
+            "display": "Enfermedades Infecciosas"
+          },
+          {
+            "code": "419192003",
+            "display": "Medicina Interna"
+          },
+          {
+            "code": "408468001",
+            "display": "Discapacidad Intelectual"
+          },
+          {
+            "code": "394593009",
+            "display": "Oncología Médica"
+          },
+          {
+            "code": "394813003",
+            "display": "Oftalmología Médica"
+          },
+          {
+            "code": "410001006",
+            "display": "Medicina Militar"
+          },
+          {
+            "code": "394589003",
+            "display": "Nefrología"
+          },
+          {
+            "code": "394591006",
+            "display": "Neurología"
+          },
+          {
+            "code": "394599008",
+            "display": "Neuropatología"
+          },
+          {
+            "code": "394649004",
+            "display": "Medicina Nuclear"
+          },
+          {
+            "code": "408470005",
+            "display": "Obstetricia"
+          },
+          {
+            "code": "394585009",
+            "display": "Obstetricia y Ginecología"
+          },
+          {
+            "code": "394821009",
+            "display": "Medicina Ocupacional"
+          },
+          {
+            "code": "422191005",
+            "display": "Cirugía Oftalmológica"
+          },
+          {
+            "code": "394594003",
+            "display": "Oftalmología"
+          },
+          {
+            "code": "416304004",
+            "display": "Medicina Osteopática Manipulativa"
+          },
+          {
+            "code": "418960008",
+            "display": "Otorrinolaringología"
+          },
+          {
+            "code": "394882004",
+            "display": "Manejo del Dolor"
+          },
+          {
+            "code": "394806003",
+            "display": "Medicina Paliativa"
+          },
+          {
+            "code": "394588006",
+            "display": "Psiquiatría Pediátrica (Infantil y Adolescente)"
+          },
+          {
+            "code": "408459003",
+            "display": "Cardiología Pediátrica"
+          },
+          {
+            "code": "394607009",
+            "display": "Odontología Pediátrica"
+          },
+          {
+            "code": "419610006",
+            "display": "Endocrinología Pediátrica"
+          },
+          {
+            "code": "418058008",
+            "display": "Gastroenterología Pediátrica"
+          },
+          {
+            "code": "420208008",
+            "display": "Genética Pediátrica"
+          },
+          {
+            "code": "418652005",
+            "display": "Hematología Pediátrica"
+          },
+          {
+            "code": "418535003",
+            "display": "Inmunología Pediátrica"
+          },
+          {
+            "code": "418862001",
+            "display": "Enfermedades Infecciosas Pediátricas"
+          },
+          {
+            "code": "419365004",
+            "display": "Nefrología Pediátrica"
+          },
+          {
+            "code": "418002000",
+            "display": "Oncología Pediátrica"
+          },
+          {
+            "code": "419983000",
+            "display": "Oftalmología Pediátrica"
+          },
+          {
+            "code": "419170002",
+            "display": "Neumología Pediátrica"
+          },
+          {
+            "code": "419472004",
+            "display": "Reumatología Pediátrica"
+          },
+          {
+            "code": "394539006",
+            "display": "Cirugía Pediátrica"
+          },
+          {
+            "code": "420112009",
+            "display": "Cirugía Pediátrica - Trasplante de médula ósea"
+          },
+          {
+            "code": "409968004",
+            "display": "Medicina Preventiva"
+          },
+          {
+            "code": "394587001",
+            "display": "Psiquiatría"
+          },
+          {
+            "code": "394913002",
+            "display": "Psicoterapia"
+          },
+          {
+            "code": "408440000",
+            "display": "Medicina de Salud Pública"
+          },
+          {
+            "code": "418112009",
+            "display": "Medicina Pulmonar"
+          },
+          {
+            "code": "419815003",
+            "display": "Oncología por Radiación"
+          },
+          {
+            "code": "394914008",
+            "display": "Radiología"
+          },
+          {
+            "code": "408455009",
+            "display": "Radiología - Radiología Intervencionista"
+          },
+          {
+            "code": "394602003",
+            "display": "Rehabilitación"
+          },
+          {
+            "code": "408447002",
+            "display": "Cuidados de Descanso"
+          },
+          {
+            "code": "394810000",
+            "display": "Reumatología"
+          },
+          {
+            "code": "408450004",
+            "display": "Estudios del Sueño"
+          },
+          {
+            "code": "408476004",
+            "display": "Cirugía - Trasplante de Hueso y Médula"
+          },
+          {
+            "code": "408469009",
+            "display": "Cirugía - Cirugía de Mama"
+          },
+          {
+            "code": "408466002",
+            "display": "Cirugía - Cirugía Cardíaca"
+          },
+          {
+            "code": "408471009",
+            "display": "Cirugía - Trasplante Cardio-Torácico"
+          },
+          {
+            "code": "408464004",
+            "display": "Cirugía - Cirugía Colorrectal"
+          },
+          {
+            "code": "408441001",
+            "display": "Cirugía Dental - Endodoncia"
+          },
+          {
+            "code": "408465003",
+            "display": "Cirugía Dental - Cirugía Oral y Maxilofacial"
+          },
+          {
+            "code": "394605001",
+            "display": "Cirugía Dental - Cirugía Oral"
+          },
+          {
+            "code": "394608004",
+            "display": "Cirugía Dental - Ortodoncia"
+          },
+          {
+            "code": "408461007",
+            "display": "Cirugía Dental - Cirugía Periodontal"
+          },
+          {
+            "code": "408460008",
+            "display": "Cirugía Dental - Prostodoncia Quirúrgica"
+          },
+          {
+            "code": "394606000",
+            "display": "Cirugía Dental - Odontología Restaurativa"
+          },
+          {
+            "code": "408449004",
+            "display": "Cirugía Dental - Odontología - Cirugía"
+          },
+          {
+            "code": "418018006",
+            "display": "Cirugía Dermatológica"
+          },
+          {
+            "code": "394604002",
+            "display": "Cirugía de Oído, Nariz y Garganta"
+          },
+          {
+            "code": "394609007",
+            "display": "Cirugía General"
+          },
+          {
+            "code": "408474001",
+            "display": "Cirugía Hepatobiliar y Pancreática"
+          },
+          {
+            "code": "394610002",
+            "display": "Neurocirugía"
+          },
+          {
+            "code": "394611003",
+            "display": "Cirugía Plástica"
+          },
+          {
+            "code": "408477008",
+            "display": "Cirugía - Cirugía de Trasplante"
+          },
+          {
+            "code": "394801008",
+            "display": "Cirugía - Traumatología y Ortopedia"
+          },
+          {
+            "code": "408463005",
+            "display": "Cirugía Vascular"
+          },
+          {
+            "code": "419321007",
+            "display": "Oncología Quirúrgica"
+          },
+          {
+            "code": "394576009",
+            "display": "Quirúrgica - Accidente y Emergencia"
+          },
+          {
+            "code": "394590007",
+            "display": "Medicina Torácica"
+          },
+          {
+            "code": "409967009",
+            "display": "Toxicología"
+          },
+          {
+            "code": "408448007",
+            "display": "Medicina Tropical"
+          },
+          {
+            "code": "419043006",
+            "display": "Oncología Urológica"
+          },
+          {
+            "code": "394612005",
+            "display": "Urología"
+          },
+          {
+            "code": "394733009",
+            "display": "Especialidad Médica - OTROS - NO LISTADOS"
+          },
+          {
+            "code": "394732004",
+            "display": "Especialidad Quirúrgica - OTROS - NO LISTADOS"
+          }
+        ]
+      }
+    ]
+  }
+}

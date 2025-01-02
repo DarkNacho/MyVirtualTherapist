@@ -190,7 +190,19 @@ export default function PractitionerList({
                               {PersonUtil.getContactPointFirstOrDefaultAsString(
                                 resource,
                                 "phone"
-                              )}
+                              )}{" "}
+                              <strong>Email:</strong>{" "}
+                              <a
+                                href={`mailto:${PersonUtil.getContactPointFirstOrDefaultAsString(
+                                  resource,
+                                  "email"
+                                )}`}
+                              >
+                                {PersonUtil.getContactPointFirstOrDefaultAsString(
+                                  resource,
+                                  "email"
+                                )}
+                              </a>
                             </Typography>
                           </Box>
                         </>

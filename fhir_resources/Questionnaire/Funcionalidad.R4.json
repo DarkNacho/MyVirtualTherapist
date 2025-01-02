@@ -1,0 +1,47 @@
+{
+  "resourceType": "Questionnaire",
+  "title": "Funcionalidad",
+  "status": "draft",
+  "item": [
+    {
+      "type": "string",
+      "linkId": "3472328081559",
+      "text": "Adaptaciones en el hogar"
+    },
+    {
+      "type": "string",
+      "linkId": "7191705276832",
+      "text": "Actividades recreacionales"
+    },
+    {
+      "type": "string",
+      "linkId": "5051537218642",
+      "text": "Autonomia de traslado"
+    },
+    {
+      "type": "string",
+      "linkId": "7900869487794",
+      "text": "Como logra autonomía"
+    },
+    {
+      "type": "string",
+      "linkId": "223588414020",
+      "text": "Estado de conciencia"
+    },
+    {
+      "type": "string",
+      "linkId": "1233712212973",
+      "text": "Orientación y memoria"
+    },
+    {
+      "type": "string",
+      "linkId": "8580531395663",
+      "text": "Lenguaje y Comunicación"
+    },
+    {
+      "type": "string",
+      "linkId": "2673616588009",
+      "text": "Visión y utilización de lentes"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "resourceType": "Questionnaire",
+  "title": "Rangos Articulares",
+  "status": "draft",
+  "item": [
+    {
+      "type": "string",
+      "linkId": "5935492976699",
+      "text": "Hombro derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "9424852208165",
+      "text": "Hombro izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "8036281213751",
+      "text": "Codo derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "9104037383043",
+      "text": "Codo izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "8991812589781",
+      "text": " Muñeca derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "2760734710467",
+      "text": " Muñeca izquierda"
+    },
+    {
+      "type": "string",
+      "linkId": "8016569961417",
+      "text": " Rodilla derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "4577203318158",
+      "text": "Rodilla izquierda"
+    },
+    {
+      "type": "string",
+      "linkId": "6355383214342",
+      "text": "Otros",
+      "repeats": true
+    }
+  ]
+}

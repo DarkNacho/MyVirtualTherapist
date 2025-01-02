@@ -1,0 +1,27 @@
+{
+  "resourceType": "Questionnaire",
+  "title": "Coordinación",
+  "status": "draft",
+  "item": [
+    {
+      "type": "string",
+      "linkId": "7250802167386",
+      "text": "Movimientos Alternados"
+    },
+    {
+      "type": "string",
+      "linkId": "181923723256",
+      "text": "Índice-Nariz"
+    },
+    {
+      "type": "string",
+      "linkId": "8785843041679",
+      "text": "Rodilla Talón"
+    },
+    {
+      "type": "string",
+      "linkId": "5010792893786",
+      "text": "Diadococinesia"
+    }
+  ]
+}

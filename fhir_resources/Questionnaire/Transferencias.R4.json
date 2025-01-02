@@ -1,0 +1,112 @@
+{
+  "resourceType": "Questionnaire",
+  "title": "Transferencias",
+  "status": "draft",
+  "item": [
+    {
+      "type": "string",
+      "linkId": "4676486287226",
+      "text": "Giros"
+    },
+    {
+      "type": "string",
+      "linkId": "3837512403144",
+      "text": "A derecha"
+    },
+    {
+      "type": "string",
+      "linkId": "6243565605526",
+      "text": "A izquierda"
+    },
+    {
+      "type": "string",
+      "linkId": "4125299035791",
+      "text": "Ambos lados"
+    },
+    {
+      "type": "string",
+      "linkId": "4023620615289",
+      "text": "Movimiento selectivo"
+    },
+    {
+      "type": "string",
+      "linkId": "2310702464569",
+      "text": "Movimiento en bloque"
+    },
+    {
+      "type": "string",
+      "linkId": "5925667593471",
+      "text": "Movimiento fluido"
+    },
+    {
+      "type": "string",
+      "linkId": "6100119830663",
+      "text": "Requiere asistencia"
+    },
+    {
+      "type": "string",
+      "linkId": "523106967137",
+      "text": "Supino-sedente"
+    },
+    {
+      "type": "string",
+      "linkId": "1176495857499",
+      "text": "Asistencia leve"
+    },
+    {
+      "type": "string",
+      "linkId": "6052268949833",
+      "text": "Usa MMSS"
+    },
+    {
+      "type": "string",
+      "linkId": "3764060437308",
+      "text": "Sin asistencia"
+    },
+    {
+      "type": "string",
+      "linkId": "1534142551544",
+      "text": "Sedente Bípedo"
+    },
+    {
+      "type": "string",
+      "linkId": "3619064632111",
+      "text": "Simetría de cargas"
+    },
+    {
+      "type": "string",
+      "linkId": "6220960499459",
+      "text": "Carga a derecha"
+    },
+    {
+      "type": "string",
+      "linkId": "9683182743327",
+      "text": "Carga a izquierda"
+    },
+    {
+      "type": "string",
+      "linkId": "4814553636806",
+      "text": "Silla de ruedas"
+    },
+    {
+      "type": "string",
+      "linkId": "5080478613142",
+      "text": "Desplazamiento independiente"
+    },
+    {
+      "type": "string",
+      "linkId": "6589911969398",
+      "text": "Posición funcional mas alta"
+    },
+    {
+      "type": "string",
+      "linkId": "40778501442",
+      "text": "Motor Assessment Scalefor stroke"
+    },
+    {
+      "type": "string",
+      "linkId": "8482633273742",
+      "text": "Test control tronco"
+    }
+  ]
+}

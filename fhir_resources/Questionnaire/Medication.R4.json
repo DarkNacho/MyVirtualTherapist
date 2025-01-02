@@ -1,0 +1,167 @@
+{
+  "resourceType": "Questionnaire",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/4.0/StructureDefinition/Questionnaire"
+    ],
+    "tag": [
+      {
+        "code": "lformsVersion: 34.3.0"
+      }
+    ]
+  },
+  "title": "Personal Health Record",
+  "status": "draft",
+  "code": [
+    {
+      "code": "phr",
+      "display": "Personal Health Record"
+    }
+  ],
+  "item": [
+    {
+      "item": [
+        {
+          "type": "open-choice",
+          "code": [
+            {
+              "code": "condition",
+              "display": "Medical condition",
+              "system": "Custom"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "autocomplete",
+                    "display": "Auto-complete"
+                  }
+                ],
+                "text": "Auto-complete"
+              }
+            },
+            {
+              "url": "http://lhcforms.nlm.nih.gov/fhir/StructureDefinition/questionnaire-externallydefined",
+              "valueUri": "https://clinicaltables.nlm.nih.gov/api/conditions/v3/search"
+            }
+          ],
+          "required": false,
+          "linkId": "/conditions/condition",
+          "text": "Medical condition"
+        },
+        {
+          "type": "choice",
+          "code": [
+            {
+              "code": "cond_status",
+              "display": "Status",
+              "system": "Custom"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "drop-down",
+                    "display": "Drop down"
+                  }
+                ],
+                "text": "Drop down"
+              }
+            }
+          ],
+          "required": false,
+          "linkId": "/conditions/cond_status",
+          "text": "Status",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "A",
+                "display": "Active"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "I",
+                "display": "Inactive"
+              }
+            }
+          ]
+        },
+        {
+          "type": "date",
+          "code": [
+            {
+              "code": "cond_started",
+              "display": "Started",
+              "system": "Custom"
+            }
+          ],
+          "required": false,
+          "linkId": "/conditions/cond_started",
+          "text": "Started"
+        },
+        {
+          "type": "date",
+          "code": [
+            {
+              "code": "cond_stopped",
+              "display": "Stopped",
+              "system": "Custom"
+            }
+          ],
+          "required": false,
+          "linkId": "/conditions/cond_stopped",
+          "text": "Stopped"
+        },
+        {
+          "type": "text",
+          "code": [
+            {
+              "code": "cond_comment",
+              "display": "Description/Comment",
+              "system": "Custom"
+            }
+          ],
+          "required": false,
+          "linkId": "/conditions/cond_comment",
+          "text": "Description/Comment"
+        }
+      ],
+      "type": "group",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "gtable",
+                "display": "Group Table"
+              }
+            ],
+            "text": "Group Table"
+          }
+        }
+      ],
+      "linkId": "/conditions",
+      "code": [
+        {
+          "system": "Custom",
+          "code": "conditions",
+          "display": "Medical Conditions"
+        }
+      ],
+      "text": "Medical Conditions",
+      "required": false,
+      "repeats": true
+    }
+  ]
+}

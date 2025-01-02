@@ -1,0 +1,2030 @@
+{
+  "resourceType": "ValueSet",
+  "url": "https://hl7.org/fhir/R4/valueset-practitioner-role.html",
+  "title": "practitioner-role",
+  "status": "active",
+  "publisher": "Ignacio Martínez",
+  "compose": {
+    "include": [
+      {
+        "system": "System",
+        "concept": [
+          {
+            "code": "Code",
+            "display": "Display"
+          }
+        ]
+      },
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/practitioner-role",
+        "concept": [
+          {
+            "code": "doctor",
+            "display": "Médico"
+          },
+          {
+            "code": "nurse",
+            "display": "Enfermera"
+          },
+          {
+            "code": "pharmacist",
+            "display": "Farmacéutico"
+          },
+          {
+            "code": "researcher",
+            "display": "Investigador"
+          },
+          {
+            "code": "teacher",
+            "display": "Teacher/educator"
+          },
+          {
+            "code": "ict",
+            "display": "Profesional de las TIC"
+          }
+        ]
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "concept": [
+          {
+            "code": "1421009",
+            "display": "Cirujano especializado"
+          },
+          {
+            "code": "3430008",
+            "display": "Radioterapeuta"
+          },
+          {
+            "code": "3842006",
+            "display": "Quiropráctico"
+          },
+          {
+            "code": "4162009",
+            "display": "Auxiliar de odontología"
+          },
+          {
+            "code": "5275007",
+            "display": "NA - Auxiliar de enfermería"
+          },
+          {
+            "code": "6816002",
+            "display": "Enfermero especializado"
+          },
+          {
+            "code": "6868009",
+            "display": "Administrador de hospital"
+          },
+          {
+            "code": "8724009",
+            "display": "Cirujano plástico"
+          },
+          {
+            "code": "11661002",
+            "display": "Neuropatólogo"
+          },
+          {
+            "code": "11911009",
+            "display": "Nefrólogo"
+          },
+          {
+            "code": "11935004",
+            "display": "Obstetra"
+          },
+          {
+            "code": "13580004",
+            "display": "Asistente dental escolar"
+          },
+          {
+            "code": "14698002",
+            "display": "Microbiólogo médico"
+          },
+          {
+            "code": "17561000",
+            "display": "Cardiólogo"
+          },
+          {
+            "code": "18803008",
+            "display": "Dermatólogo"
+          },
+          {
+            "code": "18850004",
+            "display": "Hematólogo de laboratorio"
+          },
+          {
+            "code": "19244007",
+            "display": "Gerodoncista"
+          },
+          {
+            "code": "20145008",
+            "display": "Prostodoncista removible"
+          },
+          {
+            "code": "21365001",
+            "display": "Odontólogo especializado"
+          },
+          {
+            "code": "21450003",
+            "display": "Neuropsiquiatra"
+          },
+          {
+            "code": "22515006",
+            "display": "Asistente médico"
+          },
+          {
+            "code": "22731001",
+            "display": "Cirujano ortopédico"
+          },
+          {
+            "code": "22983004",
+            "display": "Cirujano torácico"
+          },
+          {
+            "code": "23278007",
+            "display": "Médico de salud comunitaria"
+          },
+          {
+            "code": "24430003",
+            "display": "Especialista en medicina física"
+          },
+          {
+            "code": "24590004",
+            "display": "Urólogo"
+          },
+          {
+            "code": "25961008",
+            "display": "Especialista en electroencefalografía"
+          },
+          {
+            "code": "26042002",
+            "display": "Higienista dental"
+          },
+          {
+            "code": "26369006",
+            "display": "Enfermero de salud pública"
+          },
+          {
+            "code": "28229004",
+            "display": "Optometrista"
+          },
+          {
+            "code": "28411006",
+            "display": "Neonatólogo"
+          },
+          {
+            "code": "28544002",
+            "display": "Patólogo químico"
+          },
+          {
+            "code": "36682004",
+            "display": "PT - Fisioterapeuta"
+          },
+          {
+            "code": "37154003",
+            "display": "Periodoncista"
+          },
+          {
+            "code": "37504001",
+            "display": "Ortodoncista"
+          },
+          {
+            "code": "39677007",
+            "display": "Especialista en medicina interna"
+          },
+          {
+            "code": "40127002",
+            "display": "Dietista (general)"
+          },
+          {
+            "code": "40204001",
+            "display": "Hematólogo"
+          },
+          {
+            "code": "40570005",
+            "display": "Intérprete"
+          },
+          {
+            "code": "41672002",
+            "display": "Médico respiratorio"
+          },
+          {
+            "code": "41904004",
+            "display": "Técnico en radiología médica"
+          },
+          {
+            "code": "43702002",
+            "display": "Enfermero de salud laboral"
+          },
+          {
+            "code": "44652006",
+            "display": "Asistente farmacéutico"
+          },
+          {
+            "code": "45419001",
+            "display": "Masajista"
+          },
+          {
+            "code": "45440000",
+            "display": "Reumatólogo"
+          },
+          {
+            "code": "45544007",
+            "display": "Neurocirujano"
+          },
+          {
+            "code": "45956004",
+            "display": "Sanitario"
+          },
+          {
+            "code": "46255001",
+            "display": "Farmacéutico"
+          },
+          {
+            "code": "48740002",
+            "display": "Filólogo"
+          },
+          {
+            "code": "49203003",
+            "display": "Optometrista"
+          },
+          {
+            "code": "49993003",
+            "display": "Cirujano maxilofacial"
+          },
+          {
+            "code": "50149000",
+            "display": "Endodoncista"
+          },
+          {
+            "code": "54503009",
+            "display": "Curandero"
+          },
+          {
+            "code": "56397003",
+            "display": "Neurólogo"
+          },
+          {
+            "code": "56466003",
+            "display": "Médico comunitario"
+          },
+          {
+            "code": "56542007",
+            "display": "Administrador de historias clínicas"
+          },
+          {
+            "code": "56545009",
+            "display": "Cirujano cardiovascular"
+          },
+          {
+            "code": "57654006",
+            "display": "Prostodoncista fijo"
+          },
+          {
+            "code": "59058001",
+            "display": "Médico general"
+          },
+          {
+            "code": "59169001",
+            "display": "Técnico ortopédico"
+          },
+          {
+            "code": "59944000",
+            "display": "Psicólogo"
+          },
+          {
+            "code": "60008001",
+            "display": "Dietista comunitario"
+          },
+          {
+            "code": "61207006",
+            "display": "Médico patólogo"
+          },
+          {
+            "code": "61246008",
+            "display": "Especialista en medicina de laboratorio"
+          },
+          {
+            "code": "61345009",
+            "display": "Otorrinolaringólogo"
+          },
+          {
+            "code": "61894003",
+            "display": "Endocrinólogo"
+          },
+          {
+            "code": "62247001",
+            "display": "Especialista en medicina familiar"
+          },
+          {
+            "code": "63098009",
+            "display": "Inmunólogo clínico"
+          },
+          {
+            "code": "66476003",
+            "display": "Patólogo oral"
+          },
+          {
+            "code": "66862007",
+            "display": "Radiólogo"
+          },
+          {
+            "code": "68867008",
+            "display": "Odontólogo de salud pública"
+          },
+          {
+            "code": "68950000",
+            "display": "Prostodoncista"
+          },
+          {
+            "code": "69280009",
+            "display": "Médico especialista"
+          },
+          {
+            "code": "71838004",
+            "display": "Gastroenterólogo"
+          },
+          {
+            "code": "73265009",
+            "display": "Auxiliar de enfermería"
+          },
+          {
+            "code": "75271001",
+            "display": "Matrona"
+          },
+          {
+            "code": "76166008",
+            "display": "Auxiliar de farmacia"
+          },
+          {
+            "code": "76231001",
+            "display": "Osteópata"
+          },
+          {
+            "code": "76899008",
+            "display": "Médico infectólogo"
+          },
+          {
+            "code": "78703002",
+            "display": "Cirujano general"
+          },
+          {
+            "code": "78729002",
+            "display": "Radiólogo de diagnóstico"
+          },
+          {
+            "code": "79898004",
+            "display": "Auxiliar de matrona"
+          },
+          {
+            "code": "80409005",
+            "display": "Traductor"
+          },
+          {
+            "code": "80546007",
+            "display": "Terapeuta ocupacional"
+          },
+          {
+            "code": "80584001",
+            "display": "Psiquiatra"
+          },
+          {
+            "code": "80933006",
+            "display": "Médico nuclear"
+          },
+          {
+            "code": "81464008",
+            "display": "Patólogo clínico"
+          },
+          {
+            "code": "82296001",
+            "display": "Pediatra"
+          },
+          {
+            "code": "83189004",
+            "display": "Otra enfermera profesional"
+          },
+          {
+            "code": "83273008",
+            "display": "Anatomopatólogo"
+          },
+          {
+            "code": "83685006",
+            "display": "Ginecólogo"
+          },
+          {
+            "code": "85733003",
+            "display": "Patólogo general"
+          },
+          {
+            "code": "88189002",
+            "display": "Anestesista"
+          },
+          {
+            "code": "88475002",
+            "display": "Otros dietistas y nutricionistas de salud pública"
+          },
+          {
+            "code": "90201008",
+            "display": "Odontopediatra"
+          },
+          {
+            "code": "90655003",
+            "display": "Médico de atención al anciano"
+          },
+          {
+            "code": "106289002",
+            "display": "Cirujano dental"
+          },
+          {
+            "code": "106291005",
+            "display": "Dietista AND/OR public health nutritionist"
+          },
+          {
+            "code": "106292003",
+            "display": "Enfermera"
+          },
+          {
+            "code": "106293008",
+            "display": "Personal de enfermería"
+          },
+          {
+            "code": "106294002",
+            "display": "Personal de partería"
+          },
+          {
+            "code": "106296000",
+            "display": "Physiotherapist AND/OR occupational therapist"
+          },
+          {
+            "code": "106330007",
+            "display": "Filólogo, translator AND/OR interpreter"
+          },
+          {
+            "code": "112247003",
+            "display": "Médico"
+          },
+          {
+            "code": "158965000",
+            "display": "Médico generalista"
+          },
+          {
+            "code": "158966004",
+            "display": "Administrador médico - nacional"
+          },
+          {
+            "code": "158967008",
+            "display": "Médico asesor"
+          },
+          {
+            "code": "158968003",
+            "display": "Cirujano consultor"
+          },
+          {
+            "code": "158969006",
+            "display": "Consultor ginecología y obstetricia"
+          },
+          {
+            "code": "158970007",
+            "display": "Anestesista"
+          },
+          {
+            "code": "158971006",
+            "display": "Registrador hospitalario"
+          },
+          {
+            "code": "158972004",
+            "display": "Encargado de hospital"
+          },
+          {
+            "code": "158973009",
+            "display": "Médico del trabajo"
+          },
+          {
+            "code": "158974003",
+            "display": "Médico clínico"
+          },
+          {
+            "code": "158975002",
+            "display": "Médico generalista - teaching"
+          },
+          {
+            "code": "158977005",
+            "display": "Administrador dental"
+          },
+          {
+            "code": "158978000",
+            "display": "Consultor dental"
+          },
+          {
+            "code": "158979008",
+            "display": "Odontólogo general"
+          },
+          {
+            "code": "158980006",
+            "display": "Odontólogo docente"
+          },
+          {
+            "code": "158983008",
+            "display": "Enfermera administrator - national"
+          },
+          {
+            "code": "158984002",
+            "display": "Oficial de enfermería - región"
+          },
+          {
+            "code": "158985001",
+            "display": "Oficial de enfermería - distrito"
+          },
+          {
+            "code": "158986000",
+            "display": "Administrador de enfermería - organismo profesional"
+          },
+          {
+            "code": "158987009",
+            "display": "Oficial de enfermería - división"
+          },
+          {
+            "code": "158988004",
+            "display": "Enfermera education director"
+          },
+          {
+            "code": "158989007",
+            "display": "Encargado de enfermería - salud laboral"
+          },
+          {
+            "code": "158990003",
+            "display": "Oficial de enfermería"
+          },
+          {
+            "code": "158992006",
+            "display": "Enfermera matrona"
+          },
+          {
+            "code": "158993001",
+            "display": "Enfermera de quirófano"
+          },
+          {
+            "code": "158994007",
+            "display": "Enfermera de plantilla"
+          },
+          {
+            "code": "158995008",
+            "display": "Matrona de plantilla"
+          },
+          {
+            "code": "158996009",
+            "display": "Enfermera diplomada"
+          },
+          {
+            "code": "158997000",
+            "display": "Enfermera de distrito"
+          },
+          {
+            "code": "158998005",
+            "display": "Enfermera privada"
+          },
+          {
+            "code": "158999002",
+            "display": "Matrona comunitaria"
+          },
+          {
+            "code": "159001001",
+            "display": "Enfermera de clínica"
+          },
+          {
+            "code": "159002008",
+            "display": "Enfermera de consulta"
+          },
+          {
+            "code": "159003003",
+            "display": "Enfermera escolar"
+          },
+          {
+            "code": "159004009",
+            "display": "Enfermera - teaching"
+          },
+          {
+            "code": "159005005",
+            "display": "Estudiante de enfermería"
+          },
+          {
+            "code": "159006006",
+            "display": "Enfermera dental"
+          },
+          {
+            "code": "159007002",
+            "display": "Enfermera pediátrica comunitaria"
+          },
+          {
+            "code": "159010009",
+            "display": "Farmacéutico de hospital"
+          },
+          {
+            "code": "159011008",
+            "display": "Farmacéutico minorista"
+          },
+          {
+            "code": "159012001",
+            "display": "Farmacéutico industrial"
+          },
+          {
+            "code": "159013006",
+            "display": "Farmacéutico oficial H.A."
+          },
+          {
+            "code": "159014000",
+            "display": "Farmacéutico en prácticas"
+          },
+          {
+            "code": "159016003",
+            "display": "Radiógrafo médico"
+          },
+          {
+            "code": "159017007",
+            "display": "Radiógrafo de diagnóstico"
+          },
+          {
+            "code": "159018002",
+            "display": "Radiógrafo terapéutico"
+          },
+          {
+            "code": "159019005",
+            "display": "Aprendiz de radiógrafo"
+          },
+          {
+            "code": "159021000",
+            "display": "Óptico oftalmólogo"
+          },
+          {
+            "code": "159022007",
+            "display": "Aprendiz de óptico"
+          },
+          {
+            "code": "159025009",
+            "display": "Gimnasia curativa"
+          },
+          {
+            "code": "159026005",
+            "display": "Logopeda"
+          },
+          {
+            "code": "159027001",
+            "display": "Ortóptico"
+          },
+          {
+            "code": "159028006",
+            "display": "Terapeuta de apoyo en prácticas"
+          },
+          {
+            "code": "159033005",
+            "display": "Dietista"
+          },
+          {
+            "code": "159034004",
+            "display": "Podólogo"
+          },
+          {
+            "code": "159035003",
+            "display": "Auxiliar de odontología"
+          },
+          {
+            "code": "159036002",
+            "display": "Técnico de ECG"
+          },
+          {
+            "code": "159037006",
+            "display": "Técnico de EEG"
+          },
+          {
+            "code": "159038001",
+            "display": "Técnico en prótesis"
+          },
+          {
+            "code": "159039009",
+            "display": "Técnico en audiología"
+          },
+          {
+            "code": "159040006",
+            "display": "Técnico de farmacia"
+          },
+          {
+            "code": "159041005",
+            "display": "Técnico médico en formación"
+          },
+          {
+            "code": "159141008",
+            "display": "Genetista"
+          },
+          {
+            "code": "159972006",
+            "display": "Montador de corsés quirúrgicos"
+          },
+          {
+            "code": "160008000",
+            "display": "Técnico dental"
+          },
+          {
+            "code": "224529009",
+            "display": "Auxiliar de clínica"
+          },
+          {
+            "code": "224530004",
+            "display": "Registrador senior"
+          },
+          {
+            "code": "224531000",
+            "display": "Registrador"
+          },
+          {
+            "code": "224532007",
+            "display": "Oficial superior"
+          },
+          {
+            "code": "224533002",
+            "display": "MO - Oficial médico"
+          },
+          {
+            "code": "224534008",
+            "display": "Health visitor, nurse/midwife"
+          },
+          {
+            "code": "224535009",
+            "display": "Enfermera diplomada"
+          },
+          {
+            "code": "224536005",
+            "display": "Tutor de obstetricia"
+          },
+          {
+            "code": "224537001",
+            "display": "Enfermera de urgencias"
+          },
+          {
+            "code": "224538006",
+            "display": "Enfermera de triaje"
+          },
+          {
+            "code": "224540001",
+            "display": "Enfermera comunitaria"
+          },
+          {
+            "code": "224541002",
+            "display": "Enfermera asesora de continencia"
+          },
+          {
+            "code": "224542009",
+            "display": "Enfermera de cuidados coronarios"
+          },
+          {
+            "code": "224543004",
+            "display": "Enfermera diabética"
+          },
+          {
+            "code": "224544005",
+            "display": "Enfermera de planificación familiar"
+          },
+          {
+            "code": "224545006",
+            "display": "Enfermera de cuidados a personas mayores"
+          },
+          {
+            "code": "224546007",
+            "display": "Enfermera de control de infecciones"
+          },
+          {
+            "code": "224547003",
+            "display": "Enfermera de terapia intensiva"
+          },
+          {
+            "code": "224548008",
+            "display": "Enfermera de dificultades de aprendizaje"
+          },
+          {
+            "code": "224549000",
+            "display": "Enfermera neonatal"
+          },
+          {
+            "code": "224550000",
+            "display": "Enfermera de neurología"
+          },
+          {
+            "code": "224551001",
+            "display": "Enfermera industrial"
+          },
+          {
+            "code": "224552008",
+            "display": "Enfermera de oncología"
+          },
+          {
+            "code": "224553003",
+            "display": "Enfermera de Macmillan"
+          },
+          {
+            "code": "224554009",
+            "display": "Enfermera Marie Curie"
+          },
+          {
+            "code": "224555005",
+            "display": "Enfermera de control del dolor"
+          },
+          {
+            "code": "224556006",
+            "display": "Enfermera de cuidados paliativos"
+          },
+          {
+            "code": "224557002",
+            "display": "Enfermera de quimioterapia"
+          },
+          {
+            "code": "224558007",
+            "display": "Enfermera de radioterapia"
+          },
+          {
+            "code": "224559004",
+            "display": "Enfermera PACU"
+          },
+          {
+            "code": "224560009",
+            "display": "Estomaterapeuta"
+          },
+          {
+            "code": "224561008",
+            "display": "Enfermera de quirófano"
+          },
+          {
+            "code": "224562001",
+            "display": "Enfermera pediátrica"
+          },
+          {
+            "code": "224563006",
+            "display": "Enfermera psiquiátrica"
+          },
+          {
+            "code": "224564000",
+            "display": "Enfermera de salud mental comunitaria"
+          },
+          {
+            "code": "224565004",
+            "display": "Enfermera renal"
+          },
+          {
+            "code": "224566003",
+            "display": "Enfermera de hemodiálisis"
+          },
+          {
+            "code": "224567007",
+            "display": "Enfermera de cuidados de heridas"
+          },
+          {
+            "code": "224569005",
+            "display": "Enfermera grade"
+          },
+          {
+            "code": "224570006",
+            "display": "Especialista en enfermería clínica"
+          },
+          {
+            "code": "224571005",
+            "display": "Enfermera practitioner"
+          },
+          {
+            "code": "224572003",
+            "display": "Hermana enfermera"
+          },
+          {
+            "code": "224573008",
+            "display": "CN - Enfermera responsable"
+          },
+          {
+            "code": "224574002",
+            "display": "Jefe de sala"
+          },
+          {
+            "code": "224575001",
+            "display": "Jefe de equipo de enfermería"
+          },
+          {
+            "code": "224576000",
+            "display": "Auxiliar de enfermería"
+          },
+          {
+            "code": "224577009",
+            "display": "Auxiliar de enfermería"
+          },
+          {
+            "code": "224578004",
+            "display": "Enfermerary nurse"
+          },
+          {
+            "code": "224579007",
+            "display": "Gestor de servicios sanitarios"
+          },
+          {
+            "code": "224580005",
+            "display": "Jefe de servicio de salud laboral"
+          },
+          {
+            "code": "224581009",
+            "display": "Enfermera comunitaria manager"
+          },
+          {
+            "code": "224583007",
+            "display": "Terapeuta conductual"
+          },
+          {
+            "code": "224584001",
+            "display": "Auxiliar de terapia conductual"
+          },
+          {
+            "code": "224585000",
+            "display": "Terapeuta dramático"
+          },
+          {
+            "code": "224586004",
+            "display": "Terapeuta ocupacional a domicilio"
+          },
+          {
+            "code": "224587008",
+            "display": "Auxiliar de terapia ocupacional"
+          },
+          {
+            "code": "224588003",
+            "display": "Psicoterapeuta"
+          },
+          {
+            "code": "224589006",
+            "display": "Fisioterapeuta comunitario"
+          },
+          {
+            "code": "224590002",
+            "display": "Terapeuta lúdico"
+          },
+          {
+            "code": "224591003",
+            "display": "Especialista en juego"
+          },
+          {
+            "code": "224592005",
+            "display": "Animador lúdico"
+          },
+          {
+            "code": "224593000",
+            "display": "Community-based speech/language therapist"
+          },
+          {
+            "code": "224594006",
+            "display": "Speech/language assistant"
+          },
+          {
+            "code": "224595007",
+            "display": "Orientador profesional"
+          },
+          {
+            "code": "224596008",
+            "display": "Orientador matrimonial"
+          },
+          {
+            "code": "224597004",
+            "display": "Enfermera asesora cualificada"
+          },
+          {
+            "code": "224598009",
+            "display": "Trabajador social cualificado"
+          },
+          {
+            "code": "224599001",
+            "display": "Asesor de personal cualificado"
+          },
+          {
+            "code": "224600003",
+            "display": "Psicoanalista"
+          },
+          {
+            "code": "224601004",
+            "display": "Psicólogo asistente"
+          },
+          {
+            "code": "224602006",
+            "display": "Podólogo comunitario"
+          },
+          {
+            "code": "224603001",
+            "display": "Podólogo"
+          },
+          {
+            "code": "224604007",
+            "display": "Audiometristaa"
+          },
+          {
+            "code": "224605008",
+            "display": "Audiometrista"
+          },
+          {
+            "code": "224606009",
+            "display": "Técnico sanitario"
+          },
+          {
+            "code": "224607000",
+            "display": "Instructor técnico de terapia ocupacional"
+          },
+          {
+            "code": "224608005",
+            "display": "Personal sanitario administrativo"
+          },
+          {
+            "code": "224609002",
+            "display": "Personal sanitario complementario"
+          },
+          {
+            "code": "224610007",
+            "display": "Personal de servicios de apoyo"
+          },
+          {
+            "code": "224614003",
+            "display": "Investigador asociado"
+          },
+          {
+            "code": "224615002",
+            "display": "Research nurse"
+          },
+          {
+            "code": "224620002",
+            "display": "Auxiliar de comunicación"
+          },
+          {
+            "code": "224621003",
+            "display": "Palantypista"
+          },
+          {
+            "code": "224622005",
+            "display": "Tomador de apuntes"
+          },
+          {
+            "code": "224623000",
+            "display": "Cuer"
+          },
+          {
+            "code": "224624006",
+            "display": "Orador labial"
+          },
+          {
+            "code": "224625007",
+            "display": "Intérprete for British sign language"
+          },
+          {
+            "code": "224626008",
+            "display": "Intérprete for Signs supporting English"
+          },
+          {
+            "code": "224936003",
+            "display": "Médico generalista"
+          },
+          {
+            "code": "225726006",
+            "display": "Asesor de lactancia"
+          },
+          {
+            "code": "225727002",
+            "display": "Asesor de matrona"
+          },
+          {
+            "code": "265937000",
+            "display": "Enfermería"
+          },
+          {
+            "code": "265939002",
+            "display": "Medical/dental technicians"
+          },
+          {
+            "code": "283875005",
+            "display": "Enfermero de Parkinson"
+          },
+          {
+            "code": "302211009",
+            "display": "Enfermera especializada"
+          },
+          {
+            "code": "303124005",
+            "display": "Miembro del tribunal de revisión de salud mental"
+          },
+          {
+            "code": "303129000",
+            "display": "Director de hospital"
+          },
+          {
+            "code": "303133007",
+            "display": "Médico responsable"
+          },
+          {
+            "code": "303134001",
+            "display": "Médico independiente"
+          },
+          {
+            "code": "304291006",
+            "display": "Asesor en duelo"
+          },
+          {
+            "code": "304292004",
+            "display": "Cirujano"
+          },
+          {
+            "code": "307988006",
+            "display": "Técnico médico"
+          },
+          {
+            "code": "308002005",
+            "display": "Terapeuta curativo"
+          },
+          {
+            "code": "309294001",
+            "display": "Médico de urgencias"
+          },
+          {
+            "code": "309295000",
+            "display": "Oncólogo clínico"
+          },
+          {
+            "code": "309296004",
+            "display": "Médico de planificación familiar"
+          },
+          {
+            "code": "309322005",
+            "display": "Médico generalista adjunto"
+          },
+          {
+            "code": "309323000",
+            "display": "Socio de médico generalista"
+          },
+          {
+            "code": "309324006",
+            "display": "Médico general adjunto"
+          },
+          {
+            "code": "309326008",
+            "display": "Médico general suplente"
+          },
+          {
+            "code": "309327004",
+            "display": "Médico generalista residente"
+          },
+          {
+            "code": "309328009",
+            "display": "Pediatra ambulatorio"
+          },
+          {
+            "code": "309329001",
+            "display": "Pediatra comunitario"
+          },
+          {
+            "code": "309330006",
+            "display": "Cardiólogo pediátrico"
+          },
+          {
+            "code": "309331005",
+            "display": "Endocrinólogo pediátrico"
+          },
+          {
+            "code": "309332003",
+            "display": "Gastroenterólogo pediátrico"
+          },
+          {
+            "code": "309333008",
+            "display": "Nefrólogo pediátrico"
+          },
+          {
+            "code": "309334002",
+            "display": "Neurólogo pediátrico"
+          },
+          {
+            "code": "309335001",
+            "display": "Reumatólogo pediátrico"
+          },
+          {
+            "code": "309336000",
+            "display": "Oncólogo pediátrico"
+          },
+          {
+            "code": "309337009",
+            "display": "Especialista en tratamiento del dolor"
+          },
+          {
+            "code": "309338004",
+            "display": "Especialista en cuidados intensivos"
+          },
+          {
+            "code": "309339007",
+            "display": "Especialista en cuidados intensivos para adultos"
+          },
+          {
+            "code": "309340009",
+            "display": "Especialista en cuidados intensivos pediátricos"
+          },
+          {
+            "code": "309341008",
+            "display": "Médico especialista en transfusión sanguínea"
+          },
+          {
+            "code": "309342001",
+            "display": "Histopatólogo"
+          },
+          {
+            "code": "309343006",
+            "display": "Médico"
+          },
+          {
+            "code": "309345004",
+            "display": "Médico de tórax"
+          },
+          {
+            "code": "309346003",
+            "display": "Médico torácico"
+          },
+          {
+            "code": "309347007",
+            "display": "Hematólogo clínico"
+          },
+          {
+            "code": "309348002",
+            "display": "Neurofisiólogo clínico"
+          },
+          {
+            "code": "309349005",
+            "display": "Fisiólogo clínico"
+          },
+          {
+            "code": "309350005",
+            "display": "Diabetólogo"
+          },
+          {
+            "code": "309351009",
+            "display": "Andrólogo"
+          },
+          {
+            "code": "309352002",
+            "display": "Neuroendocrinólogo"
+          },
+          {
+            "code": "309353007",
+            "display": "Endocrinólogo reproductivo"
+          },
+          {
+            "code": "309354001",
+            "display": "Tiroidólogo"
+          },
+          {
+            "code": "309355000",
+            "display": "Genetista clínico"
+          },
+          {
+            "code": "309356004",
+            "display": "Citogenetista clínico"
+          },
+          {
+            "code": "309357008",
+            "display": "Genetista molecular clínico"
+          },
+          {
+            "code": "309358003",
+            "display": "Médico de medicina genitourinaria"
+          },
+          {
+            "code": "309359006",
+            "display": "Médico de cuidados paliativos"
+          },
+          {
+            "code": "309360001",
+            "display": "Médico de rehabilitación"
+          },
+          {
+            "code": "309361002",
+            "display": "Psiquiatra de niños y adolescentes"
+          },
+          {
+            "code": "309362009",
+            "display": "Psiquiatra forense"
+          },
+          {
+            "code": "309363004",
+            "display": "Psiquiatra de enlace"
+          },
+          {
+            "code": "309364005",
+            "display": "Psicogeriatra"
+          },
+          {
+            "code": "309365006",
+            "display": "Psiquiatra for mental handicap"
+          },
+          {
+            "code": "309366007",
+            "display": "Psiquiatra de rehabilitación"
+          },
+          {
+            "code": "309367003",
+            "display": "Obstetra and gynecologist"
+          },
+          {
+            "code": "309368008",
+            "display": "Cirujano de mama"
+          },
+          {
+            "code": "309369000",
+            "display": "Cirujano cardiotorácico"
+          },
+          {
+            "code": "309371000",
+            "display": "Cirujano cardíaco"
+          },
+          {
+            "code": "309372007",
+            "display": "Otorrinolaringólogo"
+          },
+          {
+            "code": "309373002",
+            "display": "Cirujano endocrino"
+          },
+          {
+            "code": "309374008",
+            "display": "Cirujano de tiroides"
+          },
+          {
+            "code": "309375009",
+            "display": "Cirujano hipofisario"
+          },
+          {
+            "code": "309376005",
+            "display": "Cirujano gastrointestinal"
+          },
+          {
+            "code": "309377001",
+            "display": "Cirujano gastrointestinal general"
+          },
+          {
+            "code": "309378006",
+            "display": "Cirujano digestivo alto"
+          },
+          {
+            "code": "309379003",
+            "display": "Cirujano colorrectal"
+          },
+          {
+            "code": "309380000",
+            "display": "Cirujano de mano"
+          },
+          {
+            "code": "309381001",
+            "display": "Cirujano hepatobiliar"
+          },
+          {
+            "code": "309382008",
+            "display": "Cirujano oftalmólogo"
+          },
+          {
+            "code": "309383003",
+            "display": "Cirujano pediátrico"
+          },
+          {
+            "code": "309384009",
+            "display": "Cirujano pancreático"
+          },
+          {
+            "code": "309385005",
+            "display": "Cirujano de trasplante"
+          },
+          {
+            "code": "309386006",
+            "display": "Cirujano traumatólogo"
+          },
+          {
+            "code": "309388007",
+            "display": "Cirujano vascular"
+          },
+          {
+            "code": "309389004",
+            "display": "Médico generalista grade"
+          },
+          {
+            "code": "309390008",
+            "display": "Consultor hospitalario"
+          },
+          {
+            "code": "309391007",
+            "display": "Especialista visitante"
+          },
+          {
+            "code": "309392000",
+            "display": "Médico investigador"
+          },
+          {
+            "code": "309393005",
+            "display": "Médico generalista"
+          },
+          {
+            "code": "309394004",
+            "display": "Médico generalista principal"
+          },
+          {
+            "code": "309395003",
+            "display": "Especialista hospitalario"
+          },
+          {
+            "code": "309396002",
+            "display": "Especialista asociado"
+          },
+          {
+            "code": "309397006",
+            "display": "Investigador"
+          },
+          {
+            "code": "309398001",
+            "display": "Profesional sanitario aliado"
+          },
+          {
+            "code": "309399009",
+            "display": "Dietista hospitalario"
+          },
+          {
+            "code": "309400002",
+            "display": "Fisioterapeuta a domicilio"
+          },
+          {
+            "code": "309401003",
+            "display": "Fisioterapeuta de medicina general"
+          },
+          {
+            "code": "309402005",
+            "display": "Fisioterapeuta hospitalario"
+          },
+          {
+            "code": "309403000",
+            "display": "Fisioterapeuta privado"
+          },
+          {
+            "code": "309404006",
+            "display": "Auxiliar de fisioterapia"
+          },
+          {
+            "code": "309409001",
+            "display": "Logopeda hospitalario"
+          },
+          {
+            "code": "309410006",
+            "display": "Terapeuta artístico"
+          },
+          {
+            "code": "309411005",
+            "display": "Danzaterapeuta"
+          },
+          {
+            "code": "309412003",
+            "display": "Musicoterapeuta"
+          },
+          {
+            "code": "309413008",
+            "display": "Dietista renal"
+          },
+          {
+            "code": "309414002",
+            "display": "Dietista hepática"
+          },
+          {
+            "code": "309415001",
+            "display": "Dietista oncológico"
+          },
+          {
+            "code": "309416000",
+            "display": "Dietista pediátrico"
+          },
+          {
+            "code": "309417009",
+            "display": "Dietista para diabetes"
+          },
+          {
+            "code": "309418004",
+            "display": "Audiólogo"
+          },
+          {
+            "code": "309419007",
+            "display": "Terapeuta auditivo"
+          },
+          {
+            "code": "309420001",
+            "display": "Audiólogo"
+          },
+          {
+            "code": "309421002",
+            "display": "Distribuidor de audífonos"
+          },
+          {
+            "code": "309422009",
+            "display": "Terapeuta ocupacional comunitario"
+          },
+          {
+            "code": "309423004",
+            "display": "Terapeuta ocupacional hospitalario"
+          },
+          {
+            "code": "309427003",
+            "display": "Terapeuta ocupacional de servicios sociales"
+          },
+          {
+            "code": "309428008",
+            "display": "Ortesista"
+          },
+          {
+            "code": "309429000",
+            "display": "Adaptador quirúrgico"
+          },
+          {
+            "code": "309434001",
+            "display": "Podólogo hospitalario"
+          },
+          {
+            "code": "309435000",
+            "display": "Auxiliar de podología"
+          },
+          {
+            "code": "309436004",
+            "display": "Enfermero de linfedema"
+          },
+          {
+            "code": "309437008",
+            "display": "Enfermera comunitaria especializada en dificultades de aprendizaje"
+          },
+          {
+            "code": "309439006",
+            "display": "Profesor de enfermería clínica"
+          },
+          {
+            "code": "309440008",
+            "display": "Profesor de enfermería práctica comunitaria"
+          },
+          {
+            "code": "309441007",
+            "display": "Enfermera tutor"
+          },
+          {
+            "code": "309442000",
+            "display": "Enfermera teacher practitioner"
+          },
+          {
+            "code": "309443005",
+            "display": "Enfermera lecturer practitioner"
+          },
+          {
+            "code": "309444004",
+            "display": "Enfermera de extensión"
+          },
+          {
+            "code": "309445003",
+            "display": "Enfermera anestesista"
+          },
+          {
+            "code": "309446002",
+            "display": "Enfermera manager"
+          },
+          {
+            "code": "309450009",
+            "display": "Enfermera administrator"
+          },
+          {
+            "code": "309452001",
+            "display": "Grado de matrona"
+          },
+          {
+            "code": "309453006",
+            "display": "Matrona"
+          },
+          {
+            "code": "309454000",
+            "display": "Estudiante de matrona"
+          },
+          {
+            "code": "309455004",
+            "display": "Matrona"
+          },
+          {
+            "code": "309459005",
+            "display": "Grado profesional sanitario"
+          },
+          {
+            "code": "309460000",
+            "display": "Odontólogo restaurador"
+          },
+          {
+            "code": "310170009",
+            "display": "Audiólogo pediátrico"
+          },
+          {
+            "code": "310171008",
+            "display": "Inmunopatólogo"
+          },
+          {
+            "code": "310172001",
+            "display": "Médico audiólogo"
+          },
+          {
+            "code": "310173006",
+            "display": "Farmacólogo clínico"
+          },
+          {
+            "code": "310174000",
+            "display": "Médico privado"
+          },
+          {
+            "code": "310175004",
+            "display": "Enfermero de agencia"
+          },
+          {
+            "code": "310176003",
+            "display": "Enfermero terapeuta conductual"
+          },
+          {
+            "code": "310177007",
+            "display": "Enfermera de rehabilitación cardiaca"
+          },
+          {
+            "code": "310178002",
+            "display": "Enfermera genitourinaria"
+          },
+          {
+            "code": "310179005",
+            "display": "Enfermera especialista en reumatología"
+          },
+          {
+            "code": "310180008",
+            "display": "Enfermera de continencia"
+          },
+          {
+            "code": "310181007",
+            "display": "Enfermera de localización de contactos"
+          },
+          {
+            "code": "310182000",
+            "display": "Enfermera general"
+          },
+          {
+            "code": "310183005",
+            "display": "Enfermera for the mentally handicapped"
+          },
+          {
+            "code": "310184004",
+            "display": "Enfermera de enlace"
+          },
+          {
+            "code": "310185003",
+            "display": "Enfermera de enlace para diabéticos"
+          },
+          {
+            "code": "310186002",
+            "display": "Enfermera psychotherapist"
+          },
+          {
+            "code": "310187006",
+            "display": "Enfermera de empresa"
+          },
+          {
+            "code": "310188001",
+            "display": "Matrona de hospital"
+          },
+          {
+            "code": "310189009",
+            "display": "Asesor genético"
+          },
+          {
+            "code": "310190000",
+            "display": "Asesor en salud mental"
+          },
+          {
+            "code": "310191001",
+            "display": "Psicólogo clínico"
+          },
+          {
+            "code": "310192008",
+            "display": "Psicólogo educativo"
+          },
+          {
+            "code": "310193003",
+            "display": "Médico forense"
+          },
+          {
+            "code": "310194009",
+            "display": "Oficial de aparatos"
+          },
+          {
+            "code": "310512001",
+            "display": "Médico oncólogo"
+          },
+          {
+            "code": "311441001",
+            "display": "Médico escolar"
+          },
+          {
+            "code": "312485001",
+            "display": "Matrona integrada"
+          },
+          {
+            "code": "372102007",
+            "display": "Enfermero asistente"
+          },
+          {
+            "code": "387619007",
+            "display": "Óptico"
+          },
+          {
+            "code": "394572006",
+            "display": "Secretario médico"
+          },
+          {
+            "code": "394618009",
+            "display": "Enfermero de hospital"
+          },
+          {
+            "code": "397824005",
+            "display": "Anestesista consultor"
+          },
+          {
+            "code": "397897005",
+            "display": "Paramédico"
+          },
+          {
+            "code": "397903001",
+            "display": "Obstetra"
+          },
+          {
+            "code": "397908005",
+            "display": "Médico de plantilla"
+          },
+          {
+            "code": "398130009",
+            "display": "Estudiante de medicina"
+          },
+          {
+            "code": "398238009",
+            "display": "Registrador obstétrico interino"
+          },
+          {
+            "code": "404940000",
+            "display": "Fisioterapeuta instructor técnico"
+          },
+          {
+            "code": "405277009",
+            "display": "Médico residente"
+          },
+          {
+            "code": "405278004",
+            "display": "Enfermero anestesista diplomado"
+          },
+          {
+            "code": "405279007",
+            "display": "Médico adjunto"
+          },
+          {
+            "code": "405623001",
+            "display": "Médico asignado"
+          },
+          {
+            "code": "405684005",
+            "display": "Profesional que inicia el caso quirúrgico"
+          },
+          {
+            "code": "405685006",
+            "display": "Profesional que releva al personal durante el procedimiento quirúrgico"
+          },
+          {
+            "code": "408798009",
+            "display": "Pediatra consultor"
+          },
+          {
+            "code": "408799001",
+            "display": "Neonatólogo consultor"
+          },
+          {
+            "code": "409974004",
+            "display": "Educador sanitario"
+          },
+          {
+            "code": "409975003",
+            "display": "Especialista certificado en educación sanitaria"
+          },
+          {
+            "code": "413854007",
+            "display": "Enfermera circulante"
+          },
+          {
+            "code": "415075003",
+            "display": "Enfermera perioperatoria"
+          },
+          {
+            "code": "415506007",
+            "display": "Enfermera de quirófano"
+          },
+          {
+            "code": "416160000",
+            "display": "Fellow of American Academy of Osteópatay"
+          },
+          {
+            "code": "420409002",
+            "display": "Cirujano oculoplástico"
+          },
+          {
+            "code": "420678001",
+            "display": "Cirujano de retina"
+          },
+          {
+            "code": "421841007",
+            "display": "Médico de admisión"
+          },
+          {
+            "code": "422140007",
+            "display": "Médico oftalmólogo"
+          },
+          {
+            "code": "422234006",
+            "display": "Oftalmólogo"
+          },
+          {
+            "code": "432100008",
+            "display": "Técnico sanitario"
+          },
+          {
+            "code": "442867008",
+            "display": "Terapeuta respiratorio"
+          },
+          {
+            "code": "443090005",
+            "display": "Cirujano podiátrico"
+          },
+          {
+            "code": "444912007",
+            "display": "Hipnoterapeuta"
+          },
+          {
+            "code": "445313000",
+            "display": "Enfermero especialista en asma"
+          },
+          {
+            "code": "445451001",
+            "display": "Enfermera case manager"
+          },
+          {
+            "code": "446050000",
+            "display": "Médico de atención primaria"
+          },
+          {
+            "code": "446701002",
+            "display": "Especialista en medicina de las adicciones"
+          },
+          {
+            "code": "449161006",
+            "display": "Asistente médico"
+          },
+          {
+            "code": "471302004",
+            "display": "Matrona gubernamental"
+          },
+          {
+            "code": "3981000175106",
+            "display": "Enfermera complex case manager"
+          },
+          {
+            "code": "231189271000087109",
+            "display": "Naturópata"
+          },
+          {
+            "code": "236749831000087105",
+            "display": "Protésico"
+          },
+          {
+            "code": "258508741000087105",
+            "display": "Cirujano de cadera y rodilla"
+          },
+          {
+            "code": "260767431000087107",
+            "display": "Hepatólogo"
+          },
+          {
+            "code": "285631911000087106",
+            "display": "Cirujano de hombro"
+          },
+          {
+            "code": "291705421000087106",
+            "display": "Radiólogo intervencionista"
+          },
+          {
+            "code": "341320851000087105",
+            "display": "Radiólogo pediátrico"
+          },
+          {
+            "code": "368890881000087105",
+            "display": "Especialista en medicina de urgencias"
+          },
+          {
+            "code": "398480381000087106",
+            "display": "Especialista en medicina familiar - palliative care"
+          },
+          {
+            "code": "416186861000087101",
+            "display": "Oncólogo quirúrgico"
+          },
+          {
+            "code": "450044741000087104",
+            "display": "Acupuntor"
+          },
+          {
+            "code": "465511991000087105",
+            "display": "Cirujano ortopédico pediátrico"
+          },
+          {
+            "code": "494782281000087101",
+            "display": "Hematólogo pediátrico"
+          },
+          {
+            "code": "619197631000087102",
+            "display": "Neurorradiólogo"
+          },
+          {
+            "code": "623630151000087105",
+            "display": "Especialista en medicina familiar - anesthetist"
+          },
+          {
+            "code": "666997781000087107",
+            "display": "Doula"
+          },
+          {
+            "code": "673825031000087109",
+            "display": "Especialista en fitoterapia tradicional"
+          },
+          {
+            "code": "682131381000087105",
+            "display": "Especialista en medicina del trabajo"
+          },
+          {
+            "code": "724111801000087104",
+            "display": "Especialista en medicina de urgencias pediátricas"
+          },
+          {
+            "code": "747936471000087102",
+            "display": "Especialista en medicina familiar - care of the elderly"
+          },
+          {
+            "code": "766788081000087100",
+            "display": "Especialista en medicina del viajero"
+          },
+          {
+            "code": "767205061000087108",
+            "display": "Cirujano de columna"
+          },
+          {
+            "code": "813758161000087106",
+            "display": "Especialista en medicina materna o fetal"
+          },
+          {
+            "code": "822410621000087104",
+            "display": "Masajista"
+          },
+          {
+            "code": "847240411000087102",
+            "display": "Hospitalista"
+          },
+          {
+            "code": "853827051000087104",
+            "display": "Especialista en medicina deportiva"
+          },
+          {
+            "code": "926871431000087103",
+            "display": "Respirólogo pediátrico"
+          },
+          {
+            "code": "954544641000087107",
+            "display": "Homeópata"
+          },
+          {
+            "code": "956387501000087102",
+            "display": "Especialista en medicina familiar - emergency medicine"
+          },
+          {
+            "code": "969118571000087109",
+            "display": "Hematólogo pediátrico or oncologist"
+          },
+          {
+            "code": "984095901000087105",
+            "display": "Cirujano de pie y tobillo"
+          },
+          {
+            "code": "990928611000087105",
+            "display": "Cardiólogo invasivo"
+          },
+          {
+            "code": "999480451000087102",
+            "display": "Gestor de casos"
+          },
+          {
+            "code": "999480461000087104",
+            "display": "Cinestesiólogo"
+          }
+        ]
+      }
+    ]
+  }
+}

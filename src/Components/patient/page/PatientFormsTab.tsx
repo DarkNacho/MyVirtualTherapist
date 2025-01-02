@@ -1,3 +1,5 @@
-export default function PatientFormsTab() {
-  return <div>Forms content goes here</div>;
+import PatientQuestionnaireComponent from "../../Questionnaire/PatientQuestionnaireComponent";
+
+export default function PatientFormsTab({ id }: { id: string }) {
+  return <PatientQuestionnaireComponent patientID={id} />;
 }

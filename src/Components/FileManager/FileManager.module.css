@@ -1,0 +1,42 @@
+.dropzone {
+    border: 2px dashed #888;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+.card:hover .options {
+    display: block !important;
+}
+
+.options {
+    display: none !important;
+}
+
+.cardContent {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.box {
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.uploading {
+    position: absolute;
+    z-index: 2;
+}
+
+.options {
+    position: absolute;
+    z-index: 5;
+}

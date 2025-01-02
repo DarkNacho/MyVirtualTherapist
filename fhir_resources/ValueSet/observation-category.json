@@ -1,0 +1,52 @@
+{
+  "resourceType": "ValueSet",
+  "url": "https://www.hl7.org/fhir/valueset-observation-category.html",
+  "title": "observation-category",
+  "status": "active",
+  "publisher": "Ignacio Martínez",
+  "compose": {
+    "include": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+        "concept": [
+          {
+            "code": "social-history",
+            "display": "Historia Social"
+          },
+          {
+            "code": "vital-signs",
+            "display": "Signos Vitales"
+          },
+          {
+            "code": "imaging",
+            "display": "Imágenes"
+          },
+          {
+            "code": "laboratory",
+            "display": "Laboratorio"
+          },
+          {
+            "code": "procedure",
+            "display": "Procedimiento"
+          },
+          {
+            "code": "survey",
+            "display": "Encuesta"
+          },
+          {
+            "code": "exam",
+            "display": "Examen"
+          },
+          {
+            "code": "therapy",
+            "display": "Terapia"
+          },
+          {
+            "code": "activity",
+            "display": "Actividad"
+          }
+        ]
+      }
+    ]
+  }
+}

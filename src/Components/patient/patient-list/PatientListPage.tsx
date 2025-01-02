@@ -98,6 +98,12 @@ export default function PatientListPage() {
     const rut = data.rut.replace(/\./g, "").replace(/-/g, "").toUpperCase();
     data.rut = rut;
     const patient = await PersonUtil.PatientFormToPatient(data);
+
+    //add user as default practitioner
+    patient.generalPractitioner = [
+      { reference: `Practitioner/${localStorage.getItem("id")}` },
+    ];
+
     if (!patient)
       return {
         success: false,

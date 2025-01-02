@@ -1,0 +1,47 @@
+{
+  "resourceType": "Questionnaire",
+  "title": "Balance",
+  "status": "draft",
+  "item": [
+    {
+      "type": "string",
+      "linkId": "3566326701300",
+      "text": "Reacción de equilibrio"
+    },
+    {
+      "type": "string",
+      "linkId": "4285259235084",
+      "text": "Rx de Enderezamiento"
+    },
+    {
+      "type": "string",
+      "linkId": "7482404172419",
+      "text": "Rx de protección"
+    },
+    {
+      "type": "string",
+      "linkId": "9497091028393",
+      "text": "Signo de Romberg"
+    },
+    {
+      "type": "string",
+      "linkId": "9706679753413",
+      "text": "Test Unipodal Derecha"
+    },
+    {
+      "type": "string",
+      "linkId": "4802251216858",
+      "text": "Test Unipodal Izquierda"
+    },
+    {
+      "type": "string",
+      "linkId": "953631895604",
+      "text": "Marcha Tandem"
+    },
+    {
+      "type": "string",
+      "linkId": "7590378614218",
+      "text": "Escala de Berg"
+    }
+  ]
+}

@@ -1,0 +1,182 @@
+{
+  "resourceType": "Questionnaire",
+  "title": "Evaluación Muscular Funcional",
+  "status": "draft",
+  "item": [
+    {
+      "type": "string",
+      "linkId": "8046666192927",
+      "text": "Flexores de Cuello Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "5104531543279",
+      "text": "Flexores de Cuello Derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "541868103085",
+      "text": "Extensores de Cuello Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "6397234654239",
+      "text": " Extensores de Cuello Derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "4938859197306",
+      "text": "Flexores de Hombro Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "2920983245638",
+      "text": "Flexores de Hombro Derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "3390106787232",
+      "text": "Extensores de Hombro Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "2511459739254",
+      "text": "Extensores de Hombro Derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "3137785560487",
+      "text": "Biceps Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "5035930845939",
+      "text": "Biceps Derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "9343498803390",
+      "text": "Triceps Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "6618489870082",
+      "text": "Triceps Derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "9278590249177",
+      "text": "Flexores de Muñeca Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "286924094588",
+      "text": "Flexores de Muñeca Derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "3279496861014",
+      "text": "Extensores de Muñeca Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "9197508755153",
+      "text": "Extensores de Muñeca Derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "4044995890098",
+      "text": "Abdominales"
+    },
+    {
+      "type": "string",
+      "linkId": "3409340702023",
+      "text": "Extensores De Columna"
+    },
+    {
+      "type": "string",
+      "linkId": "6973226999052",
+      "text": "Flexores De Cadera Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "6864445930563",
+      "text": "Flexores De Cadera Derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "3260406625733",
+      "text": "Extensores De Cadera Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "7687475621469",
+      "text": "Extensores De Cadera Derecha"
+    },
+    {
+      "type": "string",
+      "linkId": "7513867204703",
+      "text": "Abductores De Cadera Izquierda"
+    },
+    {
+      "type": "string",
+      "linkId": "4107788842481",
+      "text": "Abductores De Cadera Derecha"
+    },
+    {
+      "type": "string",
+      "linkId": "9119807885134",
+      "text": "Aductores De Cadera Izquierda"
+    },
+    {
+      "type": "string",
+      "linkId": "6233949066781",
+      "text": "Aductores De Cadera Derecha"
+    },
+    {
+      "type": "string",
+      "linkId": "4402065650656",
+      "text": "Flexores De Rodilla Izquierda"
+    },
+    {
+      "type": "string",
+      "linkId": "2282059175562",
+      "text": "Flexores De Rodilla Derecha"
+    },
+    {
+      "type": "string",
+      "linkId": "5869395936207",
+      "text": "Extensores De Rodilla Izquierda"
+    },
+    {
+      "type": "string",
+      "linkId": "1966498693602",
+      "text": "Extensores De Rodilla Derecha"
+    },
+    {
+      "type": "string",
+      "linkId": "514063293307",
+      "text": "Dorsiflexion de Tobillo Izquierda"
+    },
+    {
+      "type": "string",
+      "linkId": "1123523781030",
+      "text": "Dorsiflexion de Tobillo Derecha"
+    },
+    {
+      "type": "string",
+      "linkId": "1704832125905",
+      "text": "Plantiflexion Izquierda"
+    },
+    {
+      "type": "string",
+      "linkId": "8011589317705",
+      "text": "Plantiflexion Derecha"
+    },
+    {
+      "type": "string",
+      "linkId": "5969493694200",
+      "text": " Evaluación de Fuerza"
+    }
+  ]
+}

@@ -22,6 +22,7 @@
     "contact": "CONTACT",
     "sessionExpired": "Your session has expired, please log in again."
   },
+
   "patientContactDetailForm": {
     "addPatient": "ADD PATIENT",
     "phoneNumberRequired": "Phone number required",
@@ -62,10 +63,27 @@
     "invalidRut": "Invalid RUT"
   },
   "patientPage": {
+    "overview": "Overview",
+    "appointments": "Appointments",
+    "sensor": "Sensor",
+    "forms": "Forms",
     "patientCreated": "The patient has been successfully created",
+    "evolutions": "Evolutions",
+    "conditions": "Conditions",
+    "medications": "Medications",
     "sending": "Sending...",
     "errorConvertingForm": "Error converting the form to patient",
     "userExists": "The user already exists"
+  },
+  "patientCard": {
+    "nameNotAvailable": "Name not available",
+    "phone": "Phone",
+    "email": "Email",
+    "downloadReport": "Download Report",
+    "age": "Age",
+    "birthDate": "Birth Date",
+    "gender": "Gender",
+    "refer": "Refer"
   },
   "patientList": {
     "receivedSuccessfully": "Received successfully",
@@ -154,6 +172,17 @@
     "searchByEmail": "Search by email",
     "search": "Search"
   },
+  "encounterSearchComponent": {
+    "encounter": "Encounters",
+    "searchEncounters": "Search an encounter",
+    "addEncounter": "Add\nEncounter",
+    "searchByPhone": "Search by phone",
+    "searchByRut": "Search by RUT",
+    "searchByEmail": "Search by email",
+    "search": "Search",
+    "startDate": "Start Date",
+    "endDate": "End Date"
+  },
   "notFound": {
     "sadFaceAlt": "Sad face",
     "error404": "Error 404!",
@@ -173,7 +202,7 @@
       "C": "Common Law",
       "UNK": "Unknown"
     },
-    "generoOptions": {
+    "genderOptions": {
       "unknown": "Unknown",
       "male": "Male",
       "female": "Female",

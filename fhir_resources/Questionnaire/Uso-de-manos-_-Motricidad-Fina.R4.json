@@ -1,0 +1,27 @@
+{
+  "resourceType": "Questionnaire",
+  "title": "Uso de manos / Motricidad Fina",
+  "status": "draft",
+  "item": [
+    {
+      "type": "string",
+      "linkId": "7235331496798",
+      "text": "Dominancia"
+    },
+    {
+      "type": "string",
+      "linkId": "5175773009854",
+      "text": "Movimiento pulgar"
+    },
+    {
+      "type": "string",
+      "linkId": "1182599926691",
+      "text": "Pinza tridigital"
+    },
+    {
+      "type": "string",
+      "linkId": "14030252206",
+      "text": "Movimiento selectivos"
+    }
+  ]
+}

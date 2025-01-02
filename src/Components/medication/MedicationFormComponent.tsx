@@ -1,17 +1,17 @@
 import { DevTool } from "@hookform/devtools";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { Stack, TextField } from "@mui/material";
+import { Autocomplete, Stack, TextField } from "@mui/material";
 import dayjs from "dayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { MedicationStatement, Patient, Practitioner, Encounter } from "fhir/r4";
 
-import AutoCompleteFromLHCComponentComponent from "../auto-complete-components/AutoCompleteFromLHCComponent";
 import AutoCompleteComponent from "../auto-complete-components/AutoCompleteComponent";
 import PersonUtil from "../../Services/Utils/PersonUtils";
 import EncounterUtils from "../../Services/Utils/EncounterUtils";
 import { loadUserRoleFromLocalStorage } from "../../Utils/RolUser";
 import { MedicationFormData } from "../../Models/Forms/MedicationForm";
+import { MedicamentList } from "../../Models/MedicamentList";
 
 function getEncounterDisplay(resource: Encounter): string {
   return `Profesional: ${EncounterUtils.getPrimaryPractitioner(
@@ -126,27 +126,50 @@ export default function MedicationFormComponent({
                 ? medication.medicationCodeableConcept?.coding?.[0]
                 : {}
             }
-            render={({ field: { onChange } }) => (
-              <AutoCompleteFromLHCComponentComponent
-                label="loinc"
-                table="rxterms"
-                onChange={onChange}
-                defaultResource={
-                  medication?.medicationCodeableConcept?.coding?.[0]
+            render={({ field }) => (
+              <Autocomplete
+                id="Autocomplete-MedicationList"
+                options={MedicamentList}
+                defaultValue={
+                  medication
+                    ? medication.medicationCodeableConcept?.coding?.[0]
+                    : {}
                 }
-                readOnly={
-                  !!medication?.medicationCodeableConcept?.coding ||
-                  false ||
-                  readOnly
-                }
-                textFieldProps={{
-                  ...register("medication", {
-                    required: "Código requerido",
-                  }),
-                  error: Boolean(errors.medication),
-                  helperText: errors.medication && errors.medication.message,
-                  onBlur: () => trigger("medication"),
+                getOptionLabel={(option) => {
+                  if (typeof option === "string") {
+                    return option;
+                  }
+                  return option.display || option.code || "UNKNOWN";
                 }}
+                isOptionEqualToValue={(option, value) =>
+                  option.code === value.code
+                }
+                freeSolo
+                readOnly={readOnly}
+                onChange={(_, newValue) => {
+                  if (typeof newValue === "string") {
+                    field.onChange({
+                      code: "OTHER",
+                      system: "CTTN",
+                      display: newValue,
+                    });
+                  } else {
+                    field.onChange(newValue);
+                  }
+                }}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.code}>
+                    {option.display}
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    label="Medicamentos"
+                    variant="outlined"
+                  />
+                )}
               />
             )}
           />

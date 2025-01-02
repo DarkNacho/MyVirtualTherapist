@@ -1,0 +1,42 @@
+{
+  "resourceType": "Questionnaire",
+  "title": "Marcha",
+  "status": "draft",
+  "item": [
+    {
+      "type": "string",
+      "linkId": "5154516326756",
+      "text": "Logra"
+    },
+    {
+      "type": "string",
+      "linkId": "5346121843333",
+      "text": "Sin asistencia"
+    },
+    {
+      "type": "string",
+      "linkId": "4004868631315",
+      "text": "Peso simétrico"
+    },
+    {
+      "type": "string",
+      "linkId": "6258303047838",
+      "text": "Peso Asimétrico"
+    },
+    {
+      "type": "string",
+      "linkId": "8649208480191",
+      "text": "Escala de marcha y equilibrio de Tinetti"
+    },
+    {
+      "type": "string",
+      "linkId": "3480908150563",
+      "text": "Analisis visual de marcha (Carr and Shepherd)"
+    },
+    {
+      "type": "string",
+      "linkId": "9117958783658",
+      "text": "Test de marcha 10 metros"
+    }
+  ]
+}

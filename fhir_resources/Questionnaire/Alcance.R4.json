@@ -1,0 +1,37 @@
+{
+  "resourceType": "Questionnaire",
+  "title": "Alcance",
+  "status": "draft",
+  "item": [
+    {
+      "type": "string",
+      "linkId": "7031755396757",
+      "text": "Logra alcance"
+    },
+    {
+      "type": "string",
+      "linkId": "6861021713700",
+      "text": "Extiende code"
+    },
+    {
+      "type": "string",
+      "linkId": "4333729270199",
+      "text": "Abre mano"
+    },
+    {
+      "type": "string",
+      "linkId": "6706971795030",
+      "text": "Eleva hombros"
+    },
+    {
+      "type": "string",
+      "linkId": "438790783741",
+      "text": "Muñeca extendida"
+    },
+    {
+      "type": "string",
+      "linkId": "2967758036691",
+      "text": "Toma objeto"
+    }
+  ]
+}

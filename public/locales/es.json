@@ -62,10 +62,27 @@
     "invalidRut": "Rut inválido"
   },
   "patientPage": {
+    "overview": "Visión general",
+    "appointments": "Sesiones",
+    "sensor": "Sensor",
+    "forms": "Formularios",
     "patientCreated": "El paciente ha sido creado exitosamente",
+    "evolutions": "Evoluciones",
+    "conditions": "Condiciones",
+    "medications": "Medicamentos",
     "sending": "Enviando...",
     "errorConvertingForm": "Error al convertir el formulario a paciente",
     "userExists": "El usuario ya existe"
+  },
+  "patientCard": {
+    "nameNotAvailable": "Nombre no disponible",
+    "phone": "Teléfono",
+    "email": "Correo Electrónico",
+    "downloadReport": "Descargar Reporte",
+    "age": "Edad",
+    "birthDate": "Fecha de Nacimiento",
+    "gender": "Sexo",
+    "refer": "Derivar"
   },
   "patientList": {
     "receivedSuccessfully": "Recibidos exitosamente",
@@ -155,6 +172,18 @@
     "search": "Buscar"
   },
 
+  "encounterSearchComponent": {
+    "encounter": "Sesiones",
+    "searchEncounters": "Buscar Sesión",
+    "addEncounter": "Agregar\nSesión",
+    "searchByPhone": "Buscar por teléfono",
+    "searchByRut": "Buscar por RUT",
+    "searchByEmail": "Buscar por correo",
+    "search": "Buscar",
+    "startDate": "Fecha de Inicio",
+    "endDate": "Fecha de Término"
+  },
+
   "notFound": {
     "sadFaceAlt": "Cara triste",
     "error404": "¡Error 404!",
@@ -174,7 +203,7 @@
       "C": "Unión de Hecho",
       "UNK": "Desconocido"
     },
-    "generoOptions": {
+    "genderOptions": {
       "unknown": "No especificado",
       "male": "Masculino",
       "female": "Femenino",

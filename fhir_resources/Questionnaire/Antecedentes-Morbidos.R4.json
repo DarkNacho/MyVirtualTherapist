@@ -1,0 +1,110 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "95",
+  "meta": {
+    "versionId": "1",
+    "lastUpdated": "2024-01-26T14:11:24.876+00:00",
+    "source": "#RD19sAjHp3jw6sCI"
+  },
+  "title": "Antecedentes Morbidos",
+  "status": "draft",
+  "item": [
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "2709581436057",
+      "text": "Hipertensión arterial",
+      "type": "choice",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "display": "SI"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "No"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Default"
+          },
+          "initialSelected": true
+        }
+      ]
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "system": "http://unitsofmeasure.org",
+            "code": "deg",
+            "display": "degree - plane angle"
+          }
+        }
+      ],
+      "linkId": "7545030744824",
+      "text": "Grados",
+      "type": "integer"
+    },
+    {
+      "linkId": "5853894885167",
+      "text": "Diabetes mellitus",
+      "type": "string"
+    },
+    {
+      "linkId": "4390449068414",
+      "text": "Alcohol",
+      "type": "string"
+    },
+    {
+      "linkId": "7276587709840",
+      "text": "Tabaco / Fumador o fumadora",
+      "type": "string"
+    },
+    {
+      "linkId": "953291294626",
+      "text": "Dislipidermia",
+      "type": "string"
+    },
+    {
+      "linkId": "7617322387313",
+      "text": "Cardiopatía",
+      "type": "string"
+    },
+    {
+      "linkId": "1168549410779",
+      "text": "ACV previous",
+      "type": "string"
+    },
+    {
+      "linkId": "4365324311814",
+      "text": "Cáncer",
+      "type": "string"
+    },
+    {
+      "linkId": "1901200001091",
+      "text": "Sedentarismo",
+      "type": "string"
+    },
+    {
+      "linkId": "3846378391163",
+      "text": "IMC",
+      "type": "string"
+    }
+  ]
+}

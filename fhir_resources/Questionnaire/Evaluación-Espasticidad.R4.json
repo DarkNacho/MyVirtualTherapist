@@ -1,0 +1,107 @@
+{
+  "resourceType": "Questionnaire",
+  "title": "Evaluación Espasticidad",
+  "status": "draft",
+  "item": [
+    {
+      "type": "string",
+      "linkId": "6515500059796",
+      "text": "Dorsal ancho Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "4010969683294",
+      "text": "Dorsal ancho Derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "4345943468843",
+      "text": "Flexores de codo Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "9511153311340",
+      "text": "Flexores de codo Derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "7972438630618",
+      "text": "Muscular Flexores de muñeca Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "2190634128940",
+      "text": "Muscular Flexores de muñeca Derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "2621404694722",
+      "text": "Mano Izquierda"
+    },
+    {
+      "type": "string",
+      "linkId": "2541941983973",
+      "text": "Mano Derecha"
+    },
+    {
+      "type": "string",
+      "linkId": "2303162100672",
+      "text": "Extensores de muñeca Izquierda"
+    },
+    {
+      "type": "string",
+      "linkId": "8029945191798",
+      "text": "Extensores de muñeca Derecha"
+    },
+    {
+      "type": "string",
+      "linkId": "7105864954653",
+      "text": "Aductores de Cadera Izquierda"
+    },
+    {
+      "type": "string",
+      "linkId": "8857227948364",
+      "text": "Aductores de Cadera Derecha"
+    },
+    {
+      "type": "string",
+      "linkId": "7385976399064",
+      "text": "Flexores Cadera Izquierda"
+    },
+    {
+      "type": "string",
+      "linkId": "8715097712671",
+      "text": "Flexores Cadera Derecha"
+    },
+    {
+      "type": "string",
+      "linkId": "1303253247959",
+      "text": "lexores de Rodilla Izquierda"
+    },
+    {
+      "type": "string",
+      "linkId": "2486217168061",
+      "text": "lexores de Rodilla Derecha"
+    },
+    {
+      "type": "string",
+      "linkId": "1045728539188",
+      "text": "Extensores de Tobillo Izquierda"
+    },
+    {
+      "type": "string",
+      "linkId": "4106176531702",
+      "text": "Extensores de Tobillo Derecha"
+    },
+    {
+      "type": "string",
+      "linkId": "7919771707709",
+      "text": "Dedos Pie Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "3427858657900",
+      "text": "Dedos Pie Derecho"
+    }
+  ]
+}

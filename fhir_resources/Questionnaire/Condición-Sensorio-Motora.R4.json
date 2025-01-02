@@ -1,0 +1,57 @@
+{
+  "resourceType": "Questionnaire",
+  "title": "Condición Sensorio Motora",
+  "status": "draft",
+  "item": [
+    {
+      "type": "string",
+      "linkId": "350546943028",
+      "text": "Dolor"
+    },
+    {
+      "type": "string",
+      "linkId": "8566773269786",
+      "text": " Ubicación del dolor"
+    },
+    {
+      "type": "string",
+      "linkId": "1844639044512",
+      "text": "Sensibilidad protopática"
+    },
+    {
+      "type": "string",
+      "linkId": "8339133645861",
+      "text": "Sensibilidad epicrítica"
+    },
+    {
+      "type": "decimal",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "system": "http://unitsofmeasure.org",
+            "code": "Cel",
+            "display": "degree Celsius"
+          }
+        }
+      ],
+      "linkId": "8360239499505",
+      "text": "Temperatura",
+      "initial": [
+        {
+          "valueDecimal": 38
+        }
+      ]
+    },
+    {
+      "type": "string",
+      "linkId": "8851612233580",
+      "text": "Propiocepción"
+    },
+    {
+      "type": "text",
+      "linkId": "9502669290242",
+      "text": "Escala EVA"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "resourceType": "Questionnaire",
+  "title": "Evaluación Respiratoria",
+  "status": "draft",
+  "item": [
+    {
+      "type": "string",
+      "linkId": "1257725968141",
+      "text": "Impección"
+    },
+    {
+      "type": "string",
+      "linkId": "7478169913986",
+      "text": "Palpitación"
+    },
+    {
+      "type": "string",
+      "linkId": "6045368980057",
+      "text": "Auscultación"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 import PractitionerList from "./PractitionerList";
-import { Practitioner } from "fhir/r4";
+import { Practitioner, PractitionerRole } from "fhir/r4";
 import PractitionerSearchComponent from "../practitioner-search-component/PractitionerSearchComponent";
 
 import Grid from "@mui/material/Grid";
@@ -123,7 +123,18 @@ const PractitionerListPage = () => {
       secondaryRoles: data.role?.map((role) => role.code).join(","), //TODO: no guardó los roles.
     };
     practitionerFormData.id = responseFhir.data.id;
-    //TODO: add practitionerRole to user hapi fhir
+
+    //add practitionerRole to user hapi fhir
+    practitionerRole.practitioner = {
+      reference: `Practitioner/${responseFhir.data.id}`,
+    };
+
+    const fhirServiceRole =
+      FhirResourceService.getInstance<PractitionerRole>("PractitionerRole");
+    const responseFhirRole = await fhirServiceRole.sendResource(
+      practitionerRole
+    );
+    if (!responseFhirRole.success) return responseFhir;
 
     url = `${import.meta.env.VITE_SERVER_URL}/auth/register`;
     response_api = await fetch(url, {

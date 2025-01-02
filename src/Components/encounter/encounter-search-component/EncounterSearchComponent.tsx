@@ -95,7 +95,7 @@ export default function EncounterSearchComponent({
               textUnderlineOffset: "0.2em",
             }}
           >
-            {t("patientSearchComponent.patients")}
+            {t("encounterSearchComponent.encounter")}
           </Typography>
           <IconButton color="primary" onClick={handleFilterClick}>
             <FilterList />
@@ -107,7 +107,7 @@ export default function EncounterSearchComponent({
             <DatePicker
               format="DD-MM-YYYY"
               views={["year", "month", "day"]}
-              label="Fecha inicio"
+              label={t("encounterSearchComponent.startDate")}
               value={startDate}
               onChange={(value) => setStartDate(value)}
               //sx={{ width: "100%" }}
@@ -115,7 +115,7 @@ export default function EncounterSearchComponent({
             <DatePicker
               format="DD-MM-YYYY"
               views={["year", "month", "day"]}
-              label="Fecha Fin"
+              label={t("encounterSearchComponent.endDate")}
               value={endDate}
               onChange={(value) => setEndDate(value)}
               //sx={{ width: "100%" }}
@@ -156,7 +156,7 @@ export default function EncounterSearchComponent({
             borderColor: "primary.main",
           }}
         >
-          {t("patientSearchComponent.addPatient")}
+          {t("encounterSearchComponent.addEncounter")}
           <Box
             sx={{
               backgroundColor: "primary.main",
@@ -187,7 +187,7 @@ export default function EncounterSearchComponent({
         <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 1 }}>
           <TextField
             variant="outlined"
-            placeholder={t("patientSearchComponent.searchByPhone")}
+            placeholder={t("encounterSearchComponent.searchByPhone")}
             size="small"
             fullWidth
             value={phone}
@@ -195,7 +195,7 @@ export default function EncounterSearchComponent({
           />
           <TextField
             variant="outlined"
-            placeholder={t("patientSearchComponent.searchByRut")}
+            placeholder={t("encounterSearchComponent.searchByRut")}
             size="small"
             fullWidth
             value={rut}
@@ -203,14 +203,14 @@ export default function EncounterSearchComponent({
           />
           <TextField
             variant="outlined"
-            placeholder={t("patientSearchComponent.searchByEmail")}
+            placeholder={t("encounterSearchComponent.searchByEmail")}
             size="small"
             fullWidth
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <Button variant="contained" color="primary" onClick={handleSearch}>
-            {t("patientSearchComponent.search")}
+            {t("encounterSearchComponent.search")}
           </Button>
         </Box>
       </Popover>

@@ -14,6 +14,7 @@ import { Patient } from "fhir/r4";
 import PersonUtil from "../../../Services/Utils/PersonUtils";
 import PatientReportModal from "../patient-report/PatientReport";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 function identifier(resource: Patient) {
   const identifier = PersonUtil.getIdentifierByCode(resource, "RUT");
@@ -29,6 +30,7 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
   const isLoading = !patient;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const { t } = useTranslation();
 
   const [open, setOpen] = useState(false);
 
@@ -42,6 +44,13 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
 
   const onRefer = () => {
     console.log("Referir a otro profesional");
+  };
+
+  const genderMap = {
+    male: t("terminology.genderOptions.male"),
+    female: t("terminology.genderOptions.female"),
+    other: t("terminology.genderOptions.other"),
+    unknown: t("terminology.genderOptions.unknown"),
   };
 
   return (
@@ -108,19 +117,20 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
                     }}
                   >
                     <strong>
-                      {patient.name?.[0]?.text || "Nombre no disponible"}
+                      {patient.name?.[0]?.text ||
+                        t("patientCard.nameNotAvailable")}
                     </strong>
                   </Typography>
                   {identifier(patient)}
                   <Typography variant="body2">
-                    Teléfono:{" "}
+                    {t("patientCard.phone")}:{" "}
                     {PersonUtil.getContactPointFirstOrDefaultAsString(
                       patient,
                       "phone"
                     )}
                   </Typography>
                   <Typography variant="body2">
-                    Email:{" "}
+                    {t("patientCard.email")}:{" "}
                     <a
                       href={`mailto:${PersonUtil.getContactPointFirstOrDefaultAsString(
                         patient,
@@ -140,7 +150,7 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
                     sx={{ marginTop: 1 }}
                     disabled={isLoading}
                   >
-                    Descargar Reporte
+                    {t("patientCard.downloadReport")}
                   </Button>
                 </>
               )}
@@ -160,14 +170,16 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
                     <strong>&nbsp;</strong>
                   </Typography>
                   <Typography variant="body2">
-                    Edad: {PersonUtil.calcularEdad(patient.birthDate!)}
+                    {t("patientCard.age")}:{" "}
+                    {PersonUtil.calcularEdad(patient.birthDate!)}
                   </Typography>
                   <Typography variant="body2">
-                    Fecha nac.:{" "}
+                    {t("patientCard.birthDate")}:{" "}
                     {new Date(patient.birthDate!).toLocaleDateString("es-ES")}
                   </Typography>
                   <Typography variant="body2">
-                    Sexo: {patient.gender}
+                    {t("patientCard.gender")}:{" "}
+                    {genderMap[patient.gender || "unknown"]}
                   </Typography>
                   <Button
                     variant="contained"
@@ -176,7 +188,7 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
                     sx={{ marginTop: 1 }}
                     disabled={isLoading}
                   >
-                    Derivar
+                    {t("patientCard.refer")}
                   </Button>
                 </>
               )}

@@ -1,0 +1,47 @@
+{
+  "resourceType": "Questionnaire",
+  "title": "ROT",
+  "status": "draft",
+  "item": [
+    {
+      "type": "string",
+      "linkId": "5377240350423",
+      "text": "Bicipital Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "9959027916246",
+      "text": "Bicipital Derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "4752808209357",
+      "text": "Tricipital Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "6793559374175",
+      "text": "Tricipital Derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "724037769338",
+      "text": "Patelar Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "2470436896978",
+      "text": "Patelar Derecho"
+    },
+    {
+      "type": "string",
+      "linkId": "5717784519679",
+      "text": "Calcaneo Izquierdo"
+    },
+    {
+      "type": "string",
+      "linkId": "365646170186",
+      "text": "Calcaneo Derecho"
+    }
+  ]
+}

@@ -53,6 +53,7 @@ export default function PatientRefer({
 
   const handleRefer = async (resource: Patient) => {
     try {
+      console.log("patient refer selected", resource);
       setLoading(true);
       const fhirPractitionerService =
         FhirResourceService.getInstance<Practitioner>("Practitioner");
@@ -122,7 +123,7 @@ export default function PatientRefer({
             >
               {!loading && (
                 <MultipleAutoCompleteComponent<Practitioner>
-                  defaultValues={selectedPractitioners}
+                  defaultValues={defaultReferData}
                   resourceType={"Practitioner"}
                   label={"Profesionales"}
                   getDisplay={PersonUtil.getPersonNameAsString}

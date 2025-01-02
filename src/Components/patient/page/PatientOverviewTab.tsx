@@ -10,10 +10,11 @@ import HandleResult from "../../../Utils/HandleResult";
 import ObservationUtils from "../../../Services/Utils/ObservationUtils";
 import ConditionUtils from "../../../Services/Utils/ConditionUtils";
 import MedicationUtils from "../../../Services/Utils/MedicationUtils";
-import ObservationCreateComponent from "../../observation/ObservationCreateComponent";
 import ConditionCreateComponent from "../../condition/ConditionCreateComponent";
 import MedicationCreateComponent from "../../medication/MedicationCreateComponent";
 import { useResource } from "../../ResourceContext";
+import ClinicalImpressionCreateComponent from "../../clinical-impression/ClinicalImpressionCreateComponent";
+import { useTranslation } from "react-i18next";
 
 function getObservationDisplay(observation: Observation) {
   return {
@@ -58,6 +59,8 @@ export default function PatientOverviewTab({
   const [isMedicationOpen, setIsMedicationOpen] = useState(false);
   const [id, setId] = useState<string | undefined>(undefined);
   const { resource } = useResource<Patient>();
+
+  const { t } = useTranslation();
 
   const fetchObservations = async (id: string) => {
     const fhirService =
@@ -149,7 +152,7 @@ export default function PatientOverviewTab({
       <Grid container spacing={2}>
         <Grid item xs={12} md={4}>
           <ResourceList
-            title="Observaciones"
+            title={t("patientPage.evolutions")}
             Icon={NotesIcon}
             resources={observations}
             onClick={handleObservationClick}
@@ -159,7 +162,7 @@ export default function PatientOverviewTab({
         </Grid>
         <Grid item xs={12} md={4}>
           <ResourceList
-            title="Condiciones"
+            title={t("patientPage.conditions")}
             Icon={ConditionIcon}
             resources={conditions}
             onClick={handleConditionClick}
@@ -169,7 +172,7 @@ export default function PatientOverviewTab({
         </Grid>
         <Grid item xs={12} md={4}>
           <ResourceList
-            title="Medicaciones"
+            title={t("patientPage.medications")}
             Icon={MedicationIcon}
             resources={medications}
             onClick={handleMedicationClick}
@@ -180,11 +183,6 @@ export default function PatientOverviewTab({
       </Grid>
       {id && (
         <>
-          <ObservationCreateComponent
-            patientId={id}
-            onOpen={handleObservationOpen}
-            isOpen={isObservationOpen}
-          />
           <ConditionCreateComponent
             patientId={id}
             onOpen={handleConditionOpen}
@@ -194,6 +192,11 @@ export default function PatientOverviewTab({
             patientId={id}
             onOpen={handleMedicationOpen}
             isOpen={isMedicationOpen}
+          />
+          <ClinicalImpressionCreateComponent
+            patientId={id}
+            onOpen={handleObservationOpen}
+            isOpen={isObservationOpen}
           />
         </>
       )}

@@ -1,0 +1,32 @@
+{
+  "resourceType": "Questionnaire",
+  "title": "Bípedo",
+  "status": "draft",
+  "item": [
+    {
+      "type": "string",
+      "linkId": "6861188814670",
+      "text": "Requiere asistencia"
+    },
+    {
+      "type": "string",
+      "linkId": "1122637676398",
+      "text": "Libera asistencia"
+    },
+    {
+      "type": "string",
+      "linkId": "1905970495929",
+      "text": "Simetría de cargas"
+    },
+    {
+      "type": "string",
+      "linkId": "7874880567959",
+      "text": "Mantiene 30 seg"
+    },
+    {
+      "type": "string",
+      "linkId": "1709819142815",
+      "text": "Alineación"
+    }
+  ]
+}

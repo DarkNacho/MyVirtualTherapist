@@ -1,6 +1,6 @@
 import { DevTool } from "@hookform/devtools";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { TextField, Autocomplete, Stack } from "@mui/material";
+import { TextField, Autocomplete, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -14,6 +14,10 @@ import PersonUtil from "../../Services/Utils/PersonUtils";
 import EncounterUtils from "../../Services/Utils/EncounterUtils";
 import { loadUserRoleFromLocalStorage } from "../../Utils/RolUser";
 import { ObservationFormData } from "../../Models/Forms/ObservationForm";
+
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { useDebouncedCallback } from "use-debounce";
 
 function getEncounterDisplay(resource: Encounter): string {
   return `Profesional: ${EncounterUtils.getPrimaryPractitioner(
@@ -51,7 +55,12 @@ export default function ObservationFormComponent({
 
   const roleUser = loadUserRoleFromLocalStorage();
   if (observation) encounterId = ObservationUtils.getEncounterId(observation!);
-  console.log("EncounterId", encounterId);
+
+  const handleQuillChange = useDebouncedCallback((content: string) => {
+    setValue("note", content);
+    trigger("note");
+  }, 300);
+
   return (
     <>
       <form id={formId} onSubmit={handleSubmit(submitForm)}>
@@ -303,18 +312,68 @@ export default function ObservationFormComponent({
               />
             )}
           />
-          <TextField
-            multiline
-            fullWidth
+          <Controller
+            name="note"
+            control={control}
             defaultValue={observation?.note?.[0].text || ""}
-            rows={3}
-            label="Notas"
-            {...register("note")}
-            error={Boolean(errors.note)}
-            helperText={errors.note && errors.note.message}
-            onBlur={() => trigger("note")}
-            inputProps={{ readOnly: readOnly }}
-          ></TextField>
+            render={({ field }) => (
+              <div>
+                <Typography variant="h6">Notas</Typography>
+                <ReactQuill
+                  value={field.value}
+                  onChange={(content) => {
+                    field.onChange(content);
+                    handleQuillChange(content);
+                  }}
+                  readOnly={readOnly}
+                  modules={{
+                    toolbar: !readOnly
+                      ? [
+                          [{ header: "1" }, { header: "2" }, { font: [] }],
+                          [{ size: [] }],
+                          [
+                            "bold",
+                            "italic",
+                            "underline",
+                            "strike",
+                            "blockquote",
+                          ],
+                          [
+                            { list: "ordered" },
+                            { list: "bullet" },
+                            { indent: "-1" },
+                            { indent: "+1" },
+                          ],
+                          ["link", "image", "video"],
+                          ["clean"],
+                        ]
+                      : false,
+                  }}
+                  formats={[
+                    "header",
+                    "font",
+                    "size",
+                    "bold",
+                    "italic",
+                    "underline",
+                    "strike",
+                    "blockquote",
+                    "list",
+                    "bullet",
+                    "indent",
+                    "link",
+                    "image",
+                    "video",
+                  ]}
+                />
+                {errors.note && (
+                  <Typography color="error" variant="body2">
+                    {errors.note.message}
+                  </Typography>
+                )}
+              </div>
+            )}
+          />
           <TextField
             fullWidth
             defaultValue={ObservationUtils.getValue(observation!)}
