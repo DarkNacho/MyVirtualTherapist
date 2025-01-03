@@ -38,7 +38,7 @@ export default function UploadFileComponent({
   author,
 }: {
   subject?: Reference;
-  author?: Reference;
+  author: Reference;
 }) {
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState<{ [key: string]: boolean }>({});
@@ -89,7 +89,7 @@ export default function UploadFileComponent({
 
     const document = await FileManager.fileToDocumentReference(file);
     document.subject = subject;
-    document.author = [author || {}];
+    document.author = [author];
 
     return fhirService.sendResource(document);
   };

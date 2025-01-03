@@ -111,7 +111,8 @@ export default function PractitionerList({
       sx={{
         padding: 2,
         borderRadius: 2,
-        height: "100%",
+        flexGrow: 1,
+
         display: "flex",
         flexDirection: "column",
         border: "1px solid rgba(0, 0, 0, 0.12)",

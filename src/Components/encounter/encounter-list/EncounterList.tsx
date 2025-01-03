@@ -157,6 +157,7 @@ export default function EncounterList({
         padding: 2,
         borderRadius: 2,
         flexGrow: 1,
+
         display: "flex",
         flexDirection: "column",
         border: "1px solid rgba(0, 0, 0, 0.12)",

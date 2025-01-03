@@ -12,6 +12,7 @@ import {
   IconButton,
   TextField,
   InputAdornment,
+  Typography,
 } from "@mui/material";
 import { Close, Search } from "@mui/icons-material";
 import styles from "./QuestionnaireListDialogComponent.module.css";
@@ -123,7 +124,26 @@ export default function QuestionnaireListDialogComponent({
                 >
                   <ListItemText
                     primary={`${ques.title}`}
-                    secondary={`${ques.description}`}
+                    secondary={
+                      <>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          color="textPrimary"
+                        >
+                          {ques.description}
+                        </Typography>
+                        <br />
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          color="textSecondary"
+                        >
+                          Tags:{" "}
+                          {ques.code?.map((code) => code.display).join(", ")}
+                        </Typography>
+                      </>
+                    }
                   />
                 </ListItem>
               ))}
