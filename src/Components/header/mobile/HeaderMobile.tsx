@@ -84,7 +84,15 @@ const HeaderMobile: React.FC<HeaderMobileProps> = ({
             <Grid item xs={6}>
               <Toolbar className={styles.actionsRow}>
                 <Box className={styles.actionButtons}>
-                  <Button variant="contained" size="small">
+                  <Button
+                    variant="contained"
+                    size="small"
+                    sx={{
+                      fontSize: "0.5rem",
+                      padding: "4px 8px",
+                      minWidth: "auto",
+                    }}
+                  >
                     {t("header.getMVT")}
                   </Button>
                 </Box>
@@ -97,6 +105,7 @@ const HeaderMobile: React.FC<HeaderMobileProps> = ({
                   color="inherit"
                   aria-label="menu"
                   onClick={() => setDrawerOpen(true)}
+                  sx={{ marginLeft: "-20px" }}
                 >
                   <MenuIcon />
                 </IconButton>

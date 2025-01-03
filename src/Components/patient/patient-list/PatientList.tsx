@@ -11,6 +11,8 @@ import {
   Paper,
   Button,
   Skeleton,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import {
   ArrowForward,
@@ -37,10 +39,15 @@ interface PatientListProps {
   onDeleteClick?: (resource: Patient) => void;
 }
 
-function identifier(resource: Patient) {
+function identifier(resource: Patient, isMobile: boolean) {
   const identifier = PersonUtil.getIdentifierByCode(resource, "RUT");
   return (
-    <Typography variant="body2" color="textSecondary" component="span">
+    <Typography
+      variant="body2"
+      color="textSecondary"
+      component="span"
+      sx={{ fontSize: isMobile ? "0.7rem" : "0.875rem" }}
+    >
       <strong>{identifier.system}</strong>{" "}
       {PersonUtil.formatRut(identifier.value!)}
     </Typography>
@@ -60,6 +67,9 @@ export default function PatientList({
   const [loading, setLoading] = useState(true);
   const { setResource } = useResource<Patient>(); // Use the context
   const navigate = useNavigate();
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleNewResources = async (direction: "next" | "previous") => {
     setLoading(true);
@@ -193,6 +203,7 @@ export default function PatientList({
                             overflow: "visible",
                             textOverflow: "ellipsis",
                             width: "100%",
+                            fontSize: isMobile ? "0.7rem" : "0.875rem",
                           }}
                         >
                           {resource.name?.[0]?.text}
@@ -200,12 +211,15 @@ export default function PatientList({
                       }
                       secondary={
                         <>
-                          {identifier(resource)}
+                          {identifier(resource, isMobile)}
                           <Box component="span" className={styles.block}>
                             <Typography
                               variant="body2"
                               color="textSecondary"
                               component="span"
+                              sx={{
+                                fontSize: isMobile ? "0.7rem" : "0.875rem",
+                              }}
                             >
                               <strong>{t("patientList.age")}:</strong>{" "}
                               {PersonUtil.calcularEdad(resource.birthDate!)}
@@ -216,6 +230,13 @@ export default function PatientList({
                               variant="body2"
                               color="textSecondary"
                               component="span"
+                              sx={{
+                                whiteSpace: "nowrap",
+                                overflow: "visible",
+                                textOverflow: "ellipsis",
+                                width: "100%",
+                                fontSize: isMobile ? "0.7rem" : "0.875rem",
+                              }}
                             >
                               <strong>{t("patientList.phone")}:</strong>{" "}
                               {PersonUtil.getContactPointFirstOrDefaultAsString(
@@ -232,7 +253,11 @@ export default function PatientList({
                     {onReferClick && (
                       <Tooltip title={t("patientList.referPatient")}>
                         <IconButton
-                          className={styles.circularContainer}
+                          className={
+                            isMobile
+                              ? styles.smallCircularContainer
+                              : styles.circularContainer
+                          }
                           color="primary"
                           aria-label="derive"
                           onClick={() => onReferClick(resource)}
@@ -244,7 +269,11 @@ export default function PatientList({
                     {onEditClick && (
                       <Tooltip title={t("patientList.edit")}>
                         <IconButton
-                          className={styles.circularContainer}
+                          className={
+                            isMobile
+                              ? styles.smallCircularContainer
+                              : styles.circularContainer
+                          }
                           color="primary"
                           aria-label="edit"
                           onClick={() => onEditClick(resource)}
@@ -256,7 +285,11 @@ export default function PatientList({
                     {onDeleteClick && (
                       <Tooltip title={t("patientList.delete")}>
                         <IconButton
-                          className={styles.circularContainer}
+                          className={
+                            isMobile
+                              ? styles.smallCircularContainer
+                              : styles.circularContainer
+                          }
                           color="error"
                           aria-label="delete"
                           onClick={() => onDeleteClick(resource)}

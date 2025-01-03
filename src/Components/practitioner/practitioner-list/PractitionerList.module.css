@@ -7,11 +7,18 @@
     border: 2px solid darkblue !important;
 }
 
-/* UserList.css */
-.listItem
-{
-    height: 90px;
+.smallCircularContainer {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    width: 30px !important;
+    height: 30px !important;
+    border: 2px solid darkblue !important;
 }
+
+
 
 .listItem:hover {
     background-color: #f0f0f0;

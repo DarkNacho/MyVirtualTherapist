@@ -21,7 +21,7 @@
 }
 
 .logo {
-    height: 40px;
+    height: 30px;
     width: auto;
     object-fit: contain;
     cursor: pointer;
@@ -31,6 +31,8 @@
 .navigationRow {
     height: 50px;
     padding: 0 16px;
+    
+
 }
 
 .actionButtons {

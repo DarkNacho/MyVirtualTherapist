@@ -11,8 +11,16 @@ import {
   Paper,
   Button,
   Skeleton,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
-import { Edit, Delete, ArrowLeft, ArrowRight } from "@mui/icons-material";
+import {
+  Edit,
+  Delete,
+  ArrowLeft,
+  ArrowRight,
+  MailOutline,
+} from "@mui/icons-material";
 import styles from "./PractitionerList.module.css";
 import { Practitioner } from "fhir/r4";
 import PersonUtil from "../../../Services/Utils/PersonUtils";
@@ -28,10 +36,15 @@ interface PractitionerListProps {
   onDeleteClick?: (resource: Practitioner) => void;
 }
 
-function identifier(resource: Practitioner) {
+function identifier(resource: Practitioner, isMobile: boolean) {
   const identifier = PersonUtil.getIdentifierByCode(resource, "RUT");
   return (
-    <Typography variant="body2" color="textSecondary" component="span">
+    <Typography
+      variant="body2"
+      color="textSecondary"
+      component="span"
+      sx={{ fontSize: isMobile ? "0.7rem" : "0.875rem" }}
+    >
       <strong>{identifier.system}</strong>{" "}
       {PersonUtil.formatRut(identifier.value!)}
     </Typography>
@@ -50,6 +63,9 @@ export default function PractitionerList({
   const { t } = useTranslation();
   const [resources, setResources] = useState<Practitioner[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleNewResources = async (direction: "next" | "previous") => {
     setLoading(true);
@@ -164,21 +180,28 @@ export default function PractitionerList({
                           variant="body1"
                           color="textSecondary"
                           component="span"
-                          sx={{ fontWeight: "bold", display: "block" }}
+                          sx={{
+                            fontWeight: "bold",
+                            display: "block",
+                            fontSize: isMobile ? "0.7rem" : "0.875rem",
+                          }}
                         >
                           {resource.name?.[0]?.text}
                         </Typography>
                       }
                       secondary={
                         <>
-                          {identifier(resource)}
+                          {identifier(resource, isMobile)}
                           <Box component="span" className={styles.block}>
                             <Typography
                               variant="body2"
                               color="textSecondary"
                               component="span"
+                              sx={{
+                                fontSize: isMobile ? "0.7rem" : "0.875rem",
+                              }}
                             >
-                              <strong>Especialidad:</strong> Especialidad aquí
+                              <strong>Especialidad:</strong> Especialidad
                             </Typography>
                           </Box>
                           <Box component="span" className={styles.block}>
@@ -186,12 +209,26 @@ export default function PractitionerList({
                               variant="body2"
                               color="textSecondary"
                               component="span"
+                              sx={{
+                                fontSize: isMobile ? "0.7rem" : "0.875rem",
+                              }}
                             >
                               <strong>{t("practitionerList.phone")}:</strong>{" "}
                               {PersonUtil.getContactPointFirstOrDefaultAsString(
                                 resource,
                                 "phone"
-                              )}{" "}
+                              )}
+                            </Typography>
+                          </Box>
+                          <Box component="span" className={styles.block}>
+                            <Typography
+                              variant="body2"
+                              color="textSecondary"
+                              component="span"
+                              sx={{
+                                fontSize: isMobile ? "0.7rem" : "0.875rem",
+                              }}
+                            >
                               <strong>Email:</strong>{" "}
                               <a
                                 href={`mailto:${PersonUtil.getContactPointFirstOrDefaultAsString(
@@ -211,10 +248,31 @@ export default function PractitionerList({
                     />
                   </Box>
                   <Box sx={{ display: "flex", gap: 1 }}>
+                    <IconButton
+                      className={
+                        isMobile
+                          ? styles.smallCircularContainer
+                          : styles.circularContainer
+                      }
+                      color="primary"
+                      aria-label="contact"
+                      onClick={() =>
+                        (window.location.href = `mailto:${PersonUtil.getContactPointFirstOrDefaultAsString(
+                          resource,
+                          "email"
+                        )}`)
+                      }
+                    >
+                      <MailOutline />
+                    </IconButton>
                     {onEditClick && (
                       <Tooltip title={t("practitionerList.edit")}>
                         <IconButton
-                          className={styles.circularContainer}
+                          className={
+                            isMobile
+                              ? styles.smallCircularContainer
+                              : styles.circularContainer
+                          }
                           color="primary"
                           aria-label="edit"
                           onClick={() => onEditClick(resource)}
@@ -226,7 +284,11 @@ export default function PractitionerList({
                     {onDeleteClick && (
                       <Tooltip title={t("practitionerList.delete")}>
                         <IconButton
-                          className={styles.circularContainer}
+                          className={
+                            isMobile
+                              ? styles.smallCircularContainer
+                              : styles.circularContainer
+                          }
                           color="error"
                           aria-label="delete"
                           onClick={() => onDeleteClick(resource)}

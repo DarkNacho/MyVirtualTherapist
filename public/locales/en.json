@@ -83,7 +83,8 @@
     "age": "Age",
     "birthDate": "Birth Date",
     "gender": "Gender",
-    "refer": "Refer"
+    "refer": "Refer",
+    "newEncounter": "Nueva Appointment"
   },
   "patientList": {
     "receivedSuccessfully": "Received successfully",

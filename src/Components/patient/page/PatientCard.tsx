@@ -15,6 +15,8 @@ import PersonUtil from "../../../Services/Utils/PersonUtils";
 import PatientReportModal from "../patient-report/PatientReport";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Add } from "@mui/icons-material";
+import EncounterCreateComponent from "../../encounter/encounter-create/EncounterCreateComponent";
 
 function identifier(resource: Patient) {
   const identifier = PersonUtil.getIdentifierByCode(resource, "RUT");
@@ -32,14 +34,20 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { t } = useTranslation();
 
-  const [open, setOpen] = useState(false);
+  const [openReport, setOpenReport] = useState(false);
+
+  const [openCreate, setOpenCreate] = useState(false);
+
+  const handleOpenCreate = () => {
+    setOpenCreate(true);
+  };
 
   const handleClickOpenReport = () => {
-    setOpen(true);
+    setOpenReport(true);
   };
 
   const handleCloseReport = () => {
-    setOpen(false);
+    setOpenReport(false);
   };
 
   const onRefer = () => {
@@ -208,15 +216,72 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
               width: "40%",
               background: "linear-gradient(to right, white, blue)",
             }}
-          />
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                paddingLeft: 30,
+                height: "100%",
+                width: "70%",
+              }}
+            >
+              <Button
+                variant="contained"
+                onClick={handleOpenCreate}
+                sx={{
+                  textTransform: "none",
+                  borderRadius: 2,
+                  paddingLeft: 3,
+                  paddingRight: 0,
+                  fontWeight: "bold",
+                  height: "70px",
+                  marginLeft: 2,
+                  whiteSpace: "pre-line",
+                  backgroundColor: "white",
+                  color: "primary.main",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  border: "2px solid",
+                  borderColor: "primary.main",
+                }}
+              >
+                Nueva Sesión
+                <Box
+                  sx={{
+                    height: "70px",
+                    borderRadius: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 1,
+                    marginLeft: 2,
+                  }}
+                >
+                  <Add sx={{ color: "primary.main" }} />
+                </Box>
+              </Button>
+            </Box>
+          </Box>
         )}
       </Card>
       {patient && (
-        <PatientReportModal
-          open={open}
-          handleClose={handleCloseReport}
-          patientId={patient.id!}
-        />
+        <>
+          <PatientReportModal
+            open={openReport}
+            handleClose={handleCloseReport}
+            patientId={patient.id!}
+          />
+          <EncounterCreateComponent
+            onOpen={function (isOpen: boolean): void {
+              setOpenCreate(isOpen);
+            }}
+            patientId={patient.id!}
+            isOpen={openCreate}
+          />
+        </>
       )}
     </>
   );

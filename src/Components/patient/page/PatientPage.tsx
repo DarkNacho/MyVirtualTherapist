@@ -56,7 +56,6 @@ export default function PatientPage() {
         onChange={handleTabChange}
         centered={!isMobile}
         variant={isMobile ? "scrollable" : "standard"}
-        scrollButtons={isMobile ? "auto" : "off"}
         sx={{ fontSize: "1.2rem" }}
       >
         <Tab label={t("patientPage.overview")} sx={{ fontSize: "1.2rem" }} />
