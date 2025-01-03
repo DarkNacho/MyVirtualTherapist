@@ -18,6 +18,7 @@ import { Close, Search } from "@mui/icons-material";
 import styles from "./QuestionnaireListDialogComponent.module.css";
 import FhirResourceService from "../../Services/FhirService";
 import HandleResult from "../../Utils/HandleResult";
+import { useTranslation } from "react-i18next";
 
 const questionnaireService =
   FhirResourceService.getInstance<Questionnaire>("Questionnaire");
@@ -27,6 +28,7 @@ export default function QuestionnaireListDialogComponent({
 }: {
   onQuestionnaireSelect: (ques: Questionnaire) => void;
 }) {
+  const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -74,11 +76,11 @@ export default function QuestionnaireListDialogComponent({
         color="primary"
         onClick={() => setShowModal(true)}
       >
-        Mostrar Cuestionarios
+        {t("questionnaireListDialogComponent.showQuestionnaires")}
       </Button>
       <Dialog open={showModal} onClose={closeModal} maxWidth="md" fullWidth>
         <DialogTitle className={styles.dialogTitle}>
-          Evaluaciones Disponibles
+          {t("questionnaireListDialogComponent.availableEvaluations")}
           <IconButton
             aria-label="close"
             onClick={closeModal}
@@ -98,7 +100,7 @@ export default function QuestionnaireListDialogComponent({
             >
               <TextField
                 style={{ width: "100%" }}
-                label="Buscar Formulario por título"
+                label={t("questionnaireListDialogComponent.searchFormByTitle")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 InputProps={{
@@ -139,7 +141,7 @@ export default function QuestionnaireListDialogComponent({
                           variant="body2"
                           color="textSecondary"
                         >
-                          Tags:{" "}
+                          {t("questionnaireListDialogComponent.tags")}:{" "}
                           {ques.code?.map((code) => code.display).join(", ")}
                         </Typography>
                       </>
@@ -157,14 +159,14 @@ export default function QuestionnaireListDialogComponent({
             color="error"
             onClick={closeModal}
           >
-            Cancelar
+            {t("questionnaireListDialogComponent.cancel")}
           </Button>
           <Button
             variant="contained"
             color="primary"
             href="https://www.google.com"
           >
-            Solicitar Formulario
+            {t("questionnaireListDialogComponent.requestForm")}
           </Button>
           <Button
             variant="contained"
@@ -172,7 +174,7 @@ export default function QuestionnaireListDialogComponent({
             onClick={() => handleNewQuestionnaires("previous")}
             disabled={!questionnaireService.hasPrevPage}
           >
-            Página anterior
+            {t("questionnaireListDialogComponent.previousPage")}
           </Button>
           <Button
             variant="contained"
@@ -180,7 +182,7 @@ export default function QuestionnaireListDialogComponent({
             onClick={() => handleNewQuestionnaires("next")}
             disabled={!questionnaireService.hasNextPage}
           >
-            Siguiente página
+            {t("questionnaireListDialogComponent.nextPage")}
           </Button>
         </DialogActions>
       </Dialog>

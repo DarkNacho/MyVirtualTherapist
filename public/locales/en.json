@@ -191,6 +191,22 @@
     "backToHome": "Back to the home page."
   },
 
+  "patientQuestionnaireComponent": {
+    "newForms": "New Forms:",
+    "loadedForms": "Loaded Patient Forms:"
+  },
+
+  "questionnaireListDialogComponent": {
+    "showQuestionnaires": "Show Forms",
+    "availableEvaluations": "Available Evaluations",
+    "searchFormByTitle": "Search Form by Title",
+    "tags": "Tags",
+    "cancel": "Cancel",
+    "requestForm": "Request Form",
+    "previousPage": "Previous Page",
+    "nextPage": "Next Page"
+  },
+
   "terminology": {
     "maritalOptions": {
       "S": "Never Married",

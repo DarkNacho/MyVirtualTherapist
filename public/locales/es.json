@@ -65,13 +65,13 @@
     "overview": "Visión general",
     "appointments": "Sesiones",
     "sensor": "Sensor",
-    "forms": "Formularios",
+    "forms": "Evoluciones",
     "patientCreated": "El paciente ha sido creado exitosamente",
     "evolutions": "Evoluciones",
     "conditions": "Condiciones",
     "medications": "Medicamentos",
     "sending": "Enviando...",
-    "errorConvertingForm": "Error al convertir el formulario a paciente",
+    "errorConvertingForm": "Error al convertir la evolución",
     "userExists": "El usuario ya existe"
   },
   "patientCard": {
@@ -148,7 +148,7 @@
   "practitionerPage": {
     "practitionerCreated": "El practicante ha sido creado exitosamente",
     "sending": "Enviando...",
-    "errorConvertingForm": "Error al convertir el formulario a practicante",
+    "errorConvertingForm": "Error al convertir la evolución",
     "userExists": "El usuario ya existe"
   },
   "practitionerList": {
@@ -182,6 +182,22 @@
     "search": "Buscar",
     "startDate": "Fecha de Inicio",
     "endDate": "Fecha de Término"
+  },
+
+  "patientQuestionnaireComponent": {
+    "newForms": "Nuevas evolutions:",
+    "loadedForms": "Evoluciones cargados del paciente:"
+  },
+
+  "questionnaireListDialogComponent": {
+    "showQuestionnaires": "Mostrar Evoluciones",
+    "availableEvaluations": "Evoluciones Disponibles",
+    "searchFormByTitle": "Buscar por título",
+    "tags": "Tags",
+    "cancel": "Cancelar",
+    "requestForm": "Solicitar Formulario",
+    "previousPage": "Página anterior",
+    "nextPage": "Siguiente página"
   },
 
   "notFound": {

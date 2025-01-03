@@ -6,6 +6,7 @@ import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { isAdminOrPractitioner } from "../../Utils/RolUser";
 import FhirResourceService from "../../Services/FhirService";
+import { useTranslation } from "react-i18next";
 
 const questionnaireResponseService =
   FhirResourceService.getInstance<QuestionnaireResponse>(
@@ -30,6 +31,8 @@ export default function PatientQuestionnaireComponent({
   const [newQuestionnaires, setNewQuestionnaires] = useState<Questionnaire[]>(
     []
   );
+
+  const { t } = useTranslation();
 
   const handleQuesSelect = (ques: Questionnaire) => {
     setNewQuestionnaires((prevQuestionnaires) => [ques, ...prevQuestionnaires]);
@@ -87,8 +90,7 @@ export default function PatientQuestionnaireComponent({
               id="panel1-header-new"
             >
               <h1 style={{ textDecoration: "underline" }}>
-                {" "}
-                Nuevos Formularios:
+                {t("patientQuestionnaireComponent.newForms")}
               </h1>
             </AccordionSummary>
             <AccordionDetails>
@@ -114,7 +116,7 @@ export default function PatientQuestionnaireComponent({
               id="panel1-header-old"
             >
               <h1 style={{ textDecoration: "underline" }}>
-                Formularios cargados del paciente:
+                {t("patientQuestionnaireComponent.loadedForms")}
               </h1>
             </AccordionSummary>
             <AccordionDetails>
