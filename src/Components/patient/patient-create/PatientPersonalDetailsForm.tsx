@@ -43,7 +43,7 @@ export default function PatientPersonalDetailsForm({
     const updatedGeneroOptions = generoOptions.map((option) => ({
       ...option,
       display:
-        t(`terminology.generoOptions.${option.code}`, {
+        t(`terminology.genderOptions.${option.code}`, {
           lng: currentLanguage,
         }) || option.display,
     }));

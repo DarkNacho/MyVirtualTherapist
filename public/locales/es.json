@@ -65,7 +65,7 @@
     "overview": "Visión general",
     "appointments": "Sesiones",
     "sensor": "Sensor",
-    "forms": "Evoluciones",
+    "forms": "Evaluaciones",
     "patientCreated": "El paciente ha sido creado exitosamente",
     "evolutions": "Evoluciones",
     "conditions": "Condiciones",
@@ -185,13 +185,13 @@
   },
 
   "patientQuestionnaireComponent": {
-    "newForms": "Nuevas evolutions:",
-    "loadedForms": "Evoluciones cargados del paciente:"
+    "newForms": "Nuevas Evaluaciones :",
+    "loadedForms": "Evaluaciones  cargados del paciente:"
   },
 
   "questionnaireListDialogComponent": {
-    "showQuestionnaires": "Mostrar Evoluciones",
-    "availableEvaluations": "Evoluciones Disponibles",
+    "showQuestionnaires": "Mostrar Evaluaciones ",
+    "availableEvaluations": "Evaluaciones Disponibles",
     "searchFormByTitle": "Buscar por título",
     "tags": "Tags",
     "cancel": "Cancelar",

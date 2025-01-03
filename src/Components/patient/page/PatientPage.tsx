@@ -5,7 +5,7 @@ import { Patient } from "fhir/r4";
 import { useParams } from "react-router-dom";
 import FhirResourceService from "../../../Services/FhirService";
 import HandleResult from "../../../Utils/HandleResult";
-import { Box, Tabs, Tab } from "@mui/material";
+import { Box, Tabs, Tab, useTheme, useMediaQuery } from "@mui/material";
 import PatientOverviewTab from "./PatientOverviewTab";
 import PatientAppointmentsTab from "./PatientAppointmentsTab";
 import PatientSensorTab from "./PatientSensorTab";
@@ -21,6 +21,9 @@ export default function PatientPage() {
 
   const [selectedTab, setSelectedTab] = useState(0);
   const { t } = useTranslation();
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const fetchPatient = async (id: string) => {
     const fhirService = FhirResourceService.getInstance<Patient>("Patient");
@@ -51,7 +54,9 @@ export default function PatientPage() {
       <Tabs
         value={selectedTab}
         onChange={handleTabChange}
-        centered
+        centered={!isMobile}
+        variant={isMobile ? "scrollable" : "standard"}
+        scrollButtons={isMobile ? "auto" : "off"}
         sx={{ fontSize: "1.2rem" }}
       >
         <Tab label={t("patientPage.overview")} sx={{ fontSize: "1.2rem" }} />
