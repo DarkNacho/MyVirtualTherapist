@@ -82,7 +82,8 @@
     "age": "Edad",
     "birthDate": "Fecha de Nacimiento",
     "gender": "Sexo",
-    "refer": "Derivar"
+    "refer": "Derivar",
+    "newEncounter": "Nueva Sesión"
   },
   "patientList": {
     "receivedSuccessfully": "Recibidos exitosamente",

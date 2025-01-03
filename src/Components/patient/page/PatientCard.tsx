@@ -248,7 +248,7 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
                   borderColor: "primary.main",
                 }}
               >
-                Nueva Sesión
+                {t("patientCard.newEncounter")}
                 <Box
                   sx={{
                     height: "70px",
