@@ -13,6 +13,7 @@ import ResourceListPage from "./Components/resource-list/ResourceListPage";
 import PatientPage from "./Components/patient/page/PatientPage";
 import NotFound from "./Components/not-found/NotFound";
 import ConfirmPasswordComponent from "./Components/password/ConfirmPasswordComponent";
+import EncounterPage from "./Components/encounter/encounter-page/EncounterPage";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: "/Patient/:id",
     element: <PatientPage />,
+  },
+  {
+    path: "/Encounter/:id",
+    element: <EncounterPage />,
   },
 
   {

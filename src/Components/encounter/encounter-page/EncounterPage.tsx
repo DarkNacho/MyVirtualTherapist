@@ -3,20 +3,12 @@ import { Grid } from "@mui/material";
 import ResourceList from "../../resource-list/ResourceList";
 import NotesIcon from "@mui/icons-material/Notes";
 import ConditionIcon from "@mui/icons-material/MonitorHeartSharp";
-import MedicationIcon from "@mui/icons-material/Medication";
-import {
-  Condition,
-  MedicationStatement,
-  Patient,
-  ClinicalImpression,
-} from "fhir/r4";
+import { Condition, ClinicalImpression, Encounter } from "fhir/r4";
 import FhirResourceService from "../../../Services/FhirService";
 import HandleResult from "../../../Utils/HandleResult";
 
 import ConditionUtils from "../../../Services/Utils/ConditionUtils";
-import MedicationUtils from "../../../Services/Utils/MedicationUtils";
 import ConditionCreateComponent from "../../condition/ConditionCreateComponent";
-import MedicationCreateComponent from "../../medication/MedicationCreateComponent";
 import { useResource } from "../../ResourceContext";
 import ClinicalImpressionCreateComponent from "../../clinical-impression/ClinicalImpressionCreateComponent";
 import { useTranslation } from "react-i18next";
@@ -37,18 +29,10 @@ function getConditionDisplay(condition: Condition) {
   };
 }
 
-function getMedicationDisplay(medication: MedicationStatement) {
-  return {
-    leftTitle: MedicationUtils.getName(medication),
-    leftSubtitle: MedicationUtils.getValue(medication),
-    rightText: medication.effectivePeriod?.start || "N/A",
-  };
-}
-
-export default function PatientOverviewTab({
-  patientId,
+export default function EncounterPage({
+  encounterId,
 }: {
-  patientId?: string;
+  encounterId?: string;
 }) {
   const [evolution, setEvolution] = useState<ClinicalImpression[] | undefined>(
     undefined
@@ -56,14 +40,14 @@ export default function PatientOverviewTab({
   const [conditions, setConditions] = useState<Condition[] | undefined>(
     undefined
   );
-  const [medications, setMedications] = useState<
-    MedicationStatement[] | undefined
-  >(undefined);
+
   const [isEvolutionOpen, setIsEvolutionOpen] = useState(false);
   const [isConditionOpen, setIsConditionOpen] = useState(false);
-  const [isMedicationOpen, setIsMedicationOpen] = useState(false);
+
+  const [patientId, setPatientId] = useState<string | undefined>(undefined);
+
   const [id, setId] = useState<string | undefined>(undefined);
-  const { resource } = useResource<Patient>();
+  const { resource } = useResource<Encounter>();
 
   const { t } = useTranslation();
 
@@ -71,7 +55,7 @@ export default function PatientOverviewTab({
     const fhirService =
       FhirResourceService.getInstance<ClinicalImpression>("ClinicalImpression");
     const response = await HandleResult.handleOperation(
-      () => fhirService.getResources({ patient: id }),
+      () => fhirService.getResources({ encounter: id }),
       "Evolution fetched successfully",
       "Fetching Evolution"
     );
@@ -83,7 +67,7 @@ export default function PatientOverviewTab({
   const fetchConditions = async (id: string) => {
     const fhirService = FhirResourceService.getInstance<Condition>("Condition");
     const response = await HandleResult.handleOperation(
-      () => fhirService.getResources({ patient: id }),
+      () => fhirService.getResources({ encounter: id }),
       "Conditions fetched successfully",
       "Fetching conditions"
     );
@@ -92,29 +76,19 @@ export default function PatientOverviewTab({
     }
   };
 
-  const fetchMedications = async (id: string) => {
-    const fhirService = FhirResourceService.getInstance<MedicationStatement>(
-      "MedicationStatement"
-    );
-    const response = await HandleResult.handleOperation(
-      () => fhirService.getResources({ patient: id }),
-      "Medications fetched successfully",
-      "Fetching medications"
-    );
-    if (response.success) {
-      setMedications(response.data);
-    }
-  };
-
   useEffect(() => {
-    const id = patientId || resource?.id;
+    const id = encounterId || resource?.id;
     if (id) {
       fetchEvolution(id);
       fetchConditions(id);
-      fetchMedications(id);
+
       setId(id);
+      setPatientId(
+        resource?.subject?.reference?.split("/")[1] ||
+          resource?.subject?.reference
+      );
     }
-  }, [patientId, resource]);
+  }, [encounterId, resource]);
 
   const handleEvolutionClick = (evolution: ClinicalImpression) => {
     console.log("Evolution clicked", evolution);
@@ -122,10 +96,6 @@ export default function PatientOverviewTab({
 
   const handleConditionClick = (condition: Condition) => {
     console.log("Condition clicked", condition);
-  };
-
-  const handleMedicationClick = (medication: MedicationStatement) => {
-    console.log("Medication clicked", medication);
   };
 
   const handleAddEvolutionClick = () => {
@@ -136,10 +106,6 @@ export default function PatientOverviewTab({
     setIsConditionOpen(true);
   };
 
-  const handleAddMedicationClick = () => {
-    setIsMedicationOpen(true);
-  };
-
   const handleEvolutionOpen = (isOpen: boolean) => {
     setIsEvolutionOpen(isOpen);
   };
@@ -148,13 +114,9 @@ export default function PatientOverviewTab({
     setIsConditionOpen(isOpen);
   };
 
-  const handleMedicationOpen = (isOpen: boolean) => {
-    setIsMedicationOpen(isOpen);
-  };
-
   return (
     <>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} justifyContent="center">
         <Grid item xs={12} md={4}>
           <ResourceList
             title={t("patientPage.evolutions")}
@@ -175,33 +137,21 @@ export default function PatientOverviewTab({
             onAddClick={handleAddConditionClick}
           />
         </Grid>
-        <Grid item xs={12} md={4}>
-          <ResourceList
-            title={t("patientPage.medications")}
-            Icon={MedicationIcon}
-            resources={medications}
-            onClick={handleMedicationClick}
-            getDisplay={getMedicationDisplay}
-            onAddClick={handleAddMedicationClick}
-          />
-        </Grid>
       </Grid>
-      {id && (
+      {id && patientId && (
         <>
           <ConditionCreateComponent
-            patientId={id}
+            patientId={patientId}
             onOpen={handleConditionOpen}
             isOpen={isConditionOpen}
+            encounterId={id}
           />
-          <MedicationCreateComponent
-            patientId={id}
-            onOpen={handleMedicationOpen}
-            isOpen={isMedicationOpen}
-          />
+
           <ClinicalImpressionCreateComponent
-            patientId={id}
+            patientId={patientId}
             onOpen={handleEvolutionOpen}
             isOpen={isEvolutionOpen}
+            encounterId={id}
           />
         </>
       )}

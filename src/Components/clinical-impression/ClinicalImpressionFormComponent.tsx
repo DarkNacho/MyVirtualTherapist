@@ -25,6 +25,7 @@ import { ClinicalImpressionFormData } from "../../Models/Forms/ClinicalImpressio
 
 import InfoIcon from "@mui/icons-material/Info";
 import UploadFileComponent from "../FileManager/UploadFileComponent";
+import { useState } from "react";
 
 function getEncounterDisplay(resource: Encounter): string {
   return `Profesional: ${EncounterUtils.getPrimaryPractitioner(
@@ -68,6 +69,13 @@ export default function ClinicalImpressionFormComponent({
     trigger("summary");
   }, 300);
 
+  const [selectedPatient, setSelectedPatient] = useState<string | undefined>(
+    patientId
+  );
+  const [selectedPractitioner, setSelectedPractitioner] = useState<
+    string | undefined
+  >(practitionerId);
+
   return (
     <>
       <form id={formId} onSubmit={handleSubmit(submitForm)}>
@@ -91,6 +99,7 @@ export default function ClinicalImpressionFormComponent({
                       id: selectedObject.id,
                       display: PersonUtil.getPersonNameAsString(selectedObject),
                     });
+                    setSelectedPractitioner(selectedObject.id);
                   } else {
                     field.onChange(null);
                   }
@@ -129,6 +138,7 @@ export default function ClinicalImpressionFormComponent({
                       id: selectedObject.id,
                       display: PersonUtil.getPersonNameAsString(selectedObject),
                     });
+                    setSelectedPatient(selectedObject.id);
                   } else {
                     field.onChange(null);
                   }
@@ -198,19 +208,34 @@ export default function ClinicalImpressionFormComponent({
             name="previous"
             control={control}
             render={({ field }) => (
-              <TextField
-                {...field}
-                fullWidth
-                label="Para seguimiento de"
-                variant="outlined"
-                error={Boolean(errors.previous)}
-                helperText={errors.previous?.message}
-                inputProps={{
-                  readOnly: readOnly,
+              <AutoCompleteComponent<ClinicalImpression>
+                resourceType={"ClinicalImpression"}
+                label={"Selecciona Para seguimiento de"}
+                getDisplay={(resource) => resource.description || "Unknown"}
+                defaultParams={{
+                  subject: selectedPatient!,
+                  participant: selectedPractitioner!,
+                  _count: 99999,
+                }}
+                searchParam={""}
+                onChange={(selectedObject) => {
+                  if (selectedObject) {
+                    field.onChange({
+                      id: selectedObject.id,
+                      display: selectedObject.description,
+                    });
+                  } else {
+                    field.onChange(null);
+                  }
+                }}
+                textFieldProps={{
+                  error: Boolean(errors.previous),
+                  helperText: errors.previous && errors.previous.message,
                 }}
               />
             )}
           />
+
           <Controller
             name="description"
             control={control}
@@ -319,7 +344,10 @@ export default function ClinicalImpressionFormComponent({
             )}
           />
           <Box>
-            <UploadFileComponent />
+            <UploadFileComponent
+              subject={{ reference: `Patient/${selectedPatient}` }}
+              author={{ reference: `Practitioner/${selectedPractitioner}` }}
+            />
           </Box>
         </Stack>
       </form>

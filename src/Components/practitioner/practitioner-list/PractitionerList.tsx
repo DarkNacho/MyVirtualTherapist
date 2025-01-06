@@ -257,10 +257,16 @@ export default function PractitionerList({
                       color="primary"
                       aria-label="contact"
                       onClick={() =>
-                        (window.location.href = `mailto:${PersonUtil.getContactPointFirstOrDefaultAsString(
-                          resource,
-                          "email"
-                        )}`)
+                        resource.telecom?.find(
+                          (t) => t.system === "url" && t.rank === 99
+                        )?.value &&
+                        window.open(
+                          resource.telecom?.find(
+                            (t) => t.system === "url" && t.rank === 99
+                          )?.value,
+                          "_blank",
+                          "noopener,noreferrer"
+                        )
                       }
                     >
                       <MailOutline />

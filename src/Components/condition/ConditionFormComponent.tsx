@@ -158,7 +158,7 @@ export default function ConditionFormComponent({
               <TextField
                 {...field}
                 fullWidth
-                label="Valor"
+                label="Condición Reportada"
                 variant="outlined"
                 error={Boolean(errors.code?.display)}
                 helperText={errors.code?.display?.message}
