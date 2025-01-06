@@ -39,12 +39,12 @@ const HeaderMobile: React.FC<HeaderMobileProps> = ({
   const { t, i18n } = useTranslation();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
-  const NavItem = ({ text }: { text: string }) => (
+  const NavItem = ({ text, href }: { text: string; href?: string }) => (
     <Typography
       component={"a"}
-      href={`/#${text}`}
+      href={href ? href : `/#${text}`}
       variant="h6"
-      onClick={() => handleSetLocation(text)}
+      onClick={href ? undefined : () => handleSetLocation(text)}
       sx={{
         cursor: "pointer",
         color: selectedItem === text ? "#4864cc" : "#2c427e",
@@ -149,7 +149,10 @@ const HeaderMobile: React.FC<HeaderMobileProps> = ({
                 <NavItem text={t("header.encounters")} />
               </ListItem>
               <ListItem>
-                <NavItem text={t("header.contact")} />
+                <NavItem
+                  text={t("header.contact")}
+                  href="https://wa.me/+56931416677"
+                />
               </ListItem>
               <ListItem>
                 <Button

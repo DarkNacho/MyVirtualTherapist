@@ -59,12 +59,12 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
     handleClose();
   };
 
-  const NavItem = ({ text }: { text: string }) => (
+  const NavItem = ({ text, href }: { text: string; href?: string }) => (
     <Typography
       component={"a"}
-      href={`/#${text}`}
+      href={href ? href : `/#${text}`}
       variant="h6"
-      onClick={() => handleSetLocation(text)}
+      onClick={href ? undefined : () => handleSetLocation(text)}
       sx={{
         cursor: "pointer",
         color: selectedItem === text ? "#4864cc" : "#2c427e",
@@ -122,7 +122,10 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
                   <NavItem text={t("header.patients")} />
                   <NavItem text={t("header.practitioners")} />
                   <NavItem text={t("header.encounters")} />
-                  <NavItem text={t("header.contact")} />
+                  <NavItem
+                    text={t("header.contact")}
+                    href="https://wa.me/+56931416677"
+                  />
                 </Box>
               </Toolbar>
             </Grid>
