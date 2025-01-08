@@ -64,6 +64,7 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
       component={"a"}
       href={href ? href : `/#${text}`}
       variant="h6"
+      target={href ? "_blank" : undefined}
       onClick={href ? undefined : () => handleSetLocation(text)}
       sx={{
         cursor: "pointer",

@@ -43,6 +43,7 @@ const HeaderMobile: React.FC<HeaderMobileProps> = ({
     <Typography
       component={"a"}
       href={href ? href : `/#${text}`}
+      target={href ? "_blank" : undefined}
       variant="h6"
       onClick={href ? undefined : () => handleSetLocation(text)}
       sx={{
