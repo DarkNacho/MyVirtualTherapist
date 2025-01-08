@@ -19,7 +19,7 @@ import {
   Delete,
   ArrowLeft,
   ArrowRight,
-  MailOutline,
+  Event,
 } from "@mui/icons-material";
 import styles from "./PractitionerList.module.css";
 import { Practitioner } from "fhir/r4";
@@ -269,7 +269,7 @@ export default function PractitionerList({
                         )
                       }
                     >
-                      <MailOutline />
+                      <Event />
                     </IconButton>
                     {onEditClick && (
                       <Tooltip title={t("practitionerList.edit")}>

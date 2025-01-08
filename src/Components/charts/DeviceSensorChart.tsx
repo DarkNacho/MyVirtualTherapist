@@ -12,7 +12,7 @@ import {
   Legend,
   ChartOptions,
 } from "chart.js";
-import { Button, Tab, Tabs } from "@mui/material";
+import { Button, Tab, Tabs, Typography } from "@mui/material";
 import { SensorDataByDevice } from "../../Models/SensorModel";
 
 ChartJS.register(
@@ -133,41 +133,49 @@ export default function DeviceSensorChart({
 
   return (
     <div>
-      <Tabs
-        value={activeDevice}
-        onChange={(_, value) => {
-          setActiveDevice(value);
-          setActiveSensor(Object.keys(sensorDataByDevice[value])[0]);
-        }}
-        indicatorColor="primary"
-        textColor="primary"
-        variant="scrollable"
-        scrollButtons="auto"
-      >
-        {Object.keys(sensorDataByDevice).map((device) => (
-          <Tab key={device} label={device} value={device} />
-        ))}
-      </Tabs>
-      {activeDevice && (
-        <Tabs
-          value={activeSensor}
-          onChange={(_, value) => {
-            setActiveSensor(value);
-          }}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="scrollable"
-          scrollButtons="auto"
-        >
-          {Object.keys(sensorDataByDevice[activeDevice]).map((sensor) => (
-            <Tab key={sensor} label={sensor} value={sensor} />
-          ))}
-        </Tabs>
+      {Object.keys(sensorDataByDevice).length === 0 ? (
+        <Typography variant="h6" color="textSecondary" align="center">
+          No data available
+        </Typography>
+      ) : (
+        <>
+          <Tabs
+            value={activeDevice}
+            onChange={(_, value) => {
+              setActiveDevice(value);
+              setActiveSensor(Object.keys(sensorDataByDevice[value])[0]);
+            }}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="scrollable"
+            scrollButtons="auto"
+          >
+            {Object.keys(sensorDataByDevice).map((device) => (
+              <Tab key={device} label={device} value={device} />
+            ))}
+          </Tabs>
+          {activeDevice && (
+            <Tabs
+              value={activeSensor}
+              onChange={(_, value) => {
+                setActiveSensor(value);
+              }}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="scrollable"
+              scrollButtons="auto"
+            >
+              {Object.keys(sensorDataByDevice[activeDevice]).map((sensor) => (
+                <Tab key={sensor} label={sensor} value={sensor} />
+              ))}
+            </Tabs>
+          )}
+          {chart}
+          <Button variant="outlined" onClick={resetChart}>
+            Restablecer
+          </Button>
+        </>
       )}
-      {chart}
-      <Button variant="outlined" onClick={resetChart}>
-        Restablecer
-      </Button>
     </div>
   );
 }

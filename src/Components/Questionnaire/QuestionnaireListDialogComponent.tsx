@@ -164,7 +164,7 @@ export default function QuestionnaireListDialogComponent({
           <Button
             variant="contained"
             color="primary"
-            href="https://www.google.com"
+            href="https://forms.gle/qpzLR1wSi5DoDGAw5"
           >
             {t("questionnaireListDialogComponent.requestForm")}
           </Button>

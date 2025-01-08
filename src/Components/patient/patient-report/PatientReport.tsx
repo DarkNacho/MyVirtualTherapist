@@ -16,12 +16,14 @@ interface ReportModalProps {
   open: boolean;
   handleClose: () => void;
   patientId: string;
+  encounterId?: string;
 }
 
 export default function PatientReportModal({
   open,
   handleClose,
   patientId,
+  encounterId,
 }: ReportModalProps) {
   const [reportOptions, setReportOptions] = useState({
     obs: false,
@@ -81,6 +83,7 @@ export default function PatientReportModal({
       stringifiedOptions.start = new Date(timeRange.start).toISOString();
     if (timeRange.end)
       stringifiedOptions.end = new Date(timeRange.end).toISOString();
+    if (encounterId) stringifiedOptions.encounterId = encounterId;
 
     const queryParams = new URLSearchParams(stringifiedOptions);
 

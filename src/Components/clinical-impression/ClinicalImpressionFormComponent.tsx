@@ -61,8 +61,8 @@ export default function ClinicalImpressionFormComponent({
   } = useForm<ClinicalImpressionFormData>();
 
   const roleUser = loadUserRoleFromLocalStorage();
-  if (clinicalImpression)
-    encounterId = clinicalImpression.encounter?.reference?.split("/")[1];
+  //if (clinicalImpression)
+  //  encounterId = clinicalImpression.encounter?.reference?.split("/")[1];
 
   const handleQuillChange = useDebouncedCallback((content: string) => {
     setValue("summary", content);
@@ -160,7 +160,7 @@ export default function ClinicalImpressionFormComponent({
             render={({ field }) => (
               <AutoCompleteComponent<Encounter>
                 resourceType={"Encounter"}
-                label={"Selecciona Encuentro"}
+                label={"Seleccionar Sesión"}
                 getDisplay={getEncounterDisplay}
                 defaultResourceId={encounterId}
                 defaultParams={{ subject: patientId!, _count: 99999 }}
@@ -204,37 +204,6 @@ export default function ClinicalImpressionFormComponent({
               </LocalizationProvider>
             )}
           ></Controller>
-          <Controller
-            name="previous"
-            control={control}
-            render={({ field }) => (
-              <AutoCompleteComponent<ClinicalImpression>
-                resourceType={"ClinicalImpression"}
-                label={"Selecciona Para seguimiento de"}
-                getDisplay={(resource) => resource.description || "Unknown"}
-                defaultParams={{
-                  subject: selectedPatient!,
-                  participant: selectedPractitioner!,
-                  _count: 99999,
-                }}
-                searchParam={""}
-                onChange={(selectedObject) => {
-                  if (selectedObject) {
-                    field.onChange({
-                      id: selectedObject.id,
-                      display: selectedObject.description,
-                    });
-                  } else {
-                    field.onChange(null);
-                  }
-                }}
-                textFieldProps={{
-                  error: Boolean(errors.previous),
-                  helperText: errors.previous && errors.previous.message,
-                }}
-              />
-            )}
-          />
 
           <Controller
             name="description"
