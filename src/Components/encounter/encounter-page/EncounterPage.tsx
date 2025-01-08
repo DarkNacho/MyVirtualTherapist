@@ -145,6 +145,17 @@ export default function EncounterPage() {
       if (!resource) {
         fetchEncounter(id);
       }
+      if (resource) {
+        setPatientId(
+          resource?.subject?.reference?.split("/")[1] ||
+            resource?.subject?.reference
+        );
+        setPractitionerId(
+          resource?.participant?.[0]?.individual?.reference?.split("/")[1] ||
+            resource?.participant?.[0]?.individual?.reference ||
+            localStorage.getItem("id")!
+        );
+      }
     }
   }, [effectiveResourceId, resource]);
 
@@ -233,7 +244,7 @@ export default function EncounterPage() {
         <Grid item xs={12} md={12}>
           <Box bgcolor="rgba(228, 233, 242, 0.8)" mt="30px" borderRadius="10px">
             <Tabs value={tabIndex} onChange={handleTabChange}>
-              <Tab label="Evaluación" />
+              <Tab label="Evolución" />
               <Tab label="Gráficos del sensor" />
             </Tabs>
             <TabPanel value={tabIndex} index={0}>
