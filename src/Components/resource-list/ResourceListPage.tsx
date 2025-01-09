@@ -69,13 +69,13 @@ export default function ResourceListPage() {
 
   return (
     <Box>
-      <Grid container spacing={2}>
+      <Grid container spacing={1}>
         {!isMobile && (
-          <Grid item xs={4} minHeight={"calc(100vh - 200px)"}>
+          <Grid item width={"667px"} height={"664px"}>
             <WelcomeComponent userName={localStorage.getItem("name")!} />
           </Grid>
         )}
-        <Grid item xs>
+        <Grid item xs={5}>
           {renderContent()}
         </Grid>
       </Grid>

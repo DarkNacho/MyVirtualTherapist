@@ -68,7 +68,7 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
       onClick={href ? undefined : () => handleSetLocation(text)}
       sx={{
         cursor: "pointer",
-        color: selectedItem === text ? "#4864cc" : "#2c427e",
+        color: selectedItem === text ? "#344293" : "#2c427e",
         textDecoration: selectedItem === text ? "underline" : "none",
         textDecorationThickness: "0.1em",
         textUnderlineOffset: "0.2em",
@@ -90,7 +90,7 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
           position="static"
           sx={{ backgroundColor: "white", color: "black" }}
         >
-          <Grid container sx={{ paddingLeft: 20 }}>
+          <Grid container sx={{ paddingLeft: "270px" }}>
             <Grid item xs={2} className={styles.logoContainer}>
               <img
                 src={LogoSVG}
@@ -102,7 +102,7 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
                 }}
               />
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={7.3}>
               <Toolbar className={styles.actionsRow}>
                 <Box className={styles.actionButtons}>
                   <Button variant="contained" onClick={handleOpenApp}>

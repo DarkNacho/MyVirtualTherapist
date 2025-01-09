@@ -8,6 +8,7 @@ import img3 from "../assets/PLACEHOLDERS/3.png";
 import img4 from "../assets/PLACEHOLDERS/4.png";
 import img5 from "../assets/PLACEHOLDERS/5.png";
 import { useTranslation } from "react-i18next";
+
 interface WelcomeComponentProps {
   userName: string;
 }
@@ -45,6 +46,7 @@ const WelcomeComponent: React.FC<WelcomeComponentProps> = ({ userName }) => {
         padding: 2,
         overflow: "hidden",
         height: "100%",
+        backgroundColor: "white", // Ensure the background is white
       }}
     >
       {/* Image Background */}
@@ -56,12 +58,12 @@ const WelcomeComponent: React.FC<WelcomeComponentProps> = ({ userName }) => {
           onClick={handleImageClick}
           sx={{
             borderRadius: 2,
-            width: "100%",
-            height: "100%",
+            width: "calc(100% - 46px)", // Adjust width to account for padding
+            height: "calc(100% - 46px)", // Adjust height to account for padding
             objectFit: "cover",
             position: "absolute", // Position absolutely within Paper
-            top: 0,
-            left: 0,
+            top: "23px", // Adjust top position to account for padding
+            left: "23px", // Adjust left position to account for padding
             cursor: "pointer",
           }}
         />
@@ -71,10 +73,10 @@ const WelcomeComponent: React.FC<WelcomeComponentProps> = ({ userName }) => {
       <Box
         sx={{
           position: "absolute",
-          top: 0,
-          right: 0,
+          top: "23px", // Adjust top position to account for padding
+          right: "23px", // Adjust right position to account for padding
           backgroundColor: "#287cfc",
-          borderTopRightRadius: 2,
+          borderTopRightRadius: 8,
           borderBottomLeftRadius: 15,
           padding: "4px 8px",
           cursor: "pointer",

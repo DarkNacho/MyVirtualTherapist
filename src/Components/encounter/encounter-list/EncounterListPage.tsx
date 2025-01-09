@@ -30,7 +30,7 @@ export default function PatientListPage() {
     <Box>
       <Grid container spacing={2}>
         <Grid item xs>
-          <Grid container gap={0.5}>
+          <Grid container gap={"38px"}>
             <Grid width="100%">
               <EncounterSearchComponent
                 handleAdd={handleOpenCreate}
@@ -43,7 +43,7 @@ export default function PatientListPage() {
               sx={{
                 height: isMobile
                   ? "calc(100vh - 275px)"
-                  : "calc(100vh - 340px)",
+                  : "calc(100vh - 215px)",
 
                 overflow: "auto",
               }}

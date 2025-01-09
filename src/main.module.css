@@ -36,7 +36,7 @@ body {
     background-color: rgb(89, 136, 255, 0.1);
     flex: 1;
     width: 100%;
-    padding: 20px;
+    padding: 76px 170px 20px 170px;
     margin-top: var(--header-height);
     margin-bottom: var(--footer-height);
     /* Add margin for footer */
