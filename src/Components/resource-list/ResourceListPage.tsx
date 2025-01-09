@@ -75,7 +75,7 @@ export default function ResourceListPage() {
             <WelcomeComponent userName={localStorage.getItem("name")!} />
           </Grid>
         )}
-        <Grid item xs={5}>
+        <Grid item xs>
           {renderContent()}
         </Grid>
       </Grid>
