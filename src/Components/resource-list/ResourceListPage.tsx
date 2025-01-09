@@ -71,7 +71,7 @@ export default function ResourceListPage() {
     <Box>
       <Grid container spacing={1}>
         {!isMobile && (
-          <Grid item width={"667px"} height={"664px"}>
+          <Grid item minWidth={"637px"} minHeight={"664px"}>
             <WelcomeComponent userName={localStorage.getItem("name")!} />
           </Grid>
         )}

@@ -90,7 +90,7 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
           position="static"
           sx={{ backgroundColor: "white", color: "black" }}
         >
-          <Grid container sx={{ paddingLeft: "270px" }}>
+          <Grid container sx={{ paddingLeft: "200px" }}>
             <Grid item xs={2} className={styles.logoContainer}>
               <img
                 src={LogoSVG}
@@ -102,7 +102,7 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
                 }}
               />
             </Grid>
-            <Grid item xs={7.3}>
+            <Grid item xs={8}>
               <Toolbar className={styles.actionsRow}>
                 <Box className={styles.actionButtons}>
                   <Button variant="contained" onClick={handleOpenApp}>
