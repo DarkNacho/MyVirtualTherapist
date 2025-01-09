@@ -7,6 +7,8 @@ import {
   Button,
   Paper,
   Popover,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import { Search, Add, FilterList } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
@@ -35,6 +37,9 @@ export default function EncounterSearchComponent({
   const [phone, setPhone] = useState("");
   const [rut, setRut] = useState("");
   const [email, setEmail] = useState("");
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleFilterClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -135,43 +140,58 @@ export default function EncounterSearchComponent({
           height: "100%",
         }}
       >
-        <Button
-          variant="contained"
-          onClick={handleAdd}
-          sx={{
-            textTransform: "none",
-            borderRadius: 2,
-            paddingLeft: 3,
-            paddingRight: 0,
-            fontWeight: "bold",
-            height: "70px",
-            marginLeft: 2,
-            whiteSpace: "pre-line",
-            backgroundColor: "white",
-            color: "primary.main",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            border: "2px solid",
-            borderColor: "primary.main",
-          }}
-        >
-          {t("encounterSearchComponent.addEncounter")}
-          <Box
+        {isMobile ? (
+          <IconButton
+            onClick={handleAdd}
             sx={{
               backgroundColor: "primary.main",
-              height: "70px",
+              color: "white",
               borderRadius: 2,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
               padding: 1,
               marginLeft: 2,
             }}
           >
-            <Add sx={{ color: "white" }} />
-          </Box>
-        </Button>
+            <Add />
+          </IconButton>
+        ) : (
+          <Button
+            variant="contained"
+            onClick={handleAdd}
+            sx={{
+              textTransform: "none",
+              borderRadius: 2,
+              paddingLeft: 3,
+              paddingRight: 0,
+              fontWeight: "bold",
+              height: "70px",
+              marginLeft: 2,
+              whiteSpace: "pre-line",
+              backgroundColor: "white",
+              color: "primary.main",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              border: "2px solid",
+              borderColor: "primary.main",
+            }}
+          >
+            {t("encounterSearchComponent.addEncounter")}
+            <Box
+              sx={{
+                backgroundColor: "primary.main",
+                height: "70px",
+                borderRadius: 2,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 1,
+                marginLeft: 2,
+              }}
+            >
+              <Add sx={{ color: "white" }} />
+            </Box>
+          </Button>
+        )}
       </Box>
 
       <Popover

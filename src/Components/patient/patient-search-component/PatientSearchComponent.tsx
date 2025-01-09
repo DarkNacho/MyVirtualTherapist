@@ -8,6 +8,8 @@ import {
   Button,
   Paper,
   Popover,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import { Search, Add, FilterList } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
@@ -30,6 +32,9 @@ export default function PatientSearchComponent({
   const [phone, setPhone] = useState("");
   const [rut, setRut] = useState("");
   const [email, setEmail] = useState("");
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleFilterClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -131,43 +136,58 @@ export default function PatientSearchComponent({
           height: "100%",
         }}
       >
-        <Button
-          variant="contained"
-          onClick={handleAddPatient}
-          sx={{
-            textTransform: "none",
-            borderRadius: 2,
-            paddingLeft: 3,
-            paddingRight: 0,
-            fontWeight: "bold",
-            height: "70px",
-            marginLeft: 2,
-            whiteSpace: "pre-line",
-            backgroundColor: "white",
-            color: "primary.main",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            border: "2px solid",
-            borderColor: "primary.main",
-          }}
-        >
-          {t("patientSearchComponent.addPatient")}
-          <Box
+        {isMobile ? (
+          <IconButton
+            onClick={handleAddPatient}
             sx={{
               backgroundColor: "primary.main",
-              height: "70px",
+              color: "white",
               borderRadius: 2,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: 1,
               marginLeft: 2,
+              padding: 1,
             }}
           >
-            <Add sx={{ color: "white" }} />
-          </Box>
-        </Button>
+            <Add />
+          </IconButton>
+        ) : (
+          <Button
+            variant="contained"
+            onClick={handleAddPatient}
+            sx={{
+              textTransform: "none",
+              borderRadius: 2,
+              paddingLeft: 3,
+              paddingRight: 0,
+              fontWeight: "bold",
+              height: "70px",
+              marginLeft: 2,
+              whiteSpace: "pre-line",
+              backgroundColor: "white",
+              color: "primary.main",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              border: "2px solid",
+              borderColor: "primary.main",
+            }}
+          >
+            {t("patientSearchComponent.addPatient")}
+            <Box
+              sx={{
+                backgroundColor: "primary.main",
+                height: "70px",
+                borderRadius: 2,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 1,
+                marginLeft: 2,
+              }}
+            >
+              <Add sx={{ color: "white" }} />
+            </Box>
+          </Button>
+        )}
       </Box>
 
       <Popover

@@ -159,7 +159,10 @@ export default function PractitionerList({
             ))
           : resources.map((resource) => (
               <React.Fragment key={resource.id}>
-                <ListItem className={styles.listItem}>
+                <ListItem
+                  className={styles.listItem}
+                  sx={{ overflowX: "auto" }}
+                >
                   <ListItemAvatar
                     className={styles.circularContainer}
                     sx={{ marginRight: 2 }}

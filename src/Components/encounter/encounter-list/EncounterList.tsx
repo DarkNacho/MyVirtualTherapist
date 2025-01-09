@@ -10,6 +10,8 @@ import {
   Button,
   Tooltip,
   Skeleton,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { Edit, Delete, ArrowLeft, ArrowRight } from "@mui/icons-material";
 import styles from "./EncounterList.module.css";
@@ -34,7 +36,8 @@ const fhirService = FhirResourceService.getInstance<Encounter>("Encounter");
 
 function getDisplay(
   resource: Encounter,
-  handleItemClick: (resource: Encounter) => void
+  handleItemClick: (resource: Encounter) => void,
+  isMobile: boolean
 ): JSX.Element {
   const roleUser = loadUserRoleFromLocalStorage();
   let primaryText = "";
@@ -75,13 +78,19 @@ function getDisplay(
             overflow: "visible",
             textOverflow: "ellipsis",
             width: "100%",
+            fontSize: isMobile ? "0.7rem" : "0.875rem",
           }}
         >
           {primaryText}
         </Typography>
       }
       secondary={
-        <Typography variant="body2" color="textSecondary" component="span">
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          component="span"
+          sx={{ fontSize: isMobile ? "0.7rem" : "0.875rem" }}
+        >
           {secondaryText}
           <br />
           {periodText}
@@ -101,6 +110,9 @@ export default function EncounterList({
   const [loading, setLoading] = useState(true);
   const { setResource } = useResource<Encounter>(); // Use the context
   const navigate = useNavigate();
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleNewResources = async (direction: "next" | "previous") => {
     setLoading(true);
@@ -190,13 +202,17 @@ export default function EncounterList({
               <React.Fragment key={resource.id}>
                 <ListItem className={styles.listItem}>
                   <Box sx={{ flex: 1 }}>
-                    {getDisplay(resource, handleItemClick)}
+                    {getDisplay(resource, handleItemClick, isMobile)}
                   </Box>
                   <Box sx={{ display: "flex", gap: 1 }}>
                     {onEditClick && (
                       <Tooltip title={t("encounterList.edit")}>
                         <IconButton
-                          className={styles.circularContainer}
+                          className={
+                            isMobile
+                              ? styles.smallCircularContainer
+                              : styles.circularContainer
+                          }
                           color="primary"
                           aria-label="edit"
                           onClick={() => onEditClick(resource)}
@@ -208,7 +224,11 @@ export default function EncounterList({
                     {onDeleteClick && (
                       <Tooltip title={t("encounterList.delete")}>
                         <IconButton
-                          className={styles.circularContainer}
+                          className={
+                            isMobile
+                              ? styles.smallCircularContainer
+                              : styles.circularContainer
+                          }
                           color="error"
                           aria-label="delete"
                           onClick={() => onDeleteClick(resource)}
