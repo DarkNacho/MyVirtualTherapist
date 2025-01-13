@@ -72,6 +72,8 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
         textDecoration: selectedItem === text ? "underline" : "none",
         textDecorationThickness: "0.1em",
         textUnderlineOffset: "0.2em",
+        fontWeight: selectedItem === text ? "bold" : "normal",
+        fontSize: "11pt",
         "&:hover": {
           textDecoration: "underline",
           textDecorationThickness: "0.1em",
@@ -102,10 +104,14 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
                 }}
               />
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={8.3}>
               <Toolbar className={styles.actionsRow}>
                 <Box className={styles.actionButtons}>
-                  <Button variant="contained" onClick={handleOpenApp}>
+                  <Button
+                    variant="contained"
+                    onClick={handleOpenApp}
+                    sx={{ fontWeight: "bold", background: "#2278fe" }}
+                  >
                     {t("header.getMVT")}{" "}
                   </Button>
                   <Button
@@ -113,6 +119,7 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
                     onClick={handleLanguageToggle}
                     startIcon={<LanguageIcon />}
                     className={styles.languageButton}
+                    sx={{ background: "#2278fe" }}
                   >
                     {i18n.language.toUpperCase()}
                   </Button>

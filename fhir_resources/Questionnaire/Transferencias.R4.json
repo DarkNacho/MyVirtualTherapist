@@ -4,84 +4,343 @@
   "status": "draft",
   "item": [
     {
-      "type": "string",
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ]
+          }
+        }
+      ],
       "linkId": "4676486287226",
-      "text": "Giros"
+      "text": "Giros",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "display": "Derecha"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Izquierda"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Ambos"
+          }
+        }
+      ],
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "drop-down",
+                    "display": "Drop down"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "621563066177",
+          "text": "Requiere Asistencia",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "No"
+              },
+              "initialSelected": true
+            },
+            {
+              "valueCoding": {
+                "display": "Leve"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Moderada"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Severa"
+              }
+            }
+          ]
+        }
+      ]
     },
     {
-      "type": "string",
-      "linkId": "3837512403144",
-      "text": "A derecha"
-    },
-    {
-      "type": "string",
-      "linkId": "6243565605526",
-      "text": "A izquierda"
-    },
-    {
-      "type": "string",
-      "linkId": "4125299035791",
-      "text": "Ambos lados"
-    },
-    {
-      "type": "string",
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "drop-down",
+                    "display": "Drop down"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "732333353728",
+          "text": "Requiere Asistencia",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "No"
+              },
+              "initialSelected": true
+            },
+            {
+              "valueCoding": {
+                "display": "Leve"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Moderada"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "Severa"
+              }
+            }
+          ]
+        }
+      ],
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ]
+          }
+        }
+      ],
       "linkId": "4023620615289",
-      "text": "Movimiento selectivo"
+      "text": "Movimiento",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "display": "Selectivo"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Bloque"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Fluido"
+          }
+        }
+      ]
     },
     {
-      "type": "string",
-      "linkId": "2310702464569",
-      "text": "Movimiento en bloque"
-    },
-    {
-      "type": "string",
-      "linkId": "5925667593471",
-      "text": "Movimiento fluido"
-    },
-    {
-      "type": "string",
-      "linkId": "6100119830663",
-      "text": "Requiere asistencia"
-    },
-    {
-      "type": "string",
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "drop-down",
+                    "display": "Drop down"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "6052268949833",
+          "text": "Usa Miembros Superiores",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Sí"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "No"
+              }
+            }
+          ]
+        }
+      ],
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ]
+          }
+        }
+      ],
       "linkId": "523106967137",
-      "text": "Supino-sedente"
+      "text": "Supino-sedente",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "display": "No"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Leve"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Moderada"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Severa"
+          }
+        }
+      ]
     },
     {
-      "type": "string",
-      "linkId": "1176495857499",
-      "text": "Asistencia leve"
-    },
-    {
-      "type": "string",
-      "linkId": "6052268949833",
-      "text": "Usa MMSS"
-    },
-    {
-      "type": "string",
-      "linkId": "3764060437308",
-      "text": "Sin asistencia"
-    },
-    {
-      "type": "string",
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ]
+          }
+        }
+      ],
       "linkId": "1534142551544",
-      "text": "Sedente Bípedo"
+      "text": "Sedente Bípedo",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "display": "No"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Leve"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Moderado"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Severa"
+          }
+        }
+      ],
+      "item": [
+        {
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "drop-down",
+                    "display": "Drop down"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "373687675315",
+          "text": "Usa Miembros Superiores",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "display": "Sí"
+              }
+            },
+            {
+              "valueCoding": {
+                "display": "No"
+              }
+            }
+          ]
+        }
+      ]
     },
     {
-      "type": "string",
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ]
+          }
+        }
+      ],
       "linkId": "3619064632111",
-      "text": "Simetría de cargas"
-    },
-    {
-      "type": "string",
-      "linkId": "6220960499459",
-      "text": "Carga a derecha"
-    },
-    {
-      "type": "string",
-      "linkId": "9683182743327",
-      "text": "Carga a izquierda"
+      "text": "Simetría de cargas",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "display": "Carga a Derecha"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Carga a Izquierda"
+          }
+        }
+      ]
     },
     {
       "type": "string",
@@ -97,11 +356,6 @@
       "type": "string",
       "linkId": "6589911969398",
       "text": "Posición funcional mas alta"
-    },
-    {
-      "type": "string",
-      "linkId": "40778501442",
-      "text": "Motor Assessment Scalefor stroke"
     },
     {
       "type": "string",

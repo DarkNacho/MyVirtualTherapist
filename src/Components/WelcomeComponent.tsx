@@ -75,7 +75,7 @@ const WelcomeComponent: React.FC<WelcomeComponentProps> = ({ userName }) => {
           position: "absolute",
           top: "23px", // Adjust top position to account for padding
           right: "23px", // Adjust right position to account for padding
-          backgroundColor: "#287cfc",
+          backgroundColor: "#2278fe",
           borderTopRightRadius: 8,
           borderBottomLeftRadius: 15,
           padding: "4px 8px",

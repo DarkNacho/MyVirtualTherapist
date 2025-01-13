@@ -4,14 +4,76 @@
   "status": "draft",
   "item": [
     {
-      "type": "string",
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ]
+          }
+        }
+      ],
       "linkId": "5928601671576",
-      "text": "Requiere asistencia"
+      "text": "Requiere asistencia",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "display": "No"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Leve"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Moderada"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Severa"
+          }
+        }
+      ]
     },
     {
-      "type": "string",
-      "linkId": "8116928530481",
-      "text": "Apoyo Isquión"
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "7009525844390",
+      "text": "Apoyo",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "display": "Isquion"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "Sacro"
+          }
+        }
+      ]
     },
     {
       "type": "string",
@@ -22,11 +84,6 @@
       "type": "string",
       "linkId": "5876548822059",
       "text": "Simetría de cargas"
-    },
-    {
-      "type": "string",
-      "linkId": "7009525844390",
-      "text": "Apoya sacro"
     },
     {
       "type": "string",
@@ -42,11 +99,6 @@
       "type": "string",
       "linkId": "1237967212583",
       "text": "Puntaje test de función sentado"
-    },
-    {
-      "type": "string",
-      "linkId": "9879946572158",
-      "text": "Asistencia leve"
     }
   ]
 }

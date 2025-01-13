@@ -155,7 +155,7 @@ export default function PatientSearchComponent({
             onClick={handleAddPatient}
             sx={{
               textTransform: "none",
-              borderRadius: 2,
+              borderRadius: 5,
               paddingLeft: 3,
               paddingRight: 0,
               fontWeight: "bold",
@@ -174,9 +174,9 @@ export default function PatientSearchComponent({
             {t("patientSearchComponent.addPatient")}
             <Box
               sx={{
-                backgroundColor: "primary.main",
+                backgroundColor: "#2278fe",
                 height: "70px",
-                borderRadius: 2,
+                borderRadius: 5,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -184,7 +184,7 @@ export default function PatientSearchComponent({
                 marginLeft: 2,
               }}
             >
-              <Add sx={{ color: "white" }} />
+              <Add sx={{ color: "white", fontSize: 40 }} />
             </Box>
           </Button>
         )}
