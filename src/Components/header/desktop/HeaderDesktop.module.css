@@ -33,10 +33,6 @@
   padding: 0 24px;
 }
 
-.navigationRow {
-
-}
-
 .actionButtons {
   display: flex;
   gap: 16px;
@@ -45,7 +41,7 @@
 
 .navLinks {
   display: flex;
-  gap: 2rem;
+  gap: 2.7rem;
   margin-left: auto;
 }
 

@@ -170,8 +170,7 @@ const PractitionerListPage = () => {
               item
               width="100%"
               sx={{
-                height: "calc(100vh - 315px)",
-                minHeight: "497px",
+                height: "calc(100vh - 465px)",
                 overflow: "auto",
               }}
             >

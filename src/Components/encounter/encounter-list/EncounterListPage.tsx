@@ -7,6 +7,7 @@ import { SearchParams } from "fhir-kit-client";
 import { useState } from "react";
 import EncounterSearchComponent from "../encounter-search-component/EncounterSearchComponent";
 import EncounterCreateComponent from "../encounter-create/EncounterCreateComponent";
+import EncounterCalendar from "./EncounterCalendar";
 
 const handleEditClick = (person: Encounter) => {
   console.log("Edit clicked for:", person);
@@ -31,22 +32,21 @@ export default function PatientListPage() {
       <Grid container spacing={2}>
         <Grid item xs>
           <Grid container gap={"38px"}>
-            <Grid width="100%">
+            {/*<Grid width="100%">
               <EncounterSearchComponent
                 handleAdd={handleOpenCreate}
                 setSearchParam={setSearchParam}
               />
-            </Grid>
+            </Grid>*/}
             <Grid
               item
               width="100%"
               sx={{
-                height: "calc(100vh - 315px)",
-                minHeight: "497px",
+                height: "calc(100vh - 305px)",
                 overflow: "auto",
               }}
             >
-              <EncounterList
+              <EncounterCalendar
                 onEditClick={handleEditClick}
                 onDeleteClick={handleDeleteClick}
                 searchParam={searchParam}

@@ -159,7 +159,7 @@ export default function EncounterSearchComponent({
             onClick={handleAdd}
             sx={{
               textTransform: "none",
-              borderRadius: 2,
+              borderRadius: 5,
               paddingLeft: 3,
               paddingRight: 0,
               fontWeight: "bold",
@@ -180,7 +180,7 @@ export default function EncounterSearchComponent({
               sx={{
                 backgroundColor: "primary.main",
                 height: "70px",
-                borderRadius: 2,
+                borderRadius: 5,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
