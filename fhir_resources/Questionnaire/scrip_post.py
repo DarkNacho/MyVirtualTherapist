@@ -16,6 +16,45 @@ def send_post_request(json_data):
     return response
 
 
+def get_all_questionnaires():
+    headers = {
+        # "Authorization": f"Bearer {JWT_TOKEN}",
+        "Content-Type": "application/json; charset=utf-8",
+    }
+    response = requests.get(API_URL, headers=headers)
+    if response.status_code == 200:
+        return response.json().get("entry", [])
+    else:
+        print(f"Failed to retrieve questionnaires: {response.status_code}")
+        return []
+
+
+def delete_questionnaire(questionnaire_id):
+    headers = {
+        # "Authorization": f"Bearer {JWT_TOKEN}",
+        "Content-Type": "application/json; charset=utf-8",
+    }
+    delete_url = f"{API_URL}/{questionnaire_id}"
+    response = requests.delete(delete_url, headers=headers)
+    return response
+
+
+def delete_all_questionnaires():
+    questionnaires = get_all_questionnaires()
+    for entry in questionnaires:
+        questionnaire_id = entry["resource"]["id"]
+        questionnaire_title = entry["resource"]["title"]
+        response = delete_questionnaire(questionnaire_id)
+        if response.status_code == 204:
+            print(
+                f"Deleted questionnaire {questionnaire_title}, id: {questionnaire_id}"
+            )
+        else:
+            print(
+                f"Failed to delete questionnaire {questionnaire_title}, id: {questionnaire_id}: {response.status_code}"
+            )
+
+
 def main():
     # Get the directory where the script is located
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -35,3 +74,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+    # Uncomment the following line to delete all questionnaires
+    # delete_all_questionnaires()

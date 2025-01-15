@@ -1,10 +1,12 @@
-import EncounterList from "../../encounter/encounter-list/EncounterList";
-import EncounterListPage from "../../encounter/encounter-list/EncounterListPage";
+import { Box } from "@mui/material";
+import EncounterCalendar from "../../encounter/encounter-list/EncounterCalendar";
 
 export default function PatientAppointmentsTab({ id }: { id: string }) {
   return (
-    <EncounterList
-      searchParam={{ practitioner: localStorage.getItem("id")!, patient: id }}
-    ></EncounterList>
+    <Box height={"calc(100vh - 305px)"} overflow="auto">
+      <EncounterCalendar
+        searchParam={{ practitioner: localStorage.getItem("id")!, patient: id }}
+      ></EncounterCalendar>
+    </Box>
   );
 }
