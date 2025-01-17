@@ -105,7 +105,7 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
             </Grid>
 
             {/* Patient's Name and Contact Info */}
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={3.5}>
               {isLoading ? (
                 <>
                   <Skeleton width="80%" />
@@ -133,14 +133,14 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
                   </Typography>
                   {identifier(patient)}
                   <Typography variant="body2">
-                    {t("patientCard.phone")}:{" "}
+                    <strong>{t("patientCard.phone")}:</strong>{" "}
                     {PersonUtil.getContactPointFirstOrDefaultAsString(
                       patient,
                       "phone"
                     )}
                   </Typography>
                   <Typography variant="body2">
-                    {t("patientCard.email")}:{" "}
+                    <strong>{t("patientCard.email")}:</strong>{" "}
                     <a
                       href={`mailto:${PersonUtil.getContactPointFirstOrDefaultAsString(
                         patient,
@@ -167,7 +167,7 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
             </Grid>
 
             {/* Patient's Age, Gender, and Birth Date */}
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={4}>
               {isLoading ? (
                 <>
                   <Skeleton width="80%" />
@@ -180,15 +180,15 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
                     <strong>&nbsp;</strong>
                   </Typography>
                   <Typography variant="body2">
-                    {t("patientCard.age")}:{" "}
+                    <strong>{t("patientCard.age")}:</strong>{" "}
                     {PersonUtil.calcularEdad(patient.birthDate!)}
                   </Typography>
                   <Typography variant="body2">
-                    {t("patientCard.birthDate")}:{" "}
+                    <strong>{t("patientCard.birthDate")}:</strong>{" "}
                     {new Date(patient.birthDate!).toLocaleDateString("es-ES")}
                   </Typography>
                   <Typography variant="body2">
-                    {t("patientCard.gender")}:{" "}
+                    <strong>{t("patientCard.gender")}:</strong>{" "}
                     {genderMap[patient.gender || "unknown"]}
                   </Typography>
                   {isAdminOrPractitionerUser && (

@@ -3,7 +3,7 @@ import { Practitioner, PractitionerRole } from "fhir/r4";
 import PractitionerSearchComponent from "../practitioner-search-component/PractitionerSearchComponent";
 
 import Grid from "@mui/material/Grid";
-import { Box, useMediaQuery, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
 import PractitionerCreateForm from "../practitioner-create/PractitionerCreateForm";
 import { PractitionerFormData } from "../../../Models/Forms/PractitionerForm";
 import { useState } from "react";
@@ -13,6 +13,7 @@ import FhirResourceService from "../../../Services/FhirService";
 import { SearchParams } from "fhir-kit-client";
 import { useTranslation } from "react-i18next";
 import { CacheUtils } from "../../../Utils/Cache";
+import { isAdminOrPractitioner } from "../../../Utils/RolUser";
 
 let practitionerFormData: PractitionerFormData;
 
@@ -30,8 +31,7 @@ const PractitionerListPage = () => {
   const [avatar, setAvatar] = useState<File | null>(null);
   const [isPosting, setIsPosting] = useState(false);
 
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isAdminOrPractitionerUser = isAdminOrPractitioner();
 
   const [searchParam, setSearchParam] = useState<SearchParams | undefined>();
 
@@ -175,8 +175,12 @@ const PractitionerListPage = () => {
               }}
             >
               <PractitionerList
-                onEditClick={handleEditClick}
-                onDeleteClick={handleDeleteClick}
+                onEditClick={
+                  isAdminOrPractitionerUser ? handleEditClick : undefined
+                }
+                onDeleteClick={
+                  isAdminOrPractitionerUser ? handleDeleteClick : undefined
+                }
                 searchParam={searchParam}
               />
             </Grid>

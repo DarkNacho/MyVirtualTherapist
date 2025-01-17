@@ -113,8 +113,15 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
                 alt="My Virtual Therapist"
                 className={styles.logo}
                 onClick={() => {
-                  handleSetLocation(t("header.patients"));
-                  window.location.href = "/";
+                  if (isAdminOrPractitionerUser) {
+                    handleSetLocation(t("header.patients"));
+                    window.location.href = "/";
+                  }
+                  if (isPatientUser) {
+                    window.location.href = `/Patient/${localStorage.getItem(
+                      "id"
+                    )}`;
+                  }
                 }}
               />
             </Grid>

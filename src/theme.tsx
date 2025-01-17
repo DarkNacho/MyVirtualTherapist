@@ -6,7 +6,18 @@ const theme = createTheme({
   },
   palette: {
     primary: {
-      main: "#2278fe", // Set the primary color to #2278fe
+      main: "#5988ff",
+    },
+  },
+  components: {
+    MuiDialog: {
+      styleOverrides: {
+        root: {
+          "& .MuiBackdrop-root": {
+            backgroundColor: "rgba(45, 125, 252, 0.5)", // Custom backdrop color
+          },
+        },
+      },
     },
   },
 });

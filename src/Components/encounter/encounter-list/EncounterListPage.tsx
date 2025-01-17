@@ -41,7 +41,7 @@ export default function EncounterListPage() {
                 searchParam={
                   userRol === "Practitioner"
                     ? { participant: `${localStorage.getItem("id")}` }
-                    : undefined
+                    : { patient: localStorage.getItem("id")! }
                 }
               />
             </Grid>

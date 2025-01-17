@@ -92,10 +92,14 @@ export default function EncounterCalendar({
 
   const fetchResources = async () => {
     setLoading(true);
-    await HandleResult.handleOperation(
+    /*await HandleResult.handleOperation(
       () => fhirService.getResources(searchParam),
       t("encounterList.receivedSuccessfully"),
       t("encounterList.obtaining"),
+      setResources
+    );*/
+    await HandleResult.handleOperationWithErrorOnly(
+      () => fhirService.getResources(searchParam),
       setResources
     );
     setLoading(false);
@@ -120,9 +124,13 @@ export default function EncounterCalendar({
     },
     e: React.SyntheticEvent<HTMLElement, Event>
   ) => {
-    if (currentView !== "agenda") {
-      setAnchorEl(e.currentTarget as HTMLElement);
-      setSelectedEvent(event.resource);
+    if (isAdminOrPractitioner()) {
+      if (currentView !== "agenda") {
+        setAnchorEl(e.currentTarget as HTMLElement);
+        setSelectedEvent(event.resource);
+      }
+    } else {
+      handleItemClick(event.resource);
     }
   };
 
@@ -254,7 +262,7 @@ export default function EncounterCalendar({
               }
               const isSameDay = moment(start).isSame(adjustedEnd, "day");
               if (isSameDay) {
-                alert(`Selected slot: ${start} - ${adjustedEnd}`);
+                //alert(`Selected slot: ${start} - ${adjustedEnd}`);
                 startDate = start;
                 endDate = adjustedEnd;
                 setOpenCreate(true);

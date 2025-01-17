@@ -72,10 +72,13 @@ export default function PatientOverviewTab({
   const fetchEvolution = async (id: string) => {
     const fhirService =
       FhirResourceService.getInstance<ClinicalImpression>("ClinicalImpression");
-    const response = await HandleResult.handleOperation(
+    /*const response = await HandleResult.handleOperation(
       () => fhirService.getResources({ patient: id }),
       "Evolution fetched successfully",
       "Fetching Evolution"
+    );*/
+    const response = await HandleResult.handleOperationWithErrorOnly(() =>
+      fhirService.getResources({ patient: id })
     );
     if (response.success) {
       setEvolution(response.data);
@@ -84,10 +87,13 @@ export default function PatientOverviewTab({
 
   const fetchConditions = async (id: string) => {
     const fhirService = FhirResourceService.getInstance<Condition>("Condition");
-    const response = await HandleResult.handleOperation(
+    /*const response = await HandleResult.handleOperation(
       () => fhirService.getResources({ patient: id }),
       "Conditions fetched successfully",
       "Fetching conditions"
+    );*/
+    const response = await HandleResult.handleOperationWithErrorOnly(() =>
+      fhirService.getResources({ patient: id })
     );
     if (response.success) {
       setConditions(response.data);
@@ -98,10 +104,14 @@ export default function PatientOverviewTab({
     const fhirService = FhirResourceService.getInstance<MedicationStatement>(
       "MedicationStatement"
     );
-    const response = await HandleResult.handleOperation(
+
+    /*const response = await HandleResult.handleOperation(
       () => fhirService.getResources({ patient: id }),
       "Medications fetched successfully",
       "Fetching medications"
+    );*/
+    const response = await HandleResult.handleOperationWithErrorOnly(() =>
+      fhirService.getResources({ patient: id })
     );
     if (response.success) {
       setMedications(response.data);

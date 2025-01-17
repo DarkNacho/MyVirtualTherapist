@@ -54,7 +54,15 @@ export default function ResourceList<T>({
       <AppBar position="static" sx={{ backgroundColor: "#3f51b5" }}>
         <Toolbar sx={{ justifyContent: "center" }}>
           <Icon sx={{ position: "absolute", left: 16 }} />
-          <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }}>
+          <Typography
+            variant="h6"
+            sx={{
+              flexGrow: 1,
+              textAlign: "center",
+              color: "white",
+              fontWeight: "bold",
+            }}
+          >
             {title}
           </Typography>
           {onAddClick && (

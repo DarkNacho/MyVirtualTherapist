@@ -14,6 +14,7 @@ import {
 import { Search, Add, FilterList } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { SearchParams } from "fhir-kit-client";
+import { isAdminOrPractitioner } from "../../../Utils/RolUser";
 
 export default function PractitionerSearchComponent({
   handleAddPractitioner,
@@ -33,6 +34,8 @@ export default function PractitionerSearchComponent({
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const isAdminOrPractitionerUser = isAdminOrPractitioner();
 
   const handleFilterClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -126,67 +129,69 @@ export default function PractitionerSearchComponent({
         />
       </Box>
 
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          height: "100%",
-        }}
-      >
-        {isMobile ? (
-          <IconButton
-            onClick={handleAddPractitioner}
-            sx={{
-              backgroundColor: "primary.main",
-              color: "white",
-              borderRadius: 2,
-              padding: 1,
-              marginLeft: 2,
-            }}
-          >
-            <Add />
-          </IconButton>
-        ) : (
-          <Button
-            variant="contained"
-            onClick={handleAddPractitioner}
-            sx={{
-              textTransform: "none",
-              borderRadius: 5,
-              paddingLeft: 3,
-              paddingRight: 0,
-              fontWeight: "bold",
-              height: "70px",
-              marginLeft: 2,
-              whiteSpace: "pre-line",
-              backgroundColor: "white",
-              color: "primary.main",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              border: "2px solid",
-              borderColor: "primary.main",
-            }}
-          >
-            {t("practitionerSearchComponent.addPractitioner")}
-            <Box
+      {isAdminOrPractitionerUser && (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            height: "100%",
+          }}
+        >
+          {isMobile ? (
+            <IconButton
+              onClick={handleAddPractitioner}
               sx={{
                 backgroundColor: "primary.main",
-                height: "70px",
-                borderRadius: 5,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                color: "white",
+                borderRadius: 2,
                 padding: 1,
                 marginLeft: 2,
               }}
             >
-              <Add sx={{ color: "white" }} />
-            </Box>
-          </Button>
-        )}
-      </Box>
+              <Add />
+            </IconButton>
+          ) : (
+            <Button
+              variant="contained"
+              onClick={handleAddPractitioner}
+              sx={{
+                textTransform: "none",
+                borderRadius: 5,
+                paddingLeft: 3,
+                paddingRight: 0,
+                fontWeight: "bold",
+                height: "70px",
+                marginLeft: 2,
+                whiteSpace: "pre-line",
+                backgroundColor: "white",
+                color: "primary.main",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                border: "2px solid",
+                borderColor: "primary.main",
+              }}
+            >
+              {t("practitionerSearchComponent.addPractitioner")}
+              <Box
+                sx={{
+                  backgroundColor: "primary.main",
+                  height: "70px",
+                  borderRadius: 5,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 1,
+                  marginLeft: 2,
+                }}
+              >
+                <Add sx={{ color: "white" }} />
+              </Box>
+            </Button>
+          )}
+        </Box>
+      )}
       <Popover
         id={id}
         open={open}
