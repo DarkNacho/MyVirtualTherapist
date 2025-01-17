@@ -3,7 +3,7 @@ import { Patient } from "fhir/r4";
 import PatientSearchComponent from "../patient-search-component/PatientSearchComponent";
 
 import Grid from "@mui/material/Grid";
-import { Box, useMediaQuery, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
 import PatientCreateForm from "../patient-create/PatientCreateForm";
 import { PatientFormData } from "../../../Models/Forms/PatientForm";
 import PersonUtil from "../../../Services/Utils/PersonUtils";
@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { CacheUtils } from "../../../Utils/Cache";
 import PatientRefer from "../patient-refer/PatientRefer";
+import { loadUserRoleFromLocalStorage } from "../../../Utils/RolUser";
 
 let patientFormData: PatientFormData;
 
@@ -24,6 +25,7 @@ const handleEditClick = (person: Patient) => {
 const handleDeleteClick = (person: Patient) => {
   alert(`Delete clicked for id: ${person.id}`);
 };
+
 export default function PatientListPage() {
   const { t } = useTranslation();
 
@@ -35,10 +37,19 @@ export default function PatientListPage() {
   const [isPosting, setIsPosting] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>();
 
-  const [searchParam, setSearchParam] = useState<SearchParams | undefined>();
+  const userRol = loadUserRoleFromLocalStorage();
 
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [defaultSearchParam] = useState<SearchParams | undefined>(
+    userRol === "Practitioner"
+      ? {
+          "general-practitioner": `${localStorage.getItem("id")}`,
+        }
+      : {}
+  );
+
+  const [searchParam, setSearchParam] = useState<SearchParams | undefined>(
+    defaultSearchParam
+  );
 
   const handleOpenCreate = () => {
     setOpenCreate(true);
@@ -175,6 +186,7 @@ export default function PatientListPage() {
               <PatientSearchComponent
                 handleAddPatient={handleOpenCreate}
                 setSearchParam={setSearchParam}
+                defaultSearchParam={defaultSearchParam}
               />
             </Grid>
             <Grid

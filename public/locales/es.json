@@ -20,7 +20,8 @@
     "practitioners": "PROFESIONALES",
     "encounters": "SESIONES",
     "contact": "CONTACTO",
-    "sessionExpired": "Su sesión ha expirado, por favor inicie sesión nuevamente."
+    "sessionExpired": "Su sesión ha expirado, por favor inicie sesión nuevamente.",
+    "me": "Yo"
   },
   "patientContactDetailForm": {
     "addPatient": "AGREGAR PACIENTE",

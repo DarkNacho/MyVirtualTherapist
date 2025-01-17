@@ -8,6 +8,8 @@ export function useResourceHook<T extends FhirResource>(resourceId?: string) {
     string | undefined
   >(undefined);
 
+  const userRol = localStorage.getItem("userRol");
+
   useEffect(() => {
     const id = resourceId || resource?.id;
     console.log("useResourceHook - resourceType:", resource?.resourceType);
@@ -19,5 +21,5 @@ export function useResourceHook<T extends FhirResource>(resourceId?: string) {
     }
   }, [resourceId, resource]);
 
-  return { resource, setResource, effectiveResourceId };
+  return { resource, setResource, effectiveResourceId, userRol };
 }

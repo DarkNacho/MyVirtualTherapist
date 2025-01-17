@@ -17,6 +17,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Add } from "@mui/icons-material";
 import EncounterCreateComponent from "../../encounter/encounter-create/EncounterCreateComponent";
+import { isAdminOrPractitioner } from "../../../Utils/RolUser";
 
 function identifier(resource: Patient) {
   const identifier = PersonUtil.getIdentifierByCode(resource, "RUT");
@@ -37,6 +38,7 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
   const [openReport, setOpenReport] = useState(false);
 
   const [openCreate, setOpenCreate] = useState(false);
+  const isAdminOrPractitionerUser = isAdminOrPractitioner();
 
   const handleOpenCreate = () => {
     setOpenCreate(true);
@@ -189,15 +191,17 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
                     {t("patientCard.gender")}:{" "}
                     {genderMap[patient.gender || "unknown"]}
                   </Typography>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={onRefer}
-                    sx={{ marginTop: 1 }}
-                    disabled={isLoading}
-                  >
-                    {t("patientCard.refer")}
-                  </Button>
+                  {isAdminOrPractitionerUser && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={onRefer}
+                      sx={{ marginTop: 1 }}
+                      disabled={isLoading}
+                    >
+                      {t("patientCard.refer")}
+                    </Button>
+                  )}
                 </>
               )}
             </Grid>
@@ -217,53 +221,55 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
               background: "linear-gradient(to right, white, blue)",
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                paddingLeft: 30,
-                height: "100%",
-                width: "70%",
-              }}
-            >
-              <Button
-                variant="contained"
-                onClick={handleOpenCreate}
+            {isAdminOrPractitionerUser && (
+              <Box
                 sx={{
-                  textTransform: "none",
-                  borderRadius: 2,
-                  paddingLeft: 3,
-                  paddingRight: 0,
-                  fontWeight: "bold",
-                  height: "70px",
-                  marginLeft: 2,
-                  whiteSpace: "pre-line",
-                  backgroundColor: "white",
-                  color: "primary.main",
                   display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  border: "2px solid",
-                  borderColor: "primary.main",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  paddingLeft: 30,
+                  height: "100%",
+                  width: "70%",
                 }}
               >
-                {t("patientCard.newEncounter")}
-                <Box
+                <Button
+                  variant="contained"
+                  onClick={handleOpenCreate}
                   sx={{
-                    height: "70px",
+                    textTransform: "none",
                     borderRadius: 2,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: 1,
+                    paddingLeft: 3,
+                    paddingRight: 0,
+                    fontWeight: "bold",
+                    height: "70px",
                     marginLeft: 2,
+                    whiteSpace: "pre-line",
+                    backgroundColor: "white",
+                    color: "primary.main",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    border: "2px solid",
+                    borderColor: "primary.main",
                   }}
                 >
-                  <Add sx={{ color: "primary.main" }} />
-                </Box>
-              </Button>
-            </Box>
+                  {t("patientCard.newEncounter")}
+                  <Box
+                    sx={{
+                      height: "70px",
+                      borderRadius: 2,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: 1,
+                      marginLeft: 2,
+                    }}
+                  >
+                    <Add sx={{ color: "primary.main" }} />
+                  </Box>
+                </Button>
+              </Box>
+            )}
           </Box>
         )}
       </Card>
@@ -274,13 +280,15 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
             handleClose={handleCloseReport}
             patientId={patient.id!}
           />
-          <EncounterCreateComponent
-            onOpen={function (isOpen: boolean): void {
-              setOpenCreate(isOpen);
-            }}
-            patientId={patient.id!}
-            isOpen={openCreate}
-          />
+          {isAdminOrPractitionerUser && (
+            <EncounterCreateComponent
+              onOpen={function (isOpen: boolean): void {
+                setOpenCreate(isOpen);
+              }}
+              patientId={patient.id!}
+              isOpen={openCreate}
+            />
+          )}
         </>
       )}
     </>

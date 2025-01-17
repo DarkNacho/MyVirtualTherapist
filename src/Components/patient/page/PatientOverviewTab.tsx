@@ -20,6 +20,7 @@ import MedicationCreateComponent from "../../medication/MedicationCreateComponen
 import { useResource } from "../../ResourceContext";
 import ClinicalImpressionCreateComponent from "../../clinical-impression/ClinicalImpressionCreateComponent";
 import { useTranslation } from "react-i18next";
+import { isAdminOrPractitioner } from "../../../Utils/RolUser";
 
 function getEvolutionDisplay(evolution: ClinicalImpression) {
   return {
@@ -65,6 +66,7 @@ export default function PatientOverviewTab({
   const [id, setId] = useState<string | undefined>(undefined);
   const { resource } = useResource<Patient>();
 
+  const isAdminOrPractitionerUser = isAdminOrPractitioner();
   const { t } = useTranslation();
 
   const fetchEvolution = async (id: string) => {
@@ -162,7 +164,9 @@ export default function PatientOverviewTab({
             resources={evolution}
             onClick={handleEvolutionClick}
             getDisplay={getEvolutionDisplay}
-            onAddClick={handleAddEvolutionClick}
+            onAddClick={
+              isAdminOrPractitionerUser ? handleAddEvolutionClick : undefined
+            }
           />
         </Grid>
         <Grid item xs={12} md={4}>
@@ -172,7 +176,9 @@ export default function PatientOverviewTab({
             resources={conditions}
             onClick={handleConditionClick}
             getDisplay={getConditionDisplay}
-            onAddClick={handleAddConditionClick}
+            onAddClick={
+              isAdminOrPractitionerUser ? handleAddConditionClick : undefined
+            }
           />
         </Grid>
         <Grid item xs={12} md={4}>
@@ -182,11 +188,13 @@ export default function PatientOverviewTab({
             resources={medications}
             onClick={handleMedicationClick}
             getDisplay={getMedicationDisplay}
-            onAddClick={handleAddMedicationClick}
+            onAddClick={
+              isAdminOrPractitionerUser ? handleAddMedicationClick : undefined
+            }
           />
         </Grid>
       </Grid>
-      {id && (
+      {id && isAdminOrPractitionerUser && (
         <>
           <ConditionCreateComponent
             patientId={id}

@@ -23,12 +23,16 @@ export default function EncounterFormComponent({
   practitionerId,
   patientId,
   readOnly = false,
+  start,
+  end,
 }: {
   formId: string;
   submitForm: SubmitHandler<EncounterFormData>;
   practitionerId: string;
   patientId?: string;
   readOnly?: boolean;
+  start?: Date;
+  end?: Date;
 }) {
   const {
     handleSubmit,
@@ -38,6 +42,10 @@ export default function EncounterFormComponent({
   } = useForm<EncounterFormData>();
 
   const roleUser = loadUserRoleFromLocalStorage();
+
+  const defaultStart = start ? dayjs(start) : dayjs();
+  const defaultEnd = end ? dayjs(end) : dayjs().add(30, "minutes");
+  const defaultDay = start ? dayjs(start) : dayjs();
 
   return (
     <>
@@ -115,7 +123,7 @@ export default function EncounterFormComponent({
             <Controller
               control={control}
               name="day"
-              defaultValue={dayjs()}
+              defaultValue={defaultDay}
               render={({ field }) => (
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
@@ -135,7 +143,7 @@ export default function EncounterFormComponent({
             <Controller
               control={control}
               name="start"
-              defaultValue={dayjs()}
+              defaultValue={defaultStart}
               render={({ field: { onChange, value, ref } }) => (
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <TimePicker
@@ -152,7 +160,7 @@ export default function EncounterFormComponent({
 
             <Controller
               control={control}
-              defaultValue={dayjs().add(30, "minutes")}
+              defaultValue={defaultEnd}
               name="end"
               render={({ field: { onChange, value, ref } }) => (
                 <LocalizationProvider dateAdapter={AdapterDayjs}>

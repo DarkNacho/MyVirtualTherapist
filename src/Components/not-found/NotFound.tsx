@@ -18,7 +18,7 @@ export default function NotFound() {
         <p className={styles.paragraph}>{t("notFound.nothingHere")}</p>
         <p className={styles.paragraph2}>{t("notFound.linkNotCorrect")}</p>
       </div>
-      <Link to="/" className={styles.link}>
+      <Link to={`/#${t("header.patients")}`} className={styles.link}>
         {t("notFound.backToHome")}
       </Link>
     </div>

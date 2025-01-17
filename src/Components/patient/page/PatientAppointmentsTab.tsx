@@ -6,6 +6,7 @@ export default function PatientAppointmentsTab({ id }: { id: string }) {
     <Box height={"calc(100vh - 305px)"} overflow="auto">
       <EncounterCalendar
         searchParam={{ practitioner: localStorage.getItem("id")!, patient: id }}
+        patientId={id}
       ></EncounterCalendar>
     </Box>
   );

@@ -20,7 +20,8 @@
     "practitioners": "PRACTITIONERS",
     "encounters": "ENCOUNTERS",
     "contact": "CONTACT",
-    "sessionExpired": "Your session has expired, please log in again."
+    "sessionExpired": "Your session has expired, please log in again.",
+    "me": "Me"
   },
 
   "patientContactDetailForm": {

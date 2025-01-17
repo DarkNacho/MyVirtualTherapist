@@ -1,0 +1,427 @@
+{
+  "resourceType": "Questionnaire",
+  "title": "Escala de Tinneti - Marcha",
+  "status": "draft",
+  "item": [
+    {
+      "type": "display",
+      "linkId": "150970883004",
+      "text": "Instrucciones: El paciente permanece de pie con el examinador, camina por el pasillo o por la habitación (unos 8 metros) a \"paso normal\" luego regresa a \"paso ligero pero seguro\"."
+    },
+    {
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "182862088142",
+      "text": "1.Iniciación de la marcha (inmediatamente después de decir que ande).",
+      "answerOption": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 0
+            }
+          ],
+          "valueCoding": {
+            "display": "Algunas vacilaciones o múltiples para empezar"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 1
+            }
+          ],
+          "valueCoding": {
+            "display": "No vacila"
+          }
+        }
+      ]
+    },
+    {
+      "type": "display",
+      "linkId": "705147642863",
+      "text": "2. Longitud y altura de peso"
+    },
+    {
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "360328565379",
+      "text": "A) Movimiento del pie derecho",
+      "answerOption": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 0
+            }
+          ],
+          "valueCoding": {
+            "display": "No sobrepasa el pie izquierdo con el paso"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 1
+            }
+          ],
+          "valueCoding": {
+            "display": "Sobrepasa el pie izquierdo"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 0
+            }
+          ],
+          "valueCoding": {
+            "display": "El pie derecho no se separa completamente del suelo con el peso"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 1
+            }
+          ],
+          "valueCoding": {
+            "display": "El pie derecho se separa completamente del suelo"
+          }
+        }
+      ]
+    },
+    {
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "683025096305",
+      "text": "B) Movimiento del pie izquierdo",
+      "answerOption": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 0
+            }
+          ],
+          "valueCoding": {
+            "display": "No sobrepasa el pie derecho con el paso"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 1
+            }
+          ],
+          "valueCoding": {
+            "display": "Sobrepasa el pie derecho con el paso"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 0
+            }
+          ],
+          "valueCoding": {
+            "display": "El pie izquierdo no se separa completamente del suelo con el peso"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 1
+            }
+          ],
+          "valueCoding": {
+            "display": "El pie izquierdo se separa completamente del suelo"
+          }
+        }
+      ]
+    },
+    {
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "767645400140",
+      "text": "3.Simetría del paso",
+      "answerOption": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 0
+            }
+          ],
+          "valueCoding": {
+            "display": "La longitud de los pasos con los pies derecho e izquierdo no es igual"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 1
+            }
+          ],
+          "valueCoding": {
+            "display": "La longitud parece igual"
+          }
+        }
+      ]
+    },
+    {
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "805847582225",
+      "text": "4.Fluidez del paso",
+      "answerOption": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 0
+            }
+          ],
+          "valueCoding": {
+            "display": "Paradas entre los pasos"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 1
+            }
+          ],
+          "valueCoding": {
+            "display": "Los pasos parecen continuos"
+          }
+        }
+      ]
+    },
+    {
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "561628566218",
+      "text": "5.Trayectoria (observar el trazado que realiza uno de los pies durante unos 3 metros)",
+      "answerOption": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 0
+            }
+          ],
+          "valueCoding": {
+            "display": "Desviación grave de la trayectoria"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 1
+            }
+          ],
+          "valueCoding": {
+            "display": "Leve/moderada desviación o uso de ayudas para mantener la trayectoria"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 2
+            }
+          ],
+          "valueCoding": {
+            "display": "Sin desviación o ayudas"
+          }
+        }
+      ]
+    },
+    {
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "312246764436",
+      "text": "6.Tronco",
+      "answerOption": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 0
+            }
+          ],
+          "valueCoding": {
+            "display": "Balanceo marcado o uso de ayudas"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 1
+            }
+          ],
+          "valueCoding": {
+            "display": "No se balancea pero flexiona las rodillas o la espalda o separa los brazos al caminar"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": -1
+            }
+          ],
+          "valueCoding": {
+            "display": "No se balancea, no se flexiona, ni otras ayudas"
+          }
+        }
+      ]
+    },
+    {
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "201555955459",
+      "text": "7.Postura al caminar",
+      "answerOption": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 0
+            }
+          ],
+          "valueCoding": {
+            "display": "Talones separados"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+              "valueDecimal": 1
+            }
+          ],
+          "valueCoding": {
+            "display": "Talones casi juntos al caminar"
+          }
+        }
+      ]
+    }
+  ]
+}
