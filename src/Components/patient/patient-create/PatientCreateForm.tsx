@@ -17,7 +17,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useTranslation } from "react-i18next";
 import PatientContactDetailForm from "./PatientContactDetailForm";
 import PatientPersonalDetailsForm from "./PatientPersonalDetailsForm";
+import PatientEmergencyContactsForm from "./PatientEmergencyContactsForm";
 import { PatientFormData } from "../../../Models/Forms/PatientForm";
+import { useState } from "react";
 
 const steps = ["personalDetails", "contactDetails"];
 
@@ -129,6 +131,8 @@ export default function PatientCreateForm({
     </Box>
   );
 
+  const [optionalStep, setOptionalStep] = useState(false);
+
   return (
     <Dialog
       open={open}
@@ -163,10 +167,17 @@ export default function PatientCreateForm({
               />
             )}
 
-            {activeStep === 1 && (
+            {activeStep === 1 && optionalStep === false && (
               <PatientContactDetailForm
                 patient={patient}
                 formId={`${formId}-1`}
+                submitForm={submitForm}
+              />
+            )}
+            {activeStep === 1 && optionalStep === true && (
+              <PatientEmergencyContactsForm
+                patient={patient}
+                formId={`${formId}-emergency`}
                 submitForm={submitForm}
               />
             )}
@@ -232,6 +243,25 @@ export default function PatientCreateForm({
                     }}
                   >
                     {t("patientCreateForm.viewProfile")}
+                  </Button>
+                )}
+                {activeStep === steps.length - 1 && optionalStep === false && (
+                  <Button
+                    sx={{
+                      bottom: 0,
+                      right: 200,
+                      width: 200,
+                      borderBottomRightRadius: 18,
+                      borderTopLeftRadius: 18,
+                      position: "absolute",
+                    }}
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => {
+                      setOptionalStep(true);
+                    }}
+                  >
+                    {t("patientCreateForm.newButton")}
                   </Button>
                 )}
               </Box>

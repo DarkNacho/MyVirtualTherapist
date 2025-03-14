@@ -1,6 +1,6 @@
 import { DevTool } from "@hookform/devtools";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { MenuItem, Stack, TextField } from "@mui/material";
+import { Box, MenuItem, Stack, TextField } from "@mui/material";
 import { Condition, Encounter, Patient, Practitioner, Coding } from "fhir/r4";
 import AutoCompleteComponent from "../auto-complete-components/AutoCompleteComponent";
 import PersonUtil from "../../Services/Utils/PersonUtils";
@@ -10,6 +10,8 @@ import { loadUserRoleFromLocalStorage } from "../../Utils/RolUser";
 
 import { clinicalStatus } from "../../Models/Terminology";
 import { ConditionFormData } from "../../Models/Forms/ConditionForm";
+import UploadFileComponent from "../FileManager/UploadFileComponent";
+import { useState } from "react";
 //import AutoCompleteFromSnomedComponent from "../AutoCompleteComponents/AutoCompleteFromSnomed";
 
 function getEncounterDisplay(resource: Encounter): string {
@@ -44,6 +46,13 @@ export default function ConditionFormComponent({
     formState: { errors },
   } = useForm<ConditionFormData>();
 
+  const [selectedPatient, setSelectedPatient] = useState<string | undefined>(
+    patientId
+  );
+  const [selectedPractitioner, setSelectedPractitioner] = useState<
+    string | undefined
+  >(practitionerId);
+
   const roleUser = loadUserRoleFromLocalStorage();
   const condition = {} as Condition;
   console.log("EncounterId", encounterId);
@@ -70,8 +79,10 @@ export default function ConditionFormComponent({
                       id: selectedObject.id,
                       display: PersonUtil.getPersonNameAsString(selectedObject),
                     });
+                    setSelectedPractitioner(selectedObject.id);
                   } else {
                     field.onChange(null);
+                    setSelectedPractitioner(undefined);
                   }
                 }}
                 readOnly={readOnly || !(roleUser === "Admin")}
@@ -113,8 +124,10 @@ export default function ConditionFormComponent({
                       id: selectedObject.id,
                       display: PersonUtil.getPersonNameAsString(selectedObject),
                     });
+                    setSelectedPatient(selectedObject.id);
                   } else {
                     field.onChange(null);
+                    setSelectedPatient(undefined);
                   }
                 }}
                 readOnly={readOnly || Boolean(patientId)}
@@ -245,6 +258,13 @@ export default function ConditionFormComponent({
               </MenuItem>
             ))}
           </TextField>
+
+          <Box>
+            <UploadFileComponent
+              subject={{ reference: `Patient/${selectedPatient}` }}
+              author={{ reference: `Practitioner/${selectedPractitioner}` }}
+            />
+          </Box>
         </Stack>
       </form>
       <DevTool control={control} />
