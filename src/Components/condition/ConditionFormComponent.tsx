@@ -1,17 +1,18 @@
 import { DevTool } from "@hookform/devtools";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { Box, MenuItem, Stack, TextField } from "@mui/material";
+import { Autocomplete, Box, MenuItem, Stack, TextField } from "@mui/material";
 import { Condition, Encounter, Patient, Practitioner, Coding } from "fhir/r4";
 import AutoCompleteComponent from "../auto-complete-components/AutoCompleteComponent";
 import PersonUtil from "../../Services/Utils/PersonUtils";
 import EncounterUtils from "../../Services/Utils/EncounterUtils";
 import { loadUserRoleFromLocalStorage } from "../../Utils/RolUser";
 //import AutoCompleteFromLHCComponentComponent from "../AutoCompleteComponents/AutoCompleteFromLHCComponent";
+import { CIE10 } from "../../Models/CIE10";
 
 import { clinicalStatus } from "../../Models/Terminology";
 import { ConditionFormData } from "../../Models/Forms/ConditionForm";
 import UploadFileComponent from "../FileManager/UploadFileComponent";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 //import AutoCompleteFromSnomedComponent from "../AutoCompleteComponents/AutoCompleteFromSnomed";
 
 function getEncounterDisplay(resource: Encounter): string {
@@ -28,6 +29,7 @@ export default function ConditionFormComponent({
   practitionerId,
   patientId,
   encounterId,
+  condition,
   readOnly = false,
 }: {
   formId: string;
@@ -35,6 +37,7 @@ export default function ConditionFormComponent({
   practitionerId: string;
   patientId?: string;
   encounterId?: string;
+  condition?: Condition;
   readOnly?: boolean;
 }) {
   const {
@@ -54,7 +57,29 @@ export default function ConditionFormComponent({
   >(practitionerId);
 
   const roleUser = loadUserRoleFromLocalStorage();
-  const condition = {} as Condition;
+
+  const [filteredOptions, setFilteredOptions] = useState<Coding[]>([]);
+
+  const handleSearch = (inputValue: string) => {
+    if (!inputValue) {
+      // If the input is empty, show a small subset of options
+      setFilteredOptions(CIE10.slice(0, 10)); // Display the first 10 options
+    } else {
+      // Filter the CIE10 list based on the input
+      const filtered = CIE10.filter(
+        (item) =>
+          item.display.toLowerCase().includes(inputValue.toLowerCase()) ||
+          item.code.toLowerCase().includes(inputValue.toLowerCase())
+      );
+      setFilteredOptions(filtered.slice(0, 50)); // Limit to 50 results for performance
+    }
+  };
+
+  // Initialize with a small subset of options
+  useEffect(() => {
+    setFilteredOptions(CIE10.slice(0, 10)); // Display the first 10 options initially
+  }, []);
+
   console.log("EncounterId", encounterId);
   return (
     <>
@@ -162,38 +187,7 @@ export default function ConditionFormComponent({
             )}
           />
           */}
-          <Controller
-            name="code.display"
-            control={control}
-            defaultValue={condition ? condition?.code?.coding?.[0].display : ""}
-            rules={{ required: "Debe ingresar una observación" }}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                fullWidth
-                label="Condición Reportada"
-                variant="outlined"
-                error={Boolean(errors.code?.display)}
-                helperText={errors.code?.display?.message}
-                inputProps={{
-                  readOnly: !!condition?.code?.coding || false || readOnly,
-                }}
-                onBlur={(e) => {
-                  //field.onChange(e);
-                  let newCoding: Coding = {};
-                  if (e.target.value) {
-                    newCoding = {
-                      code: "SM00",
-                      system: "cttn.cl",
-                      display: e.target.value,
-                    };
-                  }
-                  setValue("code", newCoding);
-                  console.log("Code", newCoding);
-                }}
-              />
-            )}
-          />
+
           <Controller
             name="encounter"
             control={control}
@@ -228,6 +222,59 @@ export default function ConditionFormComponent({
               />
             )}
           />
+
+          <Controller
+            name="conditionCodes"
+            control={control}
+            defaultValue={condition?.code?.coding || []}
+            render={({ field }) => (
+              <Autocomplete
+                id="Autocomplete-CIE10"
+                multiple
+                options={filteredOptions}
+                defaultValue={condition?.code?.coding || []}
+                getOptionLabel={(option) => {
+                  if (typeof option === "string") {
+                    return option;
+                  }
+                  return option.display || option.code || "UNKNOWN";
+                }}
+                isOptionEqualToValue={(option, value) =>
+                  option.code === value.code
+                }
+                freeSolo
+                readOnly={readOnly}
+                onInputChange={(_, value) => handleSearch(value)} // Trigger search on input change
+                onChange={(_, newValues) => {
+                  const formattedValues = newValues.map((newValue) => {
+                    if (typeof newValue === "string") {
+                      return {
+                        code: "OTHER",
+                        system: "CTTN",
+                        display: newValue,
+                      };
+                    }
+                    return newValue;
+                  });
+                  field.onChange(formattedValues); // Update the field with an array of values
+                }}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.code}>
+                    {option.display}
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    label="Condiciones Reportadas (CIE10)"
+                    variant="outlined"
+                  />
+                )}
+              />
+            )}
+          />
+
           <TextField
             multiline
             fullWidth
