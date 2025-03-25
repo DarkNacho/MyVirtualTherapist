@@ -212,12 +212,11 @@
   "terminology": {
     "maritalOptions": {
       "S": "Never Married",
-      "A": "Annulled",
-      "D": "Divorced",
-      "I": "Interlocutory",
-      "L": "Legally Separated",
       "M": "Married",
       "C": "Common Law",
+      "L": "Legally Separated",
+      "D": "Divorced",
+      "W": "Widowed",
       "UNK": "Unknown"
     },
     "genderOptions": {

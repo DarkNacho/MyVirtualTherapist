@@ -239,9 +239,14 @@ export default function ConditionFormComponent({
                   }
                   return option.display || option.code || "UNKNOWN";
                 }}
-                isOptionEqualToValue={(option, value) =>
-                  option.code === value.code
-                }
+                isOptionEqualToValue={(option, value) => {
+                  // Handle case where option or value is a string (new custom item)
+                  if (typeof option === "string" || typeof value === "string") {
+                    return option === value;
+                  }
+                  // Handle case where option and value are objects
+                  return option.code === value.code;
+                }}
                 freeSolo
                 readOnly={readOnly}
                 onInputChange={(_, value) => handleSearch(value)} // Trigger search on input change
@@ -249,7 +254,7 @@ export default function ConditionFormComponent({
                   const formattedValues = newValues.map((newValue) => {
                     if (typeof newValue === "string") {
                       return {
-                        code: "OTHER",
+                        code: `OTHER-${Date.now()}`, // Generate a unique code for new values
                         system: "CTTN",
                         display: newValue,
                       };

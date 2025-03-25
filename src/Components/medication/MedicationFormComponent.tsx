@@ -4,7 +4,13 @@ import { Autocomplete, Stack, TextField } from "@mui/material";
 import dayjs from "dayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { MedicationStatement, Patient, Practitioner, Encounter } from "fhir/r4";
+import {
+  MedicationStatement,
+  Patient,
+  Practitioner,
+  Encounter,
+  Coding,
+} from "fhir/r4";
 
 import AutoCompleteComponent from "../auto-complete-components/AutoCompleteComponent";
 import PersonUtil from "../../Services/Utils/PersonUtils";
@@ -12,6 +18,7 @@ import EncounterUtils from "../../Services/Utils/EncounterUtils";
 import { loadUserRoleFromLocalStorage } from "../../Utils/RolUser";
 import { MedicationFormData } from "../../Models/Forms/MedicationForm";
 import { MedicamentList } from "../../Models/MedicamentList";
+import { useEffect, useState } from "react";
 
 function getEncounterDisplay(resource: Encounter): string {
   return `Profesional: ${EncounterUtils.getPrimaryPractitioner(
@@ -46,6 +53,28 @@ export default function MedicationFormComponent({
 
   const roleUser = loadUserRoleFromLocalStorage();
   const encounterId = medication?.context?.reference?.split("/")[1];
+
+  const [filteredOptions, setFilteredOptions] = useState<Coding[]>([]);
+
+  const handleSearch = (inputValue: string) => {
+    if (!inputValue) {
+      // If the input is empty, show a small subset of options
+      setFilteredOptions(MedicamentList.slice(0, 10)); // Display the first 10 options
+    } else {
+      // Filter the CIE10 list based on the input
+      const filtered = MedicamentList.filter(
+        (item) =>
+          item.display.toLowerCase().includes(inputValue.toLowerCase()) ||
+          item.code.toLowerCase().includes(inputValue.toLowerCase())
+      );
+      setFilteredOptions(filtered.slice(0, 50)); // Limit to 50 results for performance
+    }
+  };
+
+  // Initialize with a small subset of options
+  useEffect(() => {
+    setFilteredOptions(MedicamentList.slice(0, 10)); // Display the first 10 options initially
+  }, []);
 
   return (
     <>
@@ -129,7 +158,7 @@ export default function MedicationFormComponent({
             render={({ field }) => (
               <Autocomplete
                 id="Autocomplete-MedicationList"
-                options={MedicamentList}
+                options={filteredOptions}
                 defaultValue={
                   medication
                     ? medication.medicationCodeableConcept?.coding?.[0]
@@ -144,12 +173,13 @@ export default function MedicationFormComponent({
                 isOptionEqualToValue={(option, value) =>
                   option.code === value.code
                 }
+                onInputChange={(_, value) => handleSearch(value)} // Trigger search on input change
                 freeSolo
                 readOnly={readOnly}
                 onChange={(_, newValue) => {
                   if (typeof newValue === "string") {
                     field.onChange({
-                      code: "OTHER",
+                      code: `OTHER-${Date.now()}`,
                       system: "CTTN",
                       display: newValue,
                     });

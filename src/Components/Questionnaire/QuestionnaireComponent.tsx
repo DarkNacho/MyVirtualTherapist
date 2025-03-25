@@ -6,7 +6,7 @@ import {
   QuestionnaireItem,
   QuestionnaireResponse,
 } from "fhir/r4";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Button from "@mui/material/Button";
 
@@ -16,6 +16,7 @@ import ConditionService from "../../Services/ConditionService";
 import { isAdminOrPractitioner } from "../../Utils/RolUser";
 import ObservationUtils from "../../Services/Utils/ObservationUtils";
 import HandleResult from "../../Utils/HandleResult";
+import QuestionnaireReportModal from "./QuestionnaireReportModal";
 //import "./QuestionnaireComponent.css";
 
 const fhirService =
@@ -39,6 +40,8 @@ export default function QuestionnaireComponent({
   encounterId?: string;
 }) {
   const formContainerRef = useRef(null);
+
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const formContainer = formContainerRef.current;
@@ -360,6 +363,13 @@ export default function QuestionnaireComponent({
 
   return (
     <div>
+      {questionnaireResponse.id && (
+        <QuestionnaireReportModal
+          questionnaireResponseId={questionnaireResponse.id}
+          open={open}
+          handleClose={() => setOpen(false)}
+        ></QuestionnaireReportModal>
+      )}
       <div ref={formContainerRef}></div>
       {isAdminOrPractitioner() && (
         <div
@@ -369,6 +379,15 @@ export default function QuestionnaireComponent({
             justifyContent: "space-between",
           }}
         >
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setOpen(true)}
+            disabled={!questionnaireResponse.id}
+            sx={{ marginLeft: "right" }}
+          >
+            Generar Reporte
+          </Button>
           <Button
             variant="contained"
             color="primary"
