@@ -145,17 +145,54 @@ export default function PatientQuestionnaireComponent({
                     ([questionnaireId, questionnaire]) => (
                       <Accordion
                         key={questionnaireId}
-                        sx={{ backgroundColor: "transparent" }}
+                        sx={{
+                          backgroundColor: "#E3F2FD", // Light blue background
+                          borderRadius: "8px",
+                          boxShadow: "none",
+                          marginBottom: "10px",
+                          "&:before": {
+                            display: "none",
+                          },
+                        }}
                       >
                         <AccordionSummary
-                          expandIcon={<ExpandMoreIcon />}
+                          expandIcon={
+                            <ExpandMoreIcon sx={{ color: "#FFFFFF" }} />
+                          }
                           aria-controls={`panel-${questionnaireId}-content`}
                           id={`panel-${questionnaireId}-header`}
+                          sx={{
+                            background: {
+                              xs: "linear-gradient(to right, #FFFFFF 75%, #1976D2 25%)", // For smaller screens
+                              sm: "linear-gradient(to right, #FFFFFF 90%, #1976D2 10%)", // For medium and larger screens
+                            },
+                            color: "#000000",
+                            borderRadius: "8px",
+                            padding: "10px 16px",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            "& .MuiAccordionSummary-content": {
+                              margin: 0,
+                            },
+                          }}
                         >
-                          <h1 style={{ textDecoration: "underline" }}>
+                          <span
+                            style={{ fontWeight: "bold", fontSize: "1rem" }}
+                          >
                             {questionnaire.title ||
                               t("patientQuestionnaireComponent.untitled")}
-                          </h1>
+                          </span>
+                          <span
+                            style={{
+                              marginLeft: "auto",
+                              fontSize: "0.9rem",
+                              color: "#FFFFFF",
+                              textDecoration: "underline",
+                            }}
+                          >
+                            Ver más
+                          </span>
                         </AccordionSummary>
                         <AccordionDetails>
                           {questionnaireResponses
@@ -176,7 +213,7 @@ export default function PatientQuestionnaireComponent({
                                   aria-controls={`panel-${questionnaireId}-${index}-content`}
                                   id={`panel-${questionnaireId}-${index}-header`}
                                 >
-                                  <h2>
+                                  <h2 style={{ color: "#1976D2" }}>
                                     {quesRes.authored
                                       ? new Date(
                                           quesRes.authored
@@ -193,7 +230,7 @@ export default function PatientQuestionnaireComponent({
                                       questionnaireResponse={quesRes}
                                       subjectId={patientID}
                                       encounterId={encounterID}
-                                    ></QuestionnaireComponent>
+                                    />
                                   </div>
                                 </AccordionDetails>
                               </Accordion>
