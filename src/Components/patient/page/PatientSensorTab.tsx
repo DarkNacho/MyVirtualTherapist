@@ -5,6 +5,7 @@ import WebSocketChart from "../../charts/WebSocketChart";
 import { useResourceHook } from "../../ResourceHook";
 import { Patient } from "fhir/r4";
 import SensorDataViewer from "../SensorDataViewer";
+import MultiSensorWebSocketChart from "../../charts/MultiSensorWebSocketChart";
 
 export default function PatientSensorTab({
   patientId,
@@ -34,7 +35,8 @@ export default function PatientSensorTab({
         }}
       >
         {!token && effectiveResourceId && (
-          <WebSocketChart patientId={effectiveResourceId} />
+          //<WebSocketChart patientId={effectiveResourceId} />
+          <MultiSensorWebSocketChart patientId={effectiveResourceId} />
         )}
         {token && <WebSocketChart token={token} />}
       </div>

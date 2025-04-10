@@ -58,6 +58,7 @@ export default function PatientListPage() {
   const handleClose = () => {
     setOpenCreate(false);
     setOpenRefer(false);
+    setActiveStep(0);
   };
 
   const handleOpenRefer = (open: boolean) => {
@@ -73,6 +74,10 @@ export default function PatientListPage() {
     if (event.target.files) {
       setAvatar(event.target.files[0]);
     }
+  };
+
+  const handleSetActiveStep = (step: number) => {
+    setActiveStep(step);
   };
 
   const submitForm = async (data: PatientFormData) => {
@@ -217,6 +222,7 @@ export default function PatientListPage() {
         avatar={avatar}
         handleAvatarChange={handleAvatarChange}
         isPosting={isPosting}
+        setActiveStep={handleSetActiveStep}
       />
       {selectedPatient && (
         <PatientRefer

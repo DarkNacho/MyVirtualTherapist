@@ -3,7 +3,6 @@ import {
   Grid,
   Stepper,
   Step,
-  StepLabel,
   Button,
   Box,
   Avatar,
@@ -12,6 +11,10 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
+  StepButton,
+  StepConnector,
+  stepConnectorClasses,
+  styled,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useTranslation } from "react-i18next";
@@ -23,6 +26,31 @@ import { useState } from "react";
 
 const steps = ["personalDetails", "contactDetails"];
 
+// Conector personalizado para centrar la línea entre pasos
+const CustomConnector = styled(StepConnector)(({ theme }) => ({
+  [`&.${stepConnectorClasses.alternativeLabel}`]: {
+    top: 15, // Ajusta esta altura según necesites para centrar la línea
+    left: "calc(-50% + 10px)",
+    right: "calc(50% + 40px)",
+  },
+  [`&.${stepConnectorClasses.active}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      borderColor: theme.palette.primary.main,
+    },
+  },
+  [`&.${stepConnectorClasses.completed}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      borderColor: theme.palette.primary.main,
+    },
+  },
+  [`& .${stepConnectorClasses.line}`]: {
+    borderColor:
+      theme.palette.mode === "dark" ? theme.palette.grey[800] : "#eaeaf0",
+    borderTopWidth: 3,
+    borderRadius: 1,
+  },
+}));
+
 export default function PatientCreateForm({
   formId,
   patient,
@@ -33,6 +61,7 @@ export default function PatientCreateForm({
   avatar,
   handleAvatarChange,
   isPosting = false,
+  setActiveStep,
 }: {
   formId: string;
   submitForm: SubmitHandler<PatientFormData>;
@@ -40,12 +69,25 @@ export default function PatientCreateForm({
   handleClose: () => void;
   open: boolean;
   activeStep: number;
-
   avatar?: File | null;
   handleAvatarChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isPosting: boolean;
+  setActiveStep: (step: number) => void;
 }) {
   const { t } = useTranslation();
+  const [optionalStep, setOptionalStep] = useState(false);
+
+  // Función para manejar el clic en un paso
+  const handleStepClick = (step: number) => {
+    // Solo permitir ir a pasos anteriores o iguales al actual
+    if (step <= activeStep) {
+      setActiveStep(step);
+      // Si volvemos al paso 1 desde el paso de emergencia, reseteamos optionalStep
+      if (step === 0 && optionalStep) {
+        setOptionalStep(false);
+      }
+    }
+  };
 
   const successView = () => (
     <>
@@ -80,7 +122,7 @@ export default function PatientCreateForm({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        height: "90%", // Ensure it takes the full height of the parent container
+        height: "90%",
       }}
     >
       <Box
@@ -130,8 +172,6 @@ export default function PatientCreateForm({
       </Box>
     </Box>
   );
-
-  const [optionalStep, setOptionalStep] = useState(false);
 
   return (
     <Dialog
@@ -190,16 +230,26 @@ export default function PatientCreateForm({
                 mt: 2,
               }}
             >
-              <Stepper sx={{}} activeStep={activeStep} alternativeLabel>
+              {/* Stepper con StepButton para permitir hacer clic */}
+              <Stepper
+                sx={{ width: "80%" }}
+                activeStep={activeStep}
+                alternativeLabel
+                connector={<CustomConnector />}
+              >
                 {steps.map((label, index) => (
                   <Step key={label}>
-                    <StepLabel
+                    <StepButton
+                      onClick={() => handleStepClick(index)}
+                      disabled={index > activeStep}
                       sx={{
-                        whiteSpace: "nowrap",
-                        marginLeft: index === 0 ? "0" : "50px",
-                        marginRight: "50px", // Adjust the margin value as needed
+                        // Quitar el label al ocultar todo el contenido textual
+                        "& .MuiStepLabel-label": { display: "none" },
+                        // Mantener el punto de paso centrado y clickable
+                        padding: 0,
+                        cursor: index <= activeStep ? "pointer" : "default",
                       }}
-                    ></StepLabel>
+                    />
                   </Step>
                 ))}
               </Stepper>
