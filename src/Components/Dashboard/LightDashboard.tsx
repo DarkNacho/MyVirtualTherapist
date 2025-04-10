@@ -2388,7 +2388,8 @@ const LightDashboard: FC<DashboardProps> = ({ oxygenSaturationData, heartRateDat
                 borderRadius: 1, 
                 backgroundColor: COLORS.veryLightBlue,
                 p: 1,
-                        mb: 4
+                        mb: 4,
+                        height: 350
               }}>
                 <Line
                   data={{
@@ -2503,7 +2504,8 @@ const LightDashboard: FC<DashboardProps> = ({ oxygenSaturationData, heartRateDat
                 borderRadius: 1, 
                 backgroundColor: COLORS.veryLightBlue,
                 p: 1,
-                        mb: 4
+                        mb: 4,
+                        height: 350
               }}>
                         <Line data={{
                       labels: generateSessionDateLabels(),
@@ -2616,7 +2618,8 @@ const LightDashboard: FC<DashboardProps> = ({ oxygenSaturationData, heartRateDat
                 borderRadius: 1, 
                 backgroundColor: COLORS.veryLightBlue,
                 p: 1,
-                        mb: 4
+                        mb: 4,
+                        height: 350
               }}>
                         <Line 
                           data={{
@@ -2743,7 +2746,8 @@ const LightDashboard: FC<DashboardProps> = ({ oxygenSaturationData, heartRateDat
                 borderRadius: 1, 
                 backgroundColor: COLORS.veryLightBlue,
                 p: 1,
-                        mb: 4
+                        mb: 4,
+                        height: 350 
               }}>
                 <Bar 
                   data={{
@@ -3722,7 +3726,8 @@ const LightDashboard: FC<DashboardProps> = ({ oxygenSaturationData, heartRateDat
                   borderRadius: 1, 
                   backgroundColor: COLORS.veryLightBlue,
                   p: 1,
-                  mb: 4
+                  mb: 4,
+                  height: 350
                 }}>
                   <Line
                     data={{
@@ -3834,7 +3839,8 @@ const LightDashboard: FC<DashboardProps> = ({ oxygenSaturationData, heartRateDat
                   borderRadius: 1, 
                   backgroundColor: COLORS.veryLightBlue,
                   p: 1,
-                  mb: 4
+                  mb: 4,
+                  height: 350
                 }}>
                   <Line
                     data={{
@@ -3957,7 +3963,8 @@ const LightDashboard: FC<DashboardProps> = ({ oxygenSaturationData, heartRateDat
                   borderRadius: 1, 
                   backgroundColor: COLORS.veryLightBlue,
                   p: 1,
-                  mb: 4
+                  mb: 4,
+                  height: 350
                 }}>
                   <Line
                     data={{
@@ -4109,7 +4116,8 @@ const LightDashboard: FC<DashboardProps> = ({ oxygenSaturationData, heartRateDat
                   borderRadius: 1, 
                   backgroundColor: COLORS.veryLightBlue,
                   p: 1,
-                  mb: 4
+                  mb: 4,
+                  height: 350
                 }}>
                   <Line
                     data={{
@@ -4248,7 +4256,8 @@ const LightDashboard: FC<DashboardProps> = ({ oxygenSaturationData, heartRateDat
                   borderRadius: 1, 
                   backgroundColor: COLORS.veryLightBlue,
                   p: 1,
-                  mb: 4
+                  mb: 4,
+                  height: 350
                 }}>
                   <Line
                     data={{
