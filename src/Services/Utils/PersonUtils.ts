@@ -8,6 +8,7 @@ import {
 import { PatientFormData } from "../../Models/Forms/PatientForm";
 import dayjs from "dayjs";
 import { PractitionerFormData } from "../../Models/Forms/PractitionerForm";
+import FhirResourceService from "../FhirService";
 
 type FhirResourceType = Patient | Practitioner | Person;
 
@@ -423,5 +424,52 @@ export default class PersonUtil {
       role: role,
       agendaUrl: agendaUrl,
     };
+  };
+
+  /**
+   * Convierte un objeto Practitioner de FHIR a un objeto PractitionerFormData
+   * buscando y cargando automáticamente el PractitionerRole asociado.
+   * 
+   * @param practitioner - El recurso Practitioner de FHIR
+   * @returns Una promesa que resuelve al objeto PractitionerFormData
+   */
+  static loadPractitionerForm = async (
+    practitioner: Practitioner
+  ): Promise<PractitionerFormData> => {
+    if (!practitioner.id) {
+      throw new Error("El Practitioner no tiene ID");
+    }
+
+    // Buscar el PractitionerRole asociado
+    const fhirServiceRole = 
+      FhirResourceService.getInstance<PractitionerRole>("PractitionerRole");
+    
+    let practitionerRole: PractitionerRole | undefined;
+    
+    try {
+      const response = await fhirServiceRole.getResources({
+        practitioner: practitioner.id
+      });
+      
+      if (response.success && response.data.length > 0) {
+        practitionerRole = response.data[0];
+      }
+    } catch (error) {
+      console.error("Error al obtener PractitionerRole:", error);
+    }
+    
+    // Si no se encontró un PractitionerRole, crear uno vacío
+    if (!practitionerRole) {
+      practitionerRole = {
+        resourceType: "PractitionerRole",
+        practitioner: {
+          reference: `Practitioner/${practitioner.id}`
+        },
+        code: [{ coding: [] }],
+        specialty: [{ coding: [] }]
+      };
+    }
+    
+    return this.PractitionerToPractitionerForm(practitioner, practitionerRole);
   };
 }

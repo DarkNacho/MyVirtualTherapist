@@ -21,22 +21,25 @@ export default function PractitionerContactDetailForm({
   formId,
   practitioner,
   submitForm,
+  isEditing = false,
 }: {
   formId: string;
   practitioner?: PractitionerFormData;
   submitForm: SubmitHandler<PractitionerFormData>;
+  isEditing?: boolean;
 }) {
   const { t } = useTranslation();
   const {
     control,
     register,
     handleSubmit,
-
     formState: { errors },
   } = useForm<PractitionerFormData>({
     defaultValues: {
       email: practitioner?.email || "",
       numeroTelefonico: practitioner?.numeroTelefonico || "",
+      role: practitioner?.role || [],
+      specialty: practitioner?.specialty || [],
     },
     mode: "onBlur",
   });
@@ -54,7 +57,9 @@ export default function PractitionerContactDetailForm({
               textUnderlineOffset: "0.2em",
             }}
           >
-            {t("practitionerContactDetailForm.addPractitioner")}
+            {isEditing 
+              ? t("practitionerContactDetailForm.editPractitioner", "EDIT PRACTITIONER CONTACT") 
+              : t("practitionerContactDetailForm.addPractitioner")}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -133,7 +138,7 @@ export default function PractitionerContactDetailForm({
                 isOptionEqualToValue={(option, value) =>
                   option.code === value.code
                 }
-                value={field.value}
+                value={field.value || []}
                 onChange={(_, newValue) => field.onChange(newValue)}
                 renderOption={(props, option) => (
                   <li {...props} key={option.code}>
@@ -171,7 +176,6 @@ export default function PractitionerContactDetailForm({
                   option.code === value.code
                 }
                 freeSolo
-                //onChange={(_, newValue) => field.onChange(newValue)}
                 onChange={(_, newValue) => {
                   const transformedValue = newValue.map((item) => {
                     if (typeof item === "string") {
@@ -185,7 +189,7 @@ export default function PractitionerContactDetailForm({
                   });
                   field.onChange(transformedValue);
                 }}
-                value={field.value}
+                value={field.value || []}
                 renderOption={(props, option) => (
                   <li {...props} key={option.code}>
                     {option.display}

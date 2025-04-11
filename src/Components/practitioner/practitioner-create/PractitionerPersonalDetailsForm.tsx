@@ -20,10 +20,12 @@ export default function PractitionerPersonalDetailsForm({
   formId,
   practitioner,
   submitForm,
+  isEditing = false,
 }: {
   formId: string;
   practitioner?: PractitionerFormData;
   submitForm: SubmitHandler<PractitionerFormData>;
+  isEditing?: boolean;
 }) {
   const { t } = useTranslation();
 
@@ -43,6 +45,7 @@ export default function PractitionerPersonalDetailsForm({
       rut: practitioner?.rut || "",
       fechaNacimiento:
         practitioner?.fechaNacimiento || dayjs().subtract(18, "year"),
+      agendaUrl: practitioner?.agendaUrl || "",
     },
     mode: "onBlur",
   });
@@ -60,7 +63,9 @@ export default function PractitionerPersonalDetailsForm({
               textUnderlineOffset: "0.2em",
             }}
           >
-            {t("practitionerPersonalDetailsForm.addPractitioner")}
+            {isEditing 
+              ? t("practitionerPersonalDetailsForm.editPractitioner", "EDIT PRACTITIONER") 
+              : t("practitionerPersonalDetailsForm.addPractitioner")}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -126,9 +131,10 @@ export default function PractitionerPersonalDetailsForm({
           <TextField
             label={t("practitionerPersonalDetailsForm.rut")}
             {...register("rut", {
-              required: t("practitionerPersonalDetailsForm.rutRequired"), //TODO: Ver como validarlo aquí ya que falla.
+              required: t("practitionerPersonalDetailsForm.rutRequired"),
             })}
             fullWidth
+            disabled={isEditing}
             error={Boolean(errors.rut)}
             helperText={errors.rut && errors.rut.message}
             onBlur={async (event) => {

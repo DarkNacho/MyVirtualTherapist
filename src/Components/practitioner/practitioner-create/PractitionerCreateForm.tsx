@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import PractitionerContactDetailForm from "./PractitionerContactDetailForm";
 import PractitionerPersonalDetailsForm from "./PractitionerPersonalDetailsForm";
 import { PractitionerFormData } from "../../../Models/Forms/PractitionerForm";
+import { Practitioner } from "fhir/r4";
 
 const steps = ["personalDetails", "contactDetails"];
 
@@ -32,6 +33,8 @@ export default function PractitionerCreateForm({
   avatar,
   handleAvatarChange,
   isPosting = false,
+  isEditing = false,
+  selectedPractitioner = null,
 }: {
   formId: string;
   submitForm: SubmitHandler<PractitionerFormData>;
@@ -43,6 +46,8 @@ export default function PractitionerCreateForm({
   avatar?: File | null;
   handleAvatarChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isPosting: boolean;
+  isEditing?: boolean;
+  selectedPractitioner?: Practitioner | null;
 }) {
   const { t } = useTranslation();
 
@@ -61,7 +66,9 @@ export default function PractitionerCreateForm({
           textUnderlineOffset: "0.2em",
         }}
       >
-        {t("practitionerCreateForm.practitionerCreated")}
+        {isEditing
+          ? t("practitionerCreateForm.practitionerUpdated", "PRACTITIONER UPDATED SUCCESSFULLY")
+          : t("practitionerCreateForm.practitionerCreated")}
       </Typography>
       <Typography
         variant="h6"
@@ -72,67 +79,85 @@ export default function PractitionerCreateForm({
         {practitioner?.nombre} {practitioner?.segundoNombre}{" "}
         {practitioner?.apellidoPaterno} {practitioner?.apellidoMaterno}
       </Typography>
-      {t("practitionerCreateForm.verifyEmail")}
+      {!isEditing && t("practitionerCreateForm.verifyEmail")}
     </>
   );
 
-  const renderAvatarUpload = () => (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "90%", // Ensure it takes the full height of the parent container
-      }}
-    >
+  const renderAvatarUpload = () => {
+    // Si estamos editando y hay una foto en el profesional seleccionado
+    const hasPractitionerPhoto = selectedPractitioner?.photo?.[0]?.data || selectedPractitioner?.photo?.[0]?.url;
+    
+    return (
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          border: "2px solid #2d7dfc",
-          borderRadius: "32px",
-          width: "100%",
-          height: "100%",
-          position: "relative",
-          backgroundColor: "#f0f4fc",
+          height: "90%", // Ensure it takes the full height of the parent container
         }}
       >
-        <label htmlFor="avatar-upload">
-          {avatar ? (
-            <Avatar
-              src={URL.createObjectURL(avatar)}
-              sx={{
-                width: 150,
-                height: 150,
-                cursor: "pointer",
-              }}
-            />
-          ) : (
-            <Avatar
-              sx={{
-                width: 150,
-                height: 150,
-                cursor: "pointer",
-                color: "#2d7dfc",
-                backgroundColor: "#f0f4fc",
-                border: "2px solid #2d7dfc",
-              }}
-            />
-          )}
-        </label>
-        <input
-          id="avatar-upload"
-          type="file"
-          hidden
-          accept="image/*"
-          onChange={handleAvatarChange}
-        />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "2px solid #2d7dfc",
+            borderRadius: "32px",
+            width: "100%",
+            height: "100%",
+            position: "relative",
+            backgroundColor: "#f0f4fc",
+          }}
+        >
+          <label htmlFor="avatar-upload">
+            {avatar ? (
+              <Avatar
+                src={URL.createObjectURL(avatar)}
+                sx={{
+                  width: 150,
+                  height: 150,
+                  cursor: "pointer",
+                }}
+              />
+            ) : hasPractitionerPhoto ? (
+              <Avatar
+                src={
+                  selectedPractitioner?.photo?.[0]?.data
+                    ? `data:${selectedPractitioner.photo[0].contentType};base64,${selectedPractitioner.photo[0].data}`
+                    : selectedPractitioner?.photo?.[0]?.url
+                }
+                sx={{
+                  width: 150,
+                  height: 150,
+                  cursor: "pointer",
+                }}
+              />
+            ) : (
+              <Avatar
+                sx={{
+                  width: 150,
+                  height: 150,
+                  cursor: "pointer",
+                  color: "#2d7dfc",
+                  backgroundColor: "#f0f4fc",
+                  border: "2px solid #2d7dfc",
+                }}
+              />
+            )}
+          </label>
+          <input
+            id="avatar-upload"
+            type="file"
+            hidden
+            accept="image/*"
+            onChange={handleAvatarChange}
+          />
+        </Box>
       </Box>
-    </Box>
-  );
+    );
+  };
 
   return (
     <Dialog
@@ -146,6 +171,11 @@ export default function PractitionerCreateForm({
     >
       <DialogTitle>
         <Box sx={{ position: "relative" }}>
+          <Typography variant="h6" component="div" sx={{ textAlign: "center", paddingTop: 1 }}>
+            {isEditing
+              ? t("practitionerPersonalDetailsForm.editPractitioner", "EDIT PRACTITIONER")
+              : t("practitionerPersonalDetailsForm.addPractitioner")}
+          </Typography>
           <IconButton
             sx={{ position: "absolute", top: 8, right: 8, color: "#247cfc" }}
             onClick={handleClose}
@@ -165,6 +195,7 @@ export default function PractitionerCreateForm({
                 practitioner={practitioner}
                 formId={`${formId}-0`}
                 submitForm={submitForm}
+                isEditing={isEditing}
               />
             )}
 
@@ -173,6 +204,7 @@ export default function PractitionerCreateForm({
                 practitioner={practitioner}
                 formId={`${formId}-1`}
                 submitForm={submitForm}
+                isEditing={isEditing}
               />
             )}
             {activeStep === 2 && successView()}
@@ -211,7 +243,9 @@ export default function PractitionerCreateForm({
                     disabled={isPosting}
                   >
                     {activeStep === steps.length - 1
-                      ? t("practitionerCreateForm.submit")
+                      ? isEditing 
+                        ? t("practitionerCreateForm.update", "Update")
+                        : t("practitionerCreateForm.submit")
                       : t("practitionerCreateForm.next")}
                   </Button>
                 ) : (
