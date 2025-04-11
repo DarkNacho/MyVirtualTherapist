@@ -17,10 +17,12 @@ export default function PatientContactDetailForm({
   formId,
   patient,
   submitForm,
+  isEditing = false,
 }: {
   formId: string;
   patient?: PatientFormData;
   submitForm: SubmitHandler<PatientFormData>;
+  isEditing?: boolean;
 }) {
   const { t } = useTranslation();
   const {
@@ -81,7 +83,9 @@ export default function PatientContactDetailForm({
               textUnderlineOffset: "0.2em",
             }}
           >
-            {t("patientContactDetailForm.addPatient")}
+            {isEditing 
+              ? t("patientContactDetailForm.editPatient", "EDIT PATIENT CONTACT") 
+              : t("patientContactDetailForm.addPatient")}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6}>

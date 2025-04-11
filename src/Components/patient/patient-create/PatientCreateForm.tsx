@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import PatientContactDetailForm from "./PatientContactDetailForm";
 import PatientPersonalDetailsForm from "./PatientPersonalDetailsForm";
 import { PatientFormData } from "../../../Models/Forms/PatientForm";
+import { Patient } from "fhir/r4";
 
 const steps = ["personalDetails", "contactDetails"];
 
@@ -28,9 +29,12 @@ export default function PatientCreateForm({
   handleClose,
   open,
   activeStep,
+  setActiveStep,
   avatar,
   handleAvatarChange,
   isPosting = false,
+  isEditing = false,
+  selectedPatient = undefined,
 }: {
   formId: string;
   submitForm: SubmitHandler<PatientFormData>;
@@ -38,12 +42,18 @@ export default function PatientCreateForm({
   handleClose: () => void;
   open: boolean;
   activeStep: number;
-
+  setActiveStep: React.Dispatch<React.SetStateAction<number>>;
   avatar?: File | null;
   handleAvatarChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isPosting: boolean;
+  isEditing?: boolean;
+  selectedPatient?: Patient | undefined;
 }) {
   const { t } = useTranslation();
+
+  const handleBack = () => {
+    setActiveStep((prevStep) => prevStep - 1);
+  };
 
   const successView = () => (
     <>
@@ -56,7 +66,9 @@ export default function PatientCreateForm({
           textUnderlineOffset: "0.2em",
         }}
       >
-        {t("patientCreateForm.patientCreated")}
+        {isEditing
+          ? t("patientCreateForm.patientUpdated", "PATIENT UPDATED SUCCESSFULLY")
+          : t("patientCreateForm.patientCreated")}
       </Typography>
       <Typography
         variant="h6"
@@ -67,67 +79,85 @@ export default function PatientCreateForm({
         {patient?.nombre} {patient?.segundoNombre} {patient?.apellidoPaterno}{" "}
         {patient?.apellidoMaterno}
       </Typography>
-      {t("patientCreateForm.verifyEmail")}
+      {!isEditing && t("patientCreateForm.verifyEmail")}
     </>
   );
 
-  const renderAvatarUpload = () => (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "90%", // Ensure it takes the full height of the parent container
-      }}
-    >
+  const renderAvatarUpload = () => {
+    // Si estamos editando y hay una foto en el paciente seleccionado
+    const hasPatientPhoto = selectedPatient?.photo?.[0]?.data || selectedPatient?.photo?.[0]?.url;
+    
+    return (
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          border: "2px solid #2d7dfc",
-          borderRadius: "32px",
-          width: "100%",
-          height: "100%",
-          position: "relative",
-          backgroundColor: "#f0f4fc",
+          height: "90%", // Ensure it takes the full height of the parent container
         }}
       >
-        <label htmlFor="avatar-upload">
-          {avatar ? (
-            <Avatar
-              src={URL.createObjectURL(avatar)}
-              sx={{
-                width: 150,
-                height: 150,
-                cursor: "pointer",
-              }}
-            />
-          ) : (
-            <Avatar
-              sx={{
-                width: 150,
-                height: 150,
-                cursor: "pointer",
-                color: "#2d7dfc",
-                backgroundColor: "#f0f4fc",
-                border: "2px solid #2d7dfc",
-              }}
-            />
-          )}
-        </label>
-        <input
-          id="avatar-upload"
-          type="file"
-          hidden
-          accept="image/*"
-          onChange={handleAvatarChange}
-        />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "2px solid #2d7dfc",
+            borderRadius: "32px",
+            width: "100%",
+            height: "100%",
+            position: "relative",
+            backgroundColor: "#f0f4fc",
+          }}
+        >
+          <label htmlFor="avatar-upload">
+            {avatar ? (
+              <Avatar
+                src={URL.createObjectURL(avatar)}
+                sx={{
+                  width: 150,
+                  height: 150,
+                  cursor: "pointer",
+                }}
+              />
+            ) : hasPatientPhoto ? (
+              <Avatar
+                src={
+                  selectedPatient?.photo?.[0]?.data
+                    ? `data:${selectedPatient.photo[0].contentType};base64,${selectedPatient.photo[0].data}`
+                    : selectedPatient?.photo?.[0]?.url
+                }
+                sx={{
+                  width: 150,
+                  height: 150,
+                  cursor: "pointer",
+                }}
+              />
+            ) : (
+              <Avatar
+                sx={{
+                  width: 150,
+                  height: 150,
+                  cursor: "pointer",
+                  color: "#2d7dfc",
+                  backgroundColor: "#f0f4fc",
+                  border: "2px solid #2d7dfc",
+                }}
+              />
+            )}
+          </label>
+          <input
+            id="avatar-upload"
+            type="file"
+            hidden
+            accept="image/*"
+            onChange={handleAvatarChange}
+          />
+        </Box>
       </Box>
-    </Box>
-  );
+    );
+  };
 
   return (
     <Dialog
@@ -141,6 +171,11 @@ export default function PatientCreateForm({
     >
       <DialogTitle>
         <Box sx={{ position: "relative" }}>
+          <Typography variant="h6" component="div" sx={{ textAlign: "center", paddingTop: 1 }}>
+            {isEditing
+              ? t("patientPersonalDetailsForm.editPatient", "EDIT PATIENT")
+              : t("patientPersonalDetailsForm.addPatient", "ADD PATIENT")}
+          </Typography>
           <IconButton
             sx={{ position: "absolute", top: 8, right: 8, color: "#247cfc" }}
             onClick={handleClose}
@@ -160,6 +195,7 @@ export default function PatientCreateForm({
                 patient={patient}
                 formId={`${formId}-0`}
                 submitForm={submitForm}
+                isEditing={isEditing}
               />
             )}
 
@@ -168,6 +204,7 @@ export default function PatientCreateForm({
                 patient={patient}
                 formId={`${formId}-1`}
                 submitForm={submitForm}
+                isEditing={isEditing}
               />
             )}
             {activeStep === 2 && successView()}
@@ -194,6 +231,22 @@ export default function PatientCreateForm({
               </Stepper>
 
               <Box sx={{ display: "flex", alignItems: "center", mt: -5 }}>
+                {activeStep > 0 && (
+                  <Button
+                    variant="outlined"
+                    onClick={handleBack}
+                    sx={{
+                      bottom: 0,
+                      right: 210,
+                      width: 100,
+                      borderBottomRightRadius: 18,
+                      borderTopLeftRadius: 18,
+                      position: "absolute",
+                    }}
+                  >
+                    {t("patientCreateForm.back", "Back")}
+                  </Button>
+                )}
                 {activeStep < steps.length ? (
                   <Button
                     variant="contained"
@@ -211,7 +264,9 @@ export default function PatientCreateForm({
                     }}
                   >
                     {activeStep === steps.length - 1
-                      ? t("patientCreateForm.submit")
+                      ? isEditing 
+                        ? t("patientCreateForm.update", "Update")
+                        : t("patientCreateForm.submit")
                       : t("patientCreateForm.next")}
                   </Button>
                 ) : (

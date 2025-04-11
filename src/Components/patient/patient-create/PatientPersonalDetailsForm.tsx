@@ -21,10 +21,12 @@ export default function PatientPersonalDetailsForm({
   formId,
   patient,
   submitForm,
+  isEditing = false,
 }: {
   formId: string;
   patient?: PatientFormData;
   submitForm: SubmitHandler<PatientFormData>;
+  isEditing?: boolean;
 }) {
   const { t, i18n } = useTranslation();
   const currentLanguage = i18n.language;
@@ -84,7 +86,9 @@ export default function PatientPersonalDetailsForm({
               textUnderlineOffset: "0.2em",
             }}
           >
-            {t("patientPersonalDetailsForm.addPatient")}
+            {isEditing 
+              ? t("patientPersonalDetailsForm.editPatient", "EDIT PATIENT") 
+              : t("patientPersonalDetailsForm.addPatient")}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -201,9 +205,10 @@ export default function PatientPersonalDetailsForm({
           <TextField
             label={t("patientPersonalDetailsForm.rut")}
             {...register("rut", {
-              required: t("patientPersonalDetailsForm.rutRequired"), //TODO: Ver como validarlo aquí ya que falla.
+              required: t("patientPersonalDetailsForm.rutRequired"),
             })}
             fullWidth
+            disabled={isEditing}
             error={Boolean(errors.rut)}
             helperText={errors.rut && errors.rut.message}
             onBlur={async (event) => {
