@@ -84,7 +84,7 @@ export default function PatientContactDetailForm({
             }}
           >
             {isEditing 
-              ? t("patientContactDetailForm.editPatient", "EDIT PATIENT CONTACT") 
+              ? t("patientContactDetailForm.editPatient") 
               : t("patientContactDetailForm.addPatient")}
           </Typography>
         </Grid>

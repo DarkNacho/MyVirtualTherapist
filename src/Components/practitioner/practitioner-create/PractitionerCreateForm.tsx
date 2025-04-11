@@ -67,7 +67,7 @@ export default function PractitionerCreateForm({
         }}
       >
         {isEditing
-          ? t("practitionerCreateForm.practitionerUpdated", "PRACTITIONER UPDATED SUCCESSFULLY")
+          ? t("practitionerCreateForm.practitionerUpdated")
           : t("practitionerCreateForm.practitionerCreated")}
       </Typography>
       <Typography
@@ -173,7 +173,7 @@ export default function PractitionerCreateForm({
         <Box sx={{ position: "relative" }}>
           <Typography variant="h6" component="div" sx={{ textAlign: "center", paddingTop: 1 }}>
             {isEditing
-              ? t("practitionerPersonalDetailsForm.editPractitioner", "EDIT PRACTITIONER")
+              ? t("practitionerPersonalDetailsForm.editPractitioner")
               : t("practitionerPersonalDetailsForm.addPractitioner")}
           </Typography>
           <IconButton
@@ -244,7 +244,7 @@ export default function PractitionerCreateForm({
                   >
                     {activeStep === steps.length - 1
                       ? isEditing 
-                        ? t("practitionerCreateForm.update", "Update")
+                        ? t("practitionerCreateForm.update")
                         : t("practitionerCreateForm.submit")
                       : t("practitionerCreateForm.next")}
                   </Button>

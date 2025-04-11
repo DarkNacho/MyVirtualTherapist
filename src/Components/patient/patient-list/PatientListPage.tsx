@@ -118,7 +118,7 @@ export default function PatientListPage() {
           () => postPatient(patientFormData);
         
         const message = isEditing ? 
-          t("patientPage.patientUpdated", "Patient updated successfully") : 
+          t("patientPage.patientUpdated") : 
           t("patientPage.patientCreated");
         
         const response = await HandleResult.handleOperation(
@@ -143,7 +143,7 @@ export default function PatientListPage() {
     if (!selectedPatient || !selectedPatient.id) {
       return {
         success: false,
-        error: "No patient selected for update"
+        error: t("patientPage.noPatientSelected")
       };
     }
     

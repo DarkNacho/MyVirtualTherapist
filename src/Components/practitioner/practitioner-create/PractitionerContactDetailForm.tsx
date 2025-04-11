@@ -58,7 +58,7 @@ export default function PractitionerContactDetailForm({
             }}
           >
             {isEditing 
-              ? t("practitionerContactDetailForm.editPractitioner", "EDIT PRACTITIONER CONTACT") 
+              ? t("practitionerContactDetailForm.editPractitioner") 
               : t("practitionerContactDetailForm.addPractitioner")}
           </Typography>
         </Grid>

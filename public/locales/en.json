@@ -25,6 +25,7 @@
 
   "patientContactDetailForm": {
     "addPatient": "ADD PATIENT",
+    "editPatient": "EDIT PATIENT CONTACT",
     "phoneNumberRequired": "Phone number required",
     "phoneNumber": "Phone Number",
     "email": "Email",
@@ -40,14 +41,17 @@
     "personalDetails": "Personal Details",
     "contactDetails": "Contact Details",
     "patientCreated": "PATIENT CREATED SUCCESSFULLY",
+    "patientUpdated": "PATIENT UPDATED SUCCESSFULLY",
     "verifyEmail": "Verify the patient's email to confirm the access key.",
     "back": "Back",
     "next": "Next",
     "submit": "Submit",
+    "update": "Update",
     "viewProfile": "View Profile"
   },
   "patientPersonalDetailsForm": {
     "addPatient": "ADD PATIENT",
+    "editPatient": "EDIT PATIENT",
     "name": "Name",
     "nameRequired": "Name is required",
     "secondName": "Second Name",
@@ -68,12 +72,14 @@
     "sensor": "Sensor",
     "forms": "Forms",
     "patientCreated": "The patient has been successfully created",
+    "patientUpdated": "The patient has been successfully updated",
     "evolutions": "Evolutions",
     "conditions": "Conditions",
     "medications": "Medications",
     "sending": "Sending...",
     "errorConvertingForm": "Error converting the form to patient",
-    "userExists": "The user already exists"
+    "userExists": "The user already exists",
+    "noPatientSelected": "No patient selected for update"
   },
   "patientCard": {
     "nameNotAvailable": "Name not available",
@@ -110,6 +116,7 @@
   "practitionerContactDetailForm": {
     "role": "Profession",
     "addPractitioner": "ADD PRACTITIONER",
+    "editPractitioner": "EDIT PRACTITIONER CONTACT",
     "phoneNumberRequired": "Phone number required",
     "phoneNumber": "Phone Number",
     "email": "Email",
@@ -125,14 +132,17 @@
     "personalDetails": "Personal Details",
     "contactDetails": "Contact Details",
     "practitionerCreated": "PRACTITIONER CREATED SUCCESSFULLY",
+    "practitionerUpdated": "PRACTITIONER UPDATED SUCCESSFULLY",
     "verifyEmail": "Verify the practitioner's email to confirm access key.",
     "back": "Back",
     "next": "Next",
     "submit": "Submit",
+    "update": "Update",
     "viewProfile": "View Profile"
   },
   "practitionerPersonalDetailsForm": {
     "addPractitioner": "ADD PRACTITIONER",
+    "editPractitioner": "EDIT PRACTITIONER",
     "name": "Name",
     "nameRequired": "Name is required",
     "secondName": "Second Name",
@@ -149,9 +159,11 @@
   },
   "practitionerPage": {
     "practitionerCreated": "The practitioner has been created successfully",
+    "practitionerUpdated": "The practitioner has been updated successfully",
     "sending": "Sending...",
     "errorConvertingForm": "Error converting form to practitioner",
-    "userExists": "The user already exists"
+    "userExists": "The user already exists",
+    "noPractitionerSelected": "No practitioner selected for update"
   },
   "practitionerList": {
     "receivedSuccessfully": "Received successfully",

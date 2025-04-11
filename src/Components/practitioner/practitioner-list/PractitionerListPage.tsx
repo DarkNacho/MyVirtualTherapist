@@ -104,7 +104,7 @@ const PractitionerListPage = () => {
           () => postPractitioner(practitionerFormData);
         
         const message = isEditing ? 
-          t("practitionerPage.practitionerUpdated", "Practitioner updated successfully") : 
+          t("practitionerPage.practitionerUpdated") : 
           t("practitionerPage.practitionerCreated");
         
         const response = await HandleResult.handleOperation(
@@ -127,7 +127,7 @@ const PractitionerListPage = () => {
     if (!selectedPractitioner || !selectedPractitioner.id) {
       return {
         success: false,
-        error: "No practitioner selected for update"
+        error: t("practitionerPage.noPractitionerSelected")
       };
     }
     

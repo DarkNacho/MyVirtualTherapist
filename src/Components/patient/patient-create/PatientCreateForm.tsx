@@ -67,7 +67,7 @@ export default function PatientCreateForm({
         }}
       >
         {isEditing
-          ? t("patientCreateForm.patientUpdated", "PATIENT UPDATED SUCCESSFULLY")
+          ? t("patientCreateForm.patientUpdated")
           : t("patientCreateForm.patientCreated")}
       </Typography>
       <Typography
@@ -173,8 +173,8 @@ export default function PatientCreateForm({
         <Box sx={{ position: "relative" }}>
           <Typography variant="h6" component="div" sx={{ textAlign: "center", paddingTop: 1 }}>
             {isEditing
-              ? t("patientPersonalDetailsForm.editPatient", "EDIT PATIENT")
-              : t("patientPersonalDetailsForm.addPatient", "ADD PATIENT")}
+              ? t("patientPersonalDetailsForm.editPatient")
+              : t("patientPersonalDetailsForm.addPatient")}
           </Typography>
           <IconButton
             sx={{ position: "absolute", top: 8, right: 8, color: "#247cfc" }}
@@ -244,7 +244,7 @@ export default function PatientCreateForm({
                       position: "absolute",
                     }}
                   >
-                    {t("patientCreateForm.back", "Back")}
+                    {t("patientCreateForm.back")}
                   </Button>
                 )}
                 {activeStep < steps.length ? (
@@ -265,7 +265,7 @@ export default function PatientCreateForm({
                   >
                     {activeStep === steps.length - 1
                       ? isEditing 
-                        ? t("patientCreateForm.update", "Update")
+                        ? t("patientCreateForm.update")
                         : t("patientCreateForm.submit")
                       : t("patientCreateForm.next")}
                   </Button>

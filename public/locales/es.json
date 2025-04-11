@@ -24,6 +24,7 @@
   },
   "patientContactDetailForm": {
     "addPatient": "AGREGAR PACIENTE",
+    "editPatient": "EDITAR CONTACTO DE PACIENTE",
     "phoneNumberRequired": "Número telefónico requerido",
     "phoneNumber": "Número Telefónico",
     "email": "Correo Electrónico",
@@ -39,14 +40,17 @@
     "personalDetails": "Datos Personales",
     "contactDetails": "Datos de Contacto",
     "patientCreated": "PACIENTE CREADO CON ÉXITO",
+    "patientUpdated": "PACIENTE ACTUALIZADO CON ÉXITO",
     "verifyEmail": "Verifique el correo del paciente para confirmar clave de acceso.",
     "back": "Atrás",
     "next": "Siguiente",
     "submit": "Enviar",
+    "update": "Actualizar",
     "viewProfile": "Ver Perfil"
   },
   "patientPersonalDetailsForm": {
     "addPatient": "AGREGAR PACIENTE",
+    "editPatient": "EDITAR PACIENTE",
     "name": "Nombre",
     "nameRequired": "El Nombre es necesario",
     "secondName": "Segundo Nombre",
@@ -67,12 +71,14 @@
     "sensor": "Sensor",
     "forms": "Evaluaciones",
     "patientCreated": "El paciente ha sido creado exitosamente",
+    "patientUpdated": "El paciente ha sido actualizado exitosamente",
     "evolutions": "Evoluciones",
     "conditions": "Condiciones",
     "medications": "Medicamentos",
     "sending": "Enviando...",
     "errorConvertingForm": "Error al convertir la evolución",
-    "userExists": "El usuario ya existe"
+    "userExists": "El usuario ya existe",
+    "noPatientSelected": "No se ha seleccionado un paciente para actualizar"
   },
   "patientCard": {
     "nameNotAvailable": "Nombre no disponible",
@@ -109,6 +115,7 @@
   "practitionerContactDetailForm": {
     "role": "Profesión",
     "addPractitioner": "AGREGAR PROFESIONAL",
+    "editPractitioner": "EDITAR CONTACTO DE PROFESIONAL",
     "phoneNumberRequired": "Número telefónico requerido",
     "phoneNumber": "Número Telefónico",
     "email": "Correo Electrónico",
@@ -124,14 +131,17 @@
     "personalDetails": "Datos Personales",
     "contactDetails": "Datos de Contacto",
     "practitionerCreated": "PROFESIONAL CREADO CON ÉXITO",
+    "practitionerUpdated": "PROFESIONAL ACTUALIZADO CON ÉXITO",
     "verifyEmail": "Verifique el correo del practicante para confirmar clave de acceso.",
     "back": "Atrás",
     "next": "Siguiente",
     "submit": "Enviar",
+    "update": "Actualizar",
     "viewProfile": "Ver Perfil"
   },
   "practitionerPersonalDetailsForm": {
     "addPractitioner": "AGREGAR PROFESIONAL",
+    "editPractitioner": "EDITAR PROFESIONAL",
     "name": "Nombre",
     "nameRequired": "El Nombre es necesario",
     "secondName": "Segundo Nombre",
@@ -148,9 +158,11 @@
   },
   "practitionerPage": {
     "practitionerCreated": "El practicante ha sido creado exitosamente",
+    "practitionerUpdated": "El practicante ha sido actualizado exitosamente",
     "sending": "Enviando...",
     "errorConvertingForm": "Error al convertir la evolución",
-    "userExists": "El usuario ya existe"
+    "userExists": "El usuario ya existe",
+    "noPractitionerSelected": "No se ha seleccionado un profesional para actualizar"
   },
   "practitionerList": {
     "receivedSuccessfully": "Recibidos exitosamente",
@@ -186,13 +198,13 @@
   },
 
   "patientQuestionnaireComponent": {
-    "newForms": "Nuevas Evaluaciones :",
-    "loadedForms": "Evaluaciones  cargados del paciente:"
+    "newForms": "Nuevas Evaluaciones :",
+    "loadedForms": "Evaluaciones  cargados del paciente:"
   },
 
   "questionnaireListDialogComponent": {
-    "showQuestionnaires": "Mostrar Evaluaciones ",
-    "availableEvaluations": "Evaluaciones Disponibles",
+    "showQuestionnaires": "Mostrar Evaluaciones ",
+    "availableEvaluations": "Evaluaciones Disponibles",
     "searchFormByTitle": "Buscar por título",
     "tags": "Tags",
     "cancel": "Cancelar",
