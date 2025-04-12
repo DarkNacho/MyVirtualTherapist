@@ -7,9 +7,14 @@ import {
   QuestionnaireItem,
   QuestionnaireResponse,
 } from "fhir/r4";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 import FhirResourceService from "../../Services/FhirService";
 import ObservationService from "../../Services/ObservationService";
@@ -42,6 +47,7 @@ export default function QuestionnaireComponent({
 }) {
   const formContainerRef = useRef(null);
   const { t } = useTranslation();
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   useEffect(() => {
     const formContainer = formContainerRef.current;
@@ -417,6 +423,14 @@ export default function QuestionnaireComponent({
     }
   };
 
+  const handleDeleteClick = () => {
+    setOpenDeleteDialog(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+  };
+
   return (
     <div>
       <div ref={formContainerRef}></div>
@@ -431,13 +445,45 @@ export default function QuestionnaireComponent({
           }}
         >
           {questionnaireResponse.id && (
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={handleDelete}
-            >
-              {t("questionnaireComponent.delete")}
-            </Button>
+            <>
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={handleDeleteClick}
+              >
+                {t("questionnaireComponent.delete")}
+              </Button>
+              <Dialog
+                open={openDeleteDialog}
+                onClose={handleCloseDeleteDialog}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+              >
+                <DialogTitle id="alert-dialog-title">
+                  {t("questionnaireComponent.confirmDeleteTitle")}
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="alert-dialog-description">
+                    {t("questionnaireComponent.confirmDeleteMessage")}
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleCloseDeleteDialog}>
+                    {t("questionnaireComponent.cancel")}
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      handleCloseDeleteDialog();
+                      handleDelete();
+                    }} 
+                    color="error"
+                    autoFocus
+                  >
+                    {t("questionnaireComponent.confirm")}
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </>
           )}
           <Button
             variant="contained"

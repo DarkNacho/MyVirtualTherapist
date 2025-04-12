@@ -219,7 +219,8 @@
     "cancel": "Cancel",
     "requestForm": "Request Form",
     "previousPage": "Previous Page",
-    "nextPage": "Next Page"
+    "nextPage": "Next Page",
+    "addNewEvaluation": "Add New Evaluation"
   },
 
   "terminology": {
@@ -243,6 +244,10 @@
 
   "questionnaireComponent": {
     "save": "Save",
-    "delete": "Delete"
+    "delete": "Delete",
+    "confirmDeleteTitle": "Confirm deletion",
+    "confirmDeleteMessage": "Are you sure you want to delete this evaluation? This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
   }
 }

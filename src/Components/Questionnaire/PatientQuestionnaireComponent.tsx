@@ -1,17 +1,15 @@
 import { useEffect, useState } from "react";
 import { Questionnaire, QuestionnaireResponse } from "fhir/r4";
 import QuestionnaireComponent from "../Questionnaire/QuestionnaireComponent";
-import QuestionnaireListComponent from "../Questionnaire/QuestionnaireListDialogComponent";
-import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import QuestionnaireListDialogComponent from "../Questionnaire/QuestionnaireListDialogComponent";
+import { Box, Button, Card, CardContent, Typography, Grid, Paper, Divider } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import { isAdminOrPractitioner } from "../../Utils/RolUser";
 import FhirResourceService from "../../Services/FhirService";
 import { useTranslation } from "react-i18next";
 
 const questionnaireResponseService =
-  FhirResourceService.getInstance<QuestionnaireResponse>(
-    "QuestionnaireResponse"
-  );
+  FhirResourceService.getInstance<QuestionnaireResponse>("QuestionnaireResponse");
 const questionnaireService =
   FhirResourceService.getInstance<Questionnaire>("Questionnaire");
 
@@ -22,21 +20,16 @@ export default function PatientQuestionnaireComponent({
   patientID: string;
   encounterID?: string;
 }) {
-  const [questionnaireResponses, setQuestionnaireResponses] = useState<
-    QuestionnaireResponse[]
-  >([]);
-  const [questionnaires, setQuestionnaires] = useState<
-    Record<string, Questionnaire>
-  >({});
-  const [newQuestionnaires, setNewQuestionnaires] = useState<Questionnaire[]>(
-    []
-  );
+  const [questionnaireResponses, setQuestionnaireResponses] = useState<QuestionnaireResponse[]>([]);
+  const [questionnaires, setQuestionnaires] = useState<Record<string, Questionnaire>>({});
+  const [newQuestionnaires, setNewQuestionnaires] = useState<Questionnaire[]>([]);
+  const [showModal, setShowModal] = useState(false);
 
   const { t } = useTranslation();
 
   const handleQuesSelect = (ques: Questionnaire) => {
     setNewQuestionnaires((prevQuestionnaires) => [ques, ...prevQuestionnaires]);
-    console.log("Questionario seleccionado", ques);
+    setShowModal(false);
   };
 
   const fetchQuestionnaireResponses = async () => {
@@ -47,7 +40,6 @@ export default function PatientQuestionnaireComponent({
       });
       if (!responseBundle.success) throw Error(responseBundle.error);
 
-      console.log(responseBundle.data);
       setQuestionnaireResponses(responseBundle.data as QuestionnaireResponse[]);
       const updatedQuestionnaires: Record<string, Questionnaire> = {};
 
@@ -61,7 +53,7 @@ export default function PatientQuestionnaireComponent({
       }
       setQuestionnaires(updatedQuestionnaires);
     } catch {
-      console.log("entro al catch");
+      console.log("Error al cargar las evaluaciones");
     }
   };
 
@@ -73,76 +65,81 @@ export default function PatientQuestionnaireComponent({
   }, [patientID]);
 
   return (
-    <div>
+    <Box sx={{ p: 3 }}>
       {isAdminOrPractitioner() && (
-        <div>
-          <QuestionnaireListComponent
-            onQuestionnaireSelect={handleQuesSelect}
-          ></QuestionnaireListComponent>
-        </div>
+        <Box sx={{ mb: 3 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={() => setShowModal(true)}
+            sx={{ 
+              backgroundColor: "#354495",
+              "&:hover": {
+                backgroundColor: "#2a3877",
+              }
+            }}
+          >
+            {t("questionnaireListDialogComponent.addNewEvaluation")}
+          </Button>
+        </Box>
       )}
-      <div>
-        {newQuestionnaires.length > 0 && (
-          <Accordion sx={{ backgroundColor: "transparent" }}>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1-content-new"
-              id="panel1-header-new"
-            >
-              <h1 style={{ textDecoration: "underline" }}>
-                {t("patientQuestionnaireComponent.newForms")}
-              </h1>
-            </AccordionSummary>
-            <AccordionDetails>
-              {newQuestionnaires.map((newQues, index) => (
-                <div key={index}>
-                  <QuestionnaireComponent
-                    questionnaire={newQues}
-                    subjectId={patientID}
-                    encounterId={encounterID}
-                  ></QuestionnaireComponent>
-                </div>
-              ))}
-            </AccordionDetails>
-          </Accordion>
-        )}
-      </div>
-      <div>
-        {Object.keys(questionnaires).length > 0 && (
-          <Accordion defaultExpanded sx={{ backgroundColor: "transparent" }}>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1-content-old"
-              id="panel1-header-old"
-            >
-              <h1 style={{ textDecoration: "underline" }}>
-                {t("patientQuestionnaireComponent.loadedForms")}
-              </h1>
-            </AccordionSummary>
-            <AccordionDetails>
-              {Object.keys(questionnaires).length > 0 && (
-                <div>
-                  {questionnaireResponses.map(
-                    (quesRes, index) =>
-                      quesRes.questionnaire && (
-                        <div style={{ paddingBottom: "50px" }} key={index}>
-                          <QuestionnaireComponent
-                            questionnaire={
-                              questionnaires[quesRes.questionnaire]
-                            }
-                            questionnaireResponse={quesRes}
-                            subjectId={patientID}
-                            encounterId={encounterID}
-                          ></QuestionnaireComponent>
-                        </div>
-                      )
-                  )}
-                </div>
-              )}
-            </AccordionDetails>
-          </Accordion>
-        )}
-      </div>
-    </div>
+
+      {newQuestionnaires.length > 0 && (
+        <Paper elevation={3} sx={{ p: 3, mb: 3, backgroundColor: "#f8f9fa" }}>
+          <Typography variant="h5" sx={{ mb: 2, color: "#354495", fontWeight: "bold" }}>
+            {t("patientQuestionnaireComponent.newForms")}
+          </Typography>
+          <Grid container spacing={3}>
+            {newQuestionnaires.map((newQues, index) => (
+              <Grid item xs={12} key={index}>
+                <Card>
+                  <CardContent>
+                    <QuestionnaireComponent
+                      questionnaire={newQues}
+                      subjectId={patientID}
+                      encounterId={encounterID}
+                    />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Paper>
+      )}
+
+      {Object.keys(questionnaires).length > 0 && (
+        <Paper elevation={3} sx={{ p: 3, backgroundColor: "#f8f9fa" }}>
+          <Typography variant="h5" sx={{ mb: 2, color: "#354495", fontWeight: "bold" }}>
+            {t("patientQuestionnaireComponent.loadedForms")}
+          </Typography>
+          <Grid container spacing={3}>
+            {questionnaireResponses.map(
+              (quesRes, index) =>
+                quesRes.questionnaire && (
+                  <Grid item xs={12} key={index}>
+                    <Card>
+                      <CardContent>
+                        <QuestionnaireComponent
+                          questionnaire={questionnaires[quesRes.questionnaire]}
+                          questionnaireResponse={quesRes}
+                          subjectId={patientID}
+                          encounterId={encounterID}
+                        />
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                )
+            )}
+          </Grid>
+        </Paper>
+      )}
+
+      <QuestionnaireListDialogComponent
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        onQuestionnaireSelect={handleQuesSelect}
+      />
+    </Box>
   );
 }

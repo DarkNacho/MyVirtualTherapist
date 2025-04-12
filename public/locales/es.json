@@ -207,12 +207,13 @@
   "questionnaireListDialogComponent": {
     "showQuestionnaires": "Mostrar Evaluaciones ",
     "availableEvaluations": "Evaluaciones Disponibles",
-    "searchFormByTitle": "Buscar por título",
-    "tags": "Tags",
+    "searchFormByTitle": "Buscar evaluación por título",
+    "tags": "Etiquetas",
     "cancel": "Cancelar",
-    "requestForm": "Solicitar Formulario",
+    "requestForm": "Solicitar Nueva Evaluación",
     "previousPage": "Página anterior",
-    "nextPage": "Siguiente página"
+    "nextPage": "Siguiente página",
+    "addNewEvaluation": "Agregar Nueva Evaluación"
   },
 
   "notFound": {
@@ -244,6 +245,10 @@
 
   "questionnaireComponent": {
     "save": "Guardar",
-    "delete": "Eliminar"
+    "delete": "Eliminar",
+    "confirmDeleteTitle": "Confirmar eliminación",
+    "confirmDeleteMessage": "¿Está seguro que desea eliminar esta evaluación? Esta acción no se puede deshacer.",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar"
   }
 }
