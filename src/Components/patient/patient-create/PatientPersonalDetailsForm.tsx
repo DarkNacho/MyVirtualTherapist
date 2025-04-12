@@ -77,7 +77,7 @@ export default function PatientPersonalDetailsForm({
     <form id={formId} onSubmit={handleSubmit(submitForm)}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography
+          {/* <Typography
             variant="h5"
             sx={{
               color: "#354495",
@@ -89,7 +89,7 @@ export default function PatientPersonalDetailsForm({
             {isEditing 
               ? t("patientPersonalDetailsForm.editPatient") 
               : t("patientPersonalDetailsForm.addPatient")}
-          </Typography>
+          </Typography> */}
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField

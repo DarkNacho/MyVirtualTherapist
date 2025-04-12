@@ -75,17 +75,17 @@ export default function PatientContactDetailForm({
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography
-            variant="h5"
+            variant="h6"
             sx={{
-              color: "blue",
-              textDecoration: "underline",
+              color: "#354495",
+              //textDecoration: "underline",
               textDecorationThickness: "0.1em",
               textUnderlineOffset: "0.2em",
             }}
           >
             {isEditing 
               ? t("patientContactDetailForm.editPatient") 
-              : t("patientContactDetailForm.addPatient")}
+              : t("patientContactDetailForm.editPatient")}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -145,10 +145,10 @@ export default function PatientContactDetailForm({
         </Grid>
         <Grid item xs={12}>
           <Typography
-            variant="h5"
+            variant="h6"
             sx={{
-              color: "blue",
-              textDecoration: "underline",
+              color: "#354495",
+              //textDecoration: "underline",
               textDecorationThickness: "0.1em",
               textUnderlineOffset: "0.2em",
             }}

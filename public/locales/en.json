@@ -24,8 +24,8 @@
   },
 
   "patientContactDetailForm": {
-    "addPatient": "ADD PATIENT",
-    "editPatient": "EDIT PATIENT CONTACT",
+    "addPatient": "PATIENT CONTACT",
+    "editPatient": "PATIENT CONTACT",
     "phoneNumberRequired": "Phone number required",
     "phoneNumber": "Phone Number",
     "email": "Email",
@@ -38,7 +38,7 @@
     "submit": "Submit"
   },
   "patientCreateForm": {
-    "personalDetails": "Personal Details",
+    "personalDetails": "Basic Information",
     "contactDetails": "Contact Details",
     "patientCreated": "PATIENT CREATED SUCCESSFULLY",
     "patientUpdated": "PATIENT UPDATED SUCCESSFULLY",
@@ -47,7 +47,8 @@
     "next": "Next",
     "submit": "Submit",
     "update": "Update",
-    "viewProfile": "View Profile"
+    "viewProfile": "View Profile",
+    "changePhoto": "Change Photo"
   },
   "patientPersonalDetailsForm": {
     "addPatient": "ADD PATIENT",

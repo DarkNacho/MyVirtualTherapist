@@ -23,8 +23,8 @@
     "sessionExpired": "Su sesión ha expirado, por favor inicie sesión nuevamente."
   },
   "patientContactDetailForm": {
-    "addPatient": "AGREGAR PACIENTE",
-    "editPatient": "EDITAR CONTACTO DE PACIENTE",
+    "addPatient": "CONTACTO DE PACIENTE",
+    "editPatient": "CONTACTO DE PACIENTE",
     "phoneNumberRequired": "Número telefónico requerido",
     "phoneNumber": "Número Telefónico",
     "email": "Correo Electrónico",
@@ -37,8 +37,8 @@
     "submit": "Enviar"
   },
   "patientCreateForm": {
-    "personalDetails": "Datos Personales",
-    "contactDetails": "Datos de Contacto",
+    "personalDetails": "Información básica",
+    "contactDetails": "Datos de contacto",
     "patientCreated": "PACIENTE CREADO CON ÉXITO",
     "patientUpdated": "PACIENTE ACTUALIZADO CON ÉXITO",
     "verifyEmail": "Verifique el correo del paciente para confirmar clave de acceso.",
@@ -46,7 +46,8 @@
     "next": "Siguiente",
     "submit": "Enviar",
     "update": "Actualizar",
-    "viewProfile": "Ver Perfil"
+    "viewProfile": "Ver Perfil",
+    "changePhoto": "Cambiar foto"
   },
   "patientPersonalDetailsForm": {
     "addPatient": "AGREGAR PACIENTE",
@@ -115,7 +116,7 @@
   "practitionerContactDetailForm": {
     "role": "Profesión",
     "addPractitioner": "AGREGAR PROFESIONAL",
-    "editPractitioner": "EDITAR CONTACTO DE PROFESIONAL",
+    "editPractitioner": "CONTACTO DE PROFESIONAL",
     "phoneNumberRequired": "Número telefónico requerido",
     "phoneNumber": "Número Telefónico",
     "email": "Correo Electrónico",
