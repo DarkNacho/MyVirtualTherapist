@@ -128,8 +128,8 @@
     "submit": "Enviar"
   },
   "practitionerCreateForm": {
-    "personalDetails": "Datos Personales",
-    "contactDetails": "Datos de Contacto",
+    "personalDetails": "Información básica",
+    "contactDetails": "Datos de contacto",
     "practitionerCreated": "PROFESIONAL CREADO CON ÉXITO",
     "practitionerUpdated": "PROFESIONAL ACTUALIZADO CON ÉXITO",
     "verifyEmail": "Verifique el correo del practicante para confirmar clave de acceso.",
@@ -137,7 +137,8 @@
     "next": "Siguiente",
     "submit": "Enviar",
     "update": "Actualizar",
-    "viewProfile": "Ver Perfil"
+    "viewProfile": "Ver Perfil",
+    "changePhoto": "Cambiar foto"
   },
   "practitionerPersonalDetailsForm": {
     "addPractitioner": "AGREGAR PROFESIONAL",

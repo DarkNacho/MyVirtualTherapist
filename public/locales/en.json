@@ -129,7 +129,7 @@
     "submit": "Submit"
   },
   "practitionerCreateForm": {
-    "personalDetails": "Personal Details",
+    "personalDetails": "Basic Information",
     "contactDetails": "Contact Details",
     "practitionerCreated": "PRACTITIONER CREATED SUCCESSFULLY",
     "practitionerUpdated": "PRACTITIONER UPDATED SUCCESSFULLY",
@@ -138,7 +138,8 @@
     "next": "Next",
     "submit": "Submit",
     "update": "Update",
-    "viewProfile": "View Profile"
+    "viewProfile": "View Profile",
+    "changePhoto": "Change Photo"
   },
   "practitionerPersonalDetailsForm": {
     "addPractitioner": "ADD PRACTITIONER",
