@@ -240,5 +240,10 @@
       "female": "Femenino",
       "other": "Otro"
     }
+  },
+
+  "questionnaireComponent": {
+    "save": "Guardar",
+    "delete": "Eliminar"
   }
 }

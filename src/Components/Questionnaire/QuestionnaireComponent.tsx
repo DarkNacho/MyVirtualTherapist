@@ -17,6 +17,7 @@ import ConditionService from "../../Services/ConditionService";
 import { isAdminOrPractitioner } from "../../Utils/RolUser";
 import ObservationUtils from "../../Services/Utils/ObservationUtils";
 import HandleResult from "../../Utils/HandleResult";
+import { useTranslation } from "react-i18next";
 //import "./QuestionnaireComponent.css";
 
 const fhirService =
@@ -40,6 +41,7 @@ export default function QuestionnaireComponent({
   encounterId?: string;
 }) {
   const formContainerRef = useRef(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const formContainer = formContainerRef.current;
@@ -359,6 +361,62 @@ export default function QuestionnaireComponent({
     */
   };
 
+  const handleDelete = async () => {
+    if (!questionnaireResponse.id) return;
+    
+    try {
+      // Primero eliminamos las observaciones relacionadas
+      const observations = await getObservations();
+      if (observations.length > 0) {
+        for (const observation of observations) {
+          if (observation.id) {
+            await observationService.deleteResource(observation.id);
+          }
+        }
+      }
+
+      // Luego eliminamos las condiciones relacionadas
+      const conditions = await getConditions();
+      if (conditions.length > 0) {
+        for (const condition of conditions) {
+          if (condition.id) {
+            await conditionService.deleteResource(condition.id);
+          }
+        }
+      }
+
+      // Finalmente eliminamos el QuestionnaireResponse
+      const result = await questionnaireResponseService.deleteResource(questionnaireResponse.id);
+      
+      if (result.success) {
+        // Mostrar mensaje de éxito
+        HandleResult.handleOperation(
+          () => Promise.resolve(result),
+          "Evaluación eliminada exitosamente",
+          "Eliminando..."
+        );
+        // Recargar la página después de un breve retraso para mostrar el mensaje
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        console.error("Error al eliminar la evaluación:", result.error);
+        HandleResult.handleOperation(
+          () => Promise.reject(result.error),
+          "Error al eliminar la evaluación",
+          "Eliminando..."
+        );
+      }
+    } catch (error) {
+      console.error("Error al eliminar la evaluación:", error);
+      HandleResult.handleOperation(
+        () => Promise.reject(error),
+        "Error al eliminar la evaluación",
+        "Eliminando..."
+      );
+    }
+  };
+
   return (
     <div>
       <div ref={formContainerRef}></div>
@@ -367,16 +425,26 @@ export default function QuestionnaireComponent({
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
+            gap: "1rem",
+            marginTop: "1rem"
           }}
         >
+          {questionnaireResponse.id && (
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={handleDelete}
+            >
+              {t("questionnaireComponent.delete")}
+            </Button>
+          )}
           <Button
             variant="contained"
             color="primary"
             onClick={postData}
-            sx={{ marginLeft: "auto" }}
           >
-            Guardar
+            {t("questionnaireComponent.save")}
           </Button>
         </div>
       )}

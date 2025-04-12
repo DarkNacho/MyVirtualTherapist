@@ -239,5 +239,10 @@
       "female": "Female",
       "other": "Other"
     }
+  },
+
+  "questionnaireComponent": {
+    "save": "Save",
+    "delete": "Delete"
   }
 }
