@@ -204,7 +204,7 @@ export default function PractitionerList({
                                 fontSize: isMobile ? "0.7rem" : "0.875rem",
                               }}
                             >
-                              <strong>Especialidad:</strong> Especialidad
+                              <strong>{t("practitionerList.specialty")}:</strong> Especialidad
                             </Typography>
                           </Box>
                           <Box component="span" className={styles.block}>

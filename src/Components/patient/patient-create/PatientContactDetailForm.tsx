@@ -232,7 +232,7 @@ export default function PatientContactDetailForm({
           <TextField
             select
             label={t("patientContactDetailForm.relation")}
-            defaultValue="N"
+            defaultValue={patient?.contact?.[0]?.contactType}
             {...register(`contact.0.contactType`)}
             fullWidth
             error={Boolean(errors.contact?.[0]?.contactType)}

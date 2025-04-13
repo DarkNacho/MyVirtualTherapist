@@ -14,11 +14,16 @@ import { SearchParams } from "fhir-kit-client";
 import { useTranslation } from "react-i18next";
 import { CacheUtils } from "../../../Utils/Cache";
 
+// Definición de la interfaz Result para manejar respuestas de operaciones
+interface Result<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
 let practitionerFormData: PractitionerFormData;
 
-const handleEditClick = (person: Practitioner) => {
-  alert(`Edit clicked for id: ${person.id}`);
-};
+// Declaración de funciones para referencias de tipo, la implementación real está en el componente handleEditPractitioner
+const handleEditClick = (person: Practitioner) => {};
 
 const handleDeleteClick = (person: Practitioner) => {
   console.log(`Delete clicked for id: ${person.id}`);
@@ -29,6 +34,8 @@ const PractitionerListPage = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [avatar, setAvatar] = useState<File | null>(null);
   const [isPosting, setIsPosting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedPractitioner, setSelectedPractitioner] = useState<Practitioner | null>(null);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -36,11 +43,41 @@ const PractitionerListPage = () => {
   const [searchParam, setSearchParam] = useState<SearchParams | undefined>();
 
   const handleOpen = () => {
+    setIsEditing(false);
+    setSelectedPractitioner(null);
+    setActiveStep(0);
+    setAvatar(null);
+    practitionerFormData = {} as PractitionerFormData;
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
+    setIsEditing(false);
+    setSelectedPractitioner(null);
+  };
+
+  // Implementación real del handleEditClick dentro del componente
+  const handleEditPractitioner = async (person: Practitioner) => {
+    try {
+      setIsEditing(true);
+      setSelectedPractitioner(person);
+      setActiveStep(0);
+      
+      // Convertir el practitioner FHIR a PractitionerFormData
+      const formData = await PersonUtil.loadPractitionerForm(person);
+      practitionerFormData = formData;
+      
+      // Si hay foto, preparar para mostrarla
+      if (person.photo && person.photo.length > 0 && person.photo[0].data) {
+        // La foto está en base64, pero no podemos convertirla directamente a File
+        // En el componente se mostrará usando la propiedad photo del practitioner
+      }
+      
+      setOpen(true);
+    } catch (error) {
+      console.error("Error preparing practitioner for edit:", error);
+    }
   };
 
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,9 +98,16 @@ const PractitionerListPage = () => {
       if (activeStep < 1) {
         setActiveStep((prev) => prev + 1);
       } else {
+        const operation = isEditing ? 
+          () => updatePractitioner(practitionerFormData) : 
+          () => postPractitioner(practitionerFormData);
+      
+        const message = isEditing ? 
+          t("practitionerPage.practitionerUpdated", "Practitioner updated successfully") : 
+          t("practitionerPage.practitionerCreated");
         const response = await HandleResult.handleOperation(
-          () => postPractitioner(practitionerFormData),
-          t("practitionerPage.practitionerCreated"),
+          operation,
+          message,
           t("practitionerPage.sending")
         );
         if (response.success) setActiveStep((prev) => prev + 1);
@@ -74,6 +118,68 @@ const PractitionerListPage = () => {
     }
   };
 
+  const updatePractitioner = async (
+    data: PractitionerFormData
+  ): Promise<Result<Practitioner>> => {
+    if (!selectedPractitioner || !selectedPractitioner.id) {
+      return {
+        success: false,
+        error: "No practitioner selected for update"
+      };
+    }
+    
+    data.id = selectedPractitioner.id;
+    const rut = data.rut.replace(/\./g, "").replace(/-/g, "").toUpperCase();
+    data.rut = rut;
+    
+    const { practitioner, practitionerRole } =
+      await PersonUtil.PractitionerFormToPractitioner(data);
+    
+    if (!practitioner) {
+      return {
+        success: false,
+        error: t("practitionerPage.errorConvertingForm"),
+      };
+    }
+    
+    // Actualizar en HAPI FHIR
+    const fhirService = 
+      FhirResourceService.getInstance<Practitioner>("Practitioner");
+    const responseFhir = await fhirService.updateResource(practitioner);
+    
+    if (!responseFhir.success) return responseFhir;
+    
+    // Actualizar PractitionerRole si es necesario
+    if (practitionerRole) {
+      practitionerRole.practitioner = {
+        reference: `Practitioner/${responseFhir.data.id}`,
+      };
+      
+      const fhirServiceRole =
+        FhirResourceService.getInstance<PractitionerRole>("PractitionerRole");
+      
+      // Buscar si ya existe un PractitionerRole para este practitioner
+      const existingRoleResponse = await fhirServiceRole.getResources({
+        practitioner: responseFhir.data.id
+      });
+      
+      if (existingRoleResponse.success && existingRoleResponse.data.length > 0) {
+        // Actualizar el role existente
+        practitionerRole.id = existingRoleResponse.data[0].id;
+        await fhirServiceRole.updateResource(practitionerRole);
+      } else {
+        // Crear un nuevo role
+        await fhirServiceRole.sendResource(practitionerRole);
+      }
+    }
+    
+    // También podríamos actualizar la información del usuario en el servidor de autenticación 
+    // si fuera necesario
+    
+    CacheUtils.clearCache();
+    return responseFhir;
+  };
+  
   const postPractitioner = async (
     data: PractitionerFormData
   ): Promise<Result<Practitioner>> => {
@@ -175,7 +281,7 @@ const PractitionerListPage = () => {
               }}
             >
               <PractitionerList
-                onEditClick={handleEditClick}
+                onEditClick={handleEditPractitioner}
                 onDeleteClick={handleDeleteClick}
                 searchParam={searchParam}
               />
@@ -194,6 +300,8 @@ const PractitionerListPage = () => {
         avatar={avatar}
         handleAvatarChange={handleAvatarChange}
         isPosting={isPosting}
+        isEditing={isEditing}
+        selectedPractitioner={selectedPractitioner}
       />
     </Box>
   );

@@ -24,7 +24,7 @@ interface Result<T> {
 
 let patientFormData: PatientFormData;
 
-// Declaración de funciones para referencias de tipo, la implementación real está en el componente
+// Declaración de funciones para referencias de tipo, la implementación real está en el componente handleEditPatient
 const handleEditClick = (person: Patient) => {};
 const handleDeleteClick = (person: Patient) => {
   alert(`Delete clicked for id: ${person.id}`);
@@ -130,9 +130,9 @@ export default function PatientListPage() {
         if (response.success) setActiveStep((prev) => prev + 1);
         else setActiveStep(0);
 
-        await new Promise((resolve) => setTimeout(resolve, 2000)); // wait for 1 second
       }
     } finally {
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
       setIsPosting(false);
     }
   };
@@ -231,6 +231,7 @@ export default function PatientListPage() {
       phone_number: data.numeroTelefonico,
       name: `${data.nombre} ${data.segundoNombre} ${data.apellidoPaterno} ${data.apellidoMaterno}`,
       role: "Patient",
+      //gender: data.genero,
       fhir_id: responseFhir.data.id,
     };
     patientFormData.id = responseFhir.data.id;
