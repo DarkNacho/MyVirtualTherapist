@@ -85,18 +85,6 @@ const LightDashboard: FC<DashboardProps> = ({ oxygenSaturationData, heartRateDat
     endDate: new Date().toISOString().split('T')[0] // Hoy
   });
 
-  // Descripciones para cada gráfico
-  //TODO: Agregar descripciones a cada idioma
-  const chartDescriptions = {
-    spo2: "La saturación de oxígeno en sangre (SpO2) es una medida de la cantidad de oxígeno transportada en la sangre. Valores normales son entre 95-100%. Valores por debajo de 90% pueden indicar hipoxemia.",
-    heartRate: "La frecuencia cardíaca indica cuántas veces late el corazón por minuto. El rango normal para adultos en reposo es de 60-100 latidos por minuto. Variaciones pueden indicar actividad física, estrés o condiciones médicas.",
-    respRate: "La frecuencia respiratoria mide la cantidad de respiraciones por minuto. Para adultos en reposo, lo normal es entre 12-20 respiraciones/minuto. Valores fuera de este rango pueden indicar problemas respiratorios o metabólicos.",
-    inertial: "Los sensores inerciales detectan movimientos anómalos o patrones irregulares durante las sesiones del paciente. El histograma muestra la cantidad de eventos registrados por sesión, lo que permite identificar tendencias en la estabilidad postural, temblores o movimientos bruscos que pueden requerir intervención clínica. Un aumento en la frecuencia de eventos puede indicar deterioro neuromotor o problemas de equilibrio."
-  };
-  
-
-
-
   // Función para resetear el zoom
   const resetZoomForChart = (chartRef: React.RefObject<ChartJS<"line">>) => {
     if (chartRef.current) {
@@ -232,22 +220,6 @@ const LightDashboard: FC<DashboardProps> = ({ oxygenSaturationData, heartRateDat
   //const tabNames = ['Signos Vitales', 'Sesiones', 'Evaluaciones'];
   const tabNames = ['Signos Vitales'];
 
-  // Agrego un estado para las sesiones disponibles
-  const [availableSessions, setAvailableSessions] = useState([
-    { id: '12', date: '15/03/2024', name: 'Sesión #12 (15/03/2024)' },
-    { id: '11', date: '05/03/2024', name: 'Sesión #11 (05/03/2024)' },
-    { id: '10', date: '03/03/2024', name: 'Sesión #10 (03/03/2024)' },
-    { id: '9', date: '01/03/2024', name: 'Sesión #9 (01/03/2024)' },
-    { id: '8', date: '28/02/2024', name: 'Sesión #8 (28/02/2024)' },
-    { id: '7', date: '20/02/2024', name: 'Sesión #7 (20/02/2024)' },
-    { id: '6', date: '15/02/2024', name: 'Sesión #6 (15/02/2024)' },
-    { id: '5', date: '10/02/2024', name: 'Sesión #5 (10/02/2024)' },
-    { id: '4', date: '05/02/2024', name: 'Sesión #4 (05/02/2024)' },
-    { id: '3', date: '01/02/2024', name: 'Sesión #3 (01/02/2024)' },
-    { id: '2', date: '25/01/2024', name: 'Sesión #2 (25/01/2024)' },
-    { id: '1', date: '15/01/2024', name: 'Sesión #1 (15/01/2024)' }
-  ]);
-
   // Cerca del inicio del componente, donde están las otras declaraciones de useState:
   const [inertialObservationsOpen, setInertialObservationsOpen] = useState(false);
 
@@ -354,6 +326,31 @@ const LightDashboard: FC<DashboardProps> = ({ oxygenSaturationData, heartRateDat
   // Estado para el diálogo de historial de observaciones
   const [observationsHistoryOpen, setObservationsHistoryOpen] = useState(false);
 
+  // Agrego un estado para las sesiones disponibles
+  const [availableSessions, setAvailableSessions] = useState([
+        { id: '12', date: '15/03/2024', name: 'Sesión #12 (15/03/2024)' },
+        { id: '11', date: '05/03/2024', name: 'Sesión #11 (05/03/2024)' },
+        { id: '10', date: '03/03/2024', name: 'Sesión #10 (03/03/2024)' },
+        { id: '9', date: '01/03/2024', name: 'Sesión #9 (01/03/2024)' },
+        { id: '8', date: '28/02/2024', name: 'Sesión #8 (28/02/2024)' },
+        { id: '7', date: '20/02/2024', name: 'Sesión #7 (20/02/2024)' },
+        { id: '6', date: '15/02/2024', name: 'Sesión #6 (15/02/2024)' },
+        { id: '5', date: '10/02/2024', name: 'Sesión #5 (10/02/2024)' },
+        { id: '4', date: '05/02/2024', name: 'Sesión #4 (05/02/2024)' },
+        { id: '3', date: '01/02/2024', name: 'Sesión #3 (01/02/2024)' },
+        { id: '2', date: '25/01/2024', name: 'Sesión #2 (25/01/2024)' },
+        { id: '1', date: '15/01/2024', name: 'Sesión #1 (15/01/2024)' }
+  ]);
+
+  // Descripciones para cada gráfico
+  //TODO: Agregar descripciones a cada idioma
+  const chartDescriptions = {
+    spo2: "La saturación de oxígeno en sangre (SpO2) es una medida de la cantidad de oxígeno transportada en la sangre. Valores normales son entre 95-100%. Valores por debajo de 90% pueden indicar hipoxemia.",
+    heartRate: "La frecuencia cardíaca indica cuántas veces late el corazón por minuto. El rango normal para adultos en reposo es de 60-100 latidos por minuto. Variaciones pueden indicar actividad física, estrés o condiciones médicas.",
+    respRate: "La frecuencia respiratoria mide la cantidad de respiraciones por minuto. Para adultos en reposo, lo normal es entre 12-20 respiraciones/minuto. Valores fuera de este rango pueden indicar problemas respiratorios o metabólicos.",
+    inertial: "Los sensores inerciales detectan movimientos anómalos o patrones irregulares durante las sesiones del paciente. El histograma muestra la cantidad de eventos registrados por sesión, lo que permite identificar tendencias en la estabilidad postural, temblores o movimientos bruscos que pueden requerir intervención clínica. Un aumento en la frecuencia de eventos puede indicar deterioro neuromotor o problemas de equilibrio."
+  };
+
   // Función para generar etiquetas de fechas de sesiones para los gráficos
   const generateSessionDateLabels = () => {
     // Usamos las fechas de las sesiones disponibles, ordenadas cronológicamente
@@ -438,10 +435,6 @@ const LightDashboard: FC<DashboardProps> = ({ oxygenSaturationData, heartRateDat
       {selectedTab === 0 && (
         <>
           {renderVitalsViewButtons()}
-
-
-          
-
 
           {/* Vista general - Gráficos originales */}
           {(selectedVitalsView === 'general' || (selectedVitalsView === 'custom' && Object.values(customConfig).some(val => val === true))) && (
@@ -1829,7 +1822,7 @@ const LightDashboard: FC<DashboardProps> = ({ oxygenSaturationData, heartRateDat
             </Box>
           )}
 
-          {/* Última sesión */}
+          {/* Por sesión - ultima sesión */}
           {selectedVitalsView === 'lastSession' && (
             <Paper sx={{ p: 3, mb: 3, borderRadius: 2, bgcolor: 'white' }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -2030,638 +2023,7 @@ const LightDashboard: FC<DashboardProps> = ({ oxygenSaturationData, heartRateDat
         </>
       )}
 
-
-
-      {/* Diálogo de detalle para mostrar el gráfico ampliado */}
-      <Dialog 
-        open={detailDialog.open}
-        onClose={handleCloseDetail}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          p: 2,
-          bgcolor: 'white',
-          borderBottom: `1px solid ${COLORS.gridLine}`
-        }}>
-          <Box>
-            <Typography variant="h6" fontWeight="bold" color="textPrimary">
-              {detailDialog.title}
-            </Typography>
-            <Box sx={valuePillStyle} style={{ marginTop: 8 }}>{detailDialog.value}</Box>
-          </Box>
-          <IconButton edge="end" color="inherit" onClick={handleCloseDetail} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent sx={{ p: 3, bgcolor: COLORS.lightGrey }}>
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="body1" color="textSecondary">
-              {detailDialog.description}
-            </Typography>
-          </Box>
-          <Box sx={{ 
-            height: 400, 
-            bgcolor: 'white',
-            borderRadius: 2,
-            p: 3,
-            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.05)'
-          }}>
-            {detailDialog.chartType === 'spo2' && (
-              <>
-              <Line
-                data={{
-                  ...oxygenSaturationChartData,
-                  datasets: [{
-                    ...oxygenSaturationChartData.datasets[0],
-                    pointRadius: 3
-                  }]
-                }}
-                options={detailedLineOptions}
-                  ref={detailSpo2ChartRef}
-                />
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                  <Button 
-                    onClick={() => resetZoomForChart(detailSpo2ChartRef)}
-                    variant="text" 
-                    sx={{ 
-                      color: COLORS.secondary, 
-                      textTransform: 'none',
-                      fontWeight: 'normal',
-                      fontSize: '0.85rem'
-                    }}
-                  >
-                    Resetear Zoom
-                  </Button>
-                </Box>
-              </>
-            )}
-            {detailDialog.chartType === 'heartRate' && (
-              <>
-              <Line
-                data={{
-                  ...heartRateChartData,
-                  datasets: [{
-                    ...heartRateChartData.datasets[0],
-                    pointRadius: 3
-                  }]
-                }}
-                options={detailedLineOptions}
-                  ref={detailHeartRateChartRef}
-                />
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                  <Button 
-                    onClick={() => resetZoomForChart(detailHeartRateChartRef)}
-                    variant="text" 
-                    sx={{ 
-                      color: COLORS.secondary, 
-                      textTransform: 'none',
-                      fontWeight: 'normal',
-                      fontSize: '0.85rem'
-                    }}
-                  >
-                    Resetear Zoom
-                  </Button>
-                </Box>
-              </>
-            )}
-            {detailDialog.chartType === 'respRate' && (
-              <>
-              <Line
-                data={{
-                  ...respiratoryRateChartData,
-                  datasets: [{
-                    ...respiratoryRateChartData.datasets[0],
-                    pointRadius: 3
-                  }]
-                }}
-                options={detailedLineOptions}
-                  ref={detailRespRateChartRef}
-                />
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                  <Button 
-                    onClick={() => resetZoomForChart(detailRespRateChartRef)}
-                    variant="text" 
-                    sx={{ 
-                      color: COLORS.secondary, 
-                      textTransform: 'none',
-                      fontWeight: 'normal',
-                      fontSize: '0.85rem'
-                    }}
-                  >
-                    Resetear Zoom
-                  </Button>
-                </Box>
-              </>
-            )}
-            {detailDialog.chartType === 'inertial' && (
-              <>
-              <Bar
-                data={{
-                  labels: generateSessionDateLabels().slice(0, 10),
-                  datasets: [
-                    {
-                      label: 'Eventos anómalos por sesión',
-                      data: generateMotionAnomalyEvents(),
-                      backgroundColor: COLORS.primary,
-                      borderColor: COLORS.primary,
-                      borderWidth: 1,
-                      barThickness: 30,
-                      hoverBackgroundColor: COLORS.secondary,
-                    }
-                  ]
-                }}
-                options={{
-                  ...detailedLineOptions,
-                  plugins: {
-                    ...detailedLineOptions.plugins,
-                    title: {
-                      ...detailedLineOptions.plugins?.title,
-                      text: 'Histograma de Eventos Anómalos de Movimiento',
-                    },
-                    legend: {
-                      display: true,
-                      position: 'top'
-                    }
-                  },
-                  scales: {
-                    ...detailedLineOptions.scales,
-                    y: {
-                      ...detailedLineOptions.scales?.y,
-                      beginAtZero: true,
-                      max: 10,
-                      ticks: {
-                        stepSize: 1
-                      },
-                      title: {
-                        display: true,
-                        text: 'Número de eventos',
-                        font: {
-                          size: 14,
-                          weight: 'bold'
-                        }
-                      }
-                    },
-                    x: {
-                      ...detailedLineOptions.scales?.x,
-                      title: {
-                        display: true,
-                        text: 'Sesiones',
-                        font: {
-                          size: 14,
-                          weight: 'bold'
-                        }
-                      }
-                    }
-                  }
-                }}
-                ref={detailInertialChartRef}
-              />
-              <Box sx={{ mt: 4 }}>
-                <Typography variant="subtitle1" fontWeight="medium" gutterBottom>
-                  Resumen de Anomalías por Sesión
-                </Typography>
-                <Typography variant="body2" sx={{ mb: 2 }}>
-                  El histograma muestra la cantidad de eventos anómalos detectados en el movimiento del paciente durante cada sesión. Los eventos incluyen movimientos bruscos, posturas incorrectas y períodos de inactividad.
-                </Typography>
-                <Typography variant="body2">
-                  <strong>Observaciones destacadas:</strong>
-                </Typography>
-                <ul style={{ margin: '8px 0', paddingLeft: '20px' }}>
-                  <li><Typography variant="body2">La sesión 9 (01/03/2024) muestra el mayor número de anomalías (8 eventos)</Typography></li>
-                  <li><Typography variant="body2">Las sesiones 4 y 7 también presentan múltiples eventos anómalos</Typography></li>
-                  <li><Typography variant="body2">En general, se observa una tendencia a la disminución de eventos en las sesiones más recientes</Typography></li>
-                </ul>
-              </Box>
-              </>
-            )}
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ p: 2, borderTop: `1px solid ${COLORS.gridLine}` }}>
-          <Button onClick={handleCloseDetail} sx={{ color: COLORS.primary }}>
-            Cerrar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Diálogo de observaciones de sensores inerciales */}
-      <Dialog 
-        open={inertialObservationsOpen}
-        onClose={() => setInertialObservationsOpen(false)}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          p: 2,
-          bgcolor: 'white',
-          borderBottom: `1px solid ${COLORS.gridLine}`
-        }}>
-          <Typography variant="h6" fontWeight="bold" color="textPrimary">
-            Detalle de Eventos Detectados por Sensores Inerciales
-          </Typography>
-          <IconButton edge="end" color="inherit" onClick={() => setInertialObservationsOpen(false)} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent sx={{ p: 3, bgcolor: COLORS.lightGrey }}>
-          <Grid container spacing={3}>
-            {/* Resumen general de eventos */}
-            <Grid item xs={12}>
-              <Paper sx={{ p: 2, mb: 3 }}>
-                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
-                  Resumen de Eventos por Categoría
-                </Typography>
-                <Typography variant="body2" sx={{ mb: 2 }}>
-                  Los sensores inerciales registraron un total de 28 eventos anómalos durante las últimas 10 sesiones, distribuidos en las siguientes categorías:
-                </Typography>
-                
-                <Grid container spacing={2}>
-                  <Grid item xs={6} md={3}>
-                    <Box sx={{ 
-                      textAlign: 'center', 
-                      p: 2, 
-                      bgcolor: 'rgba(19, 72, 185, 0.1)', 
-                      borderRadius: 1 
-                    }}>
-                      <Typography variant="h5" color={COLORS.primary} fontWeight="bold">12</Typography>
-                      <Typography variant="body2">Desvíos posturales</Typography>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={6} md={3}>
-                    <Box sx={{ 
-                      textAlign: 'center', 
-                      p: 2, 
-                      bgcolor: 'rgba(255, 69, 105, 0.1)', 
-                      borderRadius: 1 
-                    }}>
-                      <Typography variant="h5" color={COLORS.redLine} fontWeight="bold">8</Typography>
-                      <Typography variant="body2">Temblores</Typography>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={6} md={3}>
-                    <Box sx={{ 
-                      textAlign: 'center', 
-                      p: 2, 
-                      bgcolor: 'rgba(31, 200, 227, 0.1)', 
-                      borderRadius: 1 
-                    }}>
-                      <Typography variant="h5" color={COLORS.cyanLine} fontWeight="bold">5</Typography>
-                      <Typography variant="body2">Movimientos bruscos</Typography>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={6} md={3}>
-                    <Box sx={{ 
-                      textAlign: 'center', 
-                      p: 2, 
-                      bgcolor: 'rgba(76, 175, 80, 0.1)', 
-                      borderRadius: 1 
-                    }}>
-                      <Typography variant="h5" color={COLORS.greenLine} fontWeight="bold">3</Typography>
-                      <Typography variant="body2">Interrupciones</Typography>
-                    </Box>
-                  </Grid>
-                </Grid>
-              </Paper>
-            </Grid>
-            
-            {/* Sesiones con mayor incidencia */}
-            <Grid item xs={12}>
-              <Paper sx={{ p: 2, mb: 3 }}>
-                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
-                  Sesiones con Mayor Incidencia de Eventos
-                </Typography>
-                
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant="subtitle2" fontWeight="medium" sx={{ mb: 1, color: COLORS.primary }}>
-                    Sesión #9 - 01/03/2024 (8 eventos)
-                  </Typography>
-                  <Box sx={{ p: 2, bgcolor: 'rgba(19, 72, 185, 0.05)', borderRadius: 1, mb: 1 }}>
-                    <Typography variant="body2" sx={{ mb: 1 }}>
-                      <strong>Patrón principal:</strong> Desvíos posturales laterales durante ejercicios de rehabilitación respiratoria.
-                    </Typography>
-                    <Typography variant="body2">
-                      <strong>Observación clínica:</strong> La paciente mostró tendencia a inclinarse hacia la derecha durante los ejercicios de respiración profunda, posiblemente indicando debilidad muscular en el hemicuerpo izquierdo o compensación por dolor.
-                    </Typography>
-                  </Box>
-                </Box>
-                
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant="subtitle2" fontWeight="medium" sx={{ mb: 1, color: COLORS.redLine }}>
-                    Sesión #4 - 05/02/2024 (6 eventos)
-                  </Typography>
-                  <Box sx={{ p: 2, bgcolor: 'rgba(255, 69, 105, 0.05)', borderRadius: 1, mb: 1 }}>
-                    <Typography variant="body2" sx={{ mb: 1 }}>
-                      <strong>Patrón principal:</strong> Temblores de baja intensidad pero persistentes durante periodos de reposo.
-                    </Typography>
-                    <Typography variant="body2">
-                      <strong>Observación clínica:</strong> Los temblores coincidieron con periodos de mayor ansiedad reportada por la paciente. Se recomienda evaluar componente ansioso y posible relación con medicación.
-                    </Typography>
-                  </Box>
-                </Box>
-                
-                <Box>
-                  <Typography variant="subtitle2" fontWeight="medium" sx={{ mb: 1, color: COLORS.cyanLine }}>
-                    Sesión #7 - 20/02/2024 (5 eventos)
-                  </Typography>
-                  <Box sx={{ p: 2, bgcolor: 'rgba(31, 200, 227, 0.05)', borderRadius: 1 }}>
-                    <Typography variant="body2" sx={{ mb: 1 }}>
-                      <strong>Patrón principal:</strong> Movimientos bruscos y pequeñas interrupciones en la continuidad del monitoreo.
-                    </Typography>
-                    <Typography variant="body2">
-                      <strong>Observación clínica:</strong> Los movimientos bruscos se asociaron temporalmente con episodios de tos. La paciente reportó molestias en la garganta durante esta sesión.
-                    </Typography>
-                  </Box>
-                </Box>
-              </Paper>
-            </Grid>
-            
-            {/* Tendencias y análisis */}
-            <Grid item xs={12}>
-              <Paper sx={{ p: 2 }}>
-                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
-                  Análisis y Tendencias
-                </Typography>
-                
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant="body2" sx={{ mb: 2 }}>
-                    El análisis de los datos recogidos por los sensores inerciales muestra las siguientes tendencias significativas:
-                  </Typography>
-                  
-                  <Box sx={{ mb: 2, p: 2, bgcolor: 'rgba(246, 246, 246, 0.7)', borderRadius: 1, border: '1px dashed rgba(0, 0, 0, 0.12)' }}>
-                    <Typography variant="body2" fontWeight="medium" sx={{ mb: 1 }}>
-                      1. Correlación entre eventos posturales y fatiga
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 1 }}>
-                      Se observa un aumento de desvíos posturales después de 20 minutos de actividad, sugiriendo fatiga muscular progresiva.
-                    </Typography>
-                  </Box>
-                  
-                  <Box sx={{ mb: 2, p: 2, bgcolor: 'rgba(246, 246, 246, 0.7)', borderRadius: 1, border: '1px dashed rgba(0, 0, 0, 0.12)' }}>
-                    <Typography variant="body2" fontWeight="medium" sx={{ mb: 1 }}>
-                      2. Disminución de eventos en las últimas sesiones
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 1 }}>
-                      Se registra una disminución general del 25% en eventos de temblores en las últimas 3 sesiones, indicando posible mejora en la estabilidad.
-                    </Typography>
-                  </Box>
-                  
-                  <Box sx={{ p: 2, bgcolor: 'rgba(246, 246, 246, 0.7)', borderRadius: 1, border: '1px dashed rgba(0, 0, 0, 0.12)' }}>
-                    <Typography variant="body2" fontWeight="medium" sx={{ mb: 1 }}>
-                      3. Recomendaciones clínicas
-                    </Typography>
-                    <Typography variant="body2">
-                      Se sugiere incorporar ejercicios específicos de fortalecimiento del core y propiocepción para mejorar la estabilidad postural. Considerar evaluación neurológica para valorar los temblores de baja intensidad.
-                    </Typography>
-                  </Box>
-                </Box>
-              </Paper>
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions sx={{ p: 2, borderTop: `1px solid ${COLORS.gridLine}` }}>
-          <Button onClick={() => setInertialObservationsOpen(false)} sx={{ color: COLORS.primary }}>
-            Cerrar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Diálogo para historial de tendencias */}
-      <Dialog
-        open={trendHistoryDialog.open}
-        onClose={() => setTrendHistoryDialog({ ...trendHistoryDialog, open: false })}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          p: 2,
-          bgcolor: 'white',
-          borderBottom: `1px solid ${COLORS.gridLine}`
-        }}>
-          <Typography variant="h6" fontWeight="bold">
-            {trendHistoryDialog.type === 'spo2' && 'Historial de Tendencias - SpO2'}
-            {trendHistoryDialog.type === 'fc' && 'Historial de Tendencias - Frecuencia Cardíaca'}
-            {trendHistoryDialog.type === 'spo2_events' && 'Historial de Eventos - SpO2 < 90%'}
-            {trendHistoryDialog.type === 'fc_events' && 'Historial de Eventos - FC > 100 LPM'}
-          </Typography>
-          <IconButton edge="end" color="inherit" onClick={() => setTrendHistoryDialog({ ...trendHistoryDialog, open: false })} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent sx={{ p: 3, bgcolor: COLORS.lightGrey }}>
-          <Box sx={{ bgcolor: 'white', p: 3, borderRadius: 2 }}>
-            {(trendHistoryDialog.type === 'spo2' || trendHistoryDialog.type === 'fc') && (
-              <>
-                <Typography variant="subtitle1" gutterBottom>
-                  Últimas 10 sesiones
-                </Typography>
-                <Box sx={{ height: 300, mb: 3 }}>
-                  <Line
-                    data={{
-                      labels: ['Sesión 1', 'Sesión 2', 'Sesión 3', 'Sesión 4', 'Sesión 5', 'Sesión 6', 'Sesión 7', 'Sesión 8', 'Sesión 9', 'Sesión 10'],
-                      datasets: [{
-                        label: trendHistoryDialog.type === 'spo2' ? 'SpO2 (%)' : 'FC (LPM)',
-                        data: trendHistoryDialog.type === 'spo2' 
-                          ? [95, 94, 96, 95, 97, 94, 95, 96, 95, 96]
-                          : [82, 78, 75, 73, 76, 74, 72, 75, 73, 72],
-                        borderColor: trendHistoryDialog.type === 'spo2' ? COLORS.primary : COLORS.redLine,
-                        backgroundColor: 'transparent',
-                        tension: 0.4
-                      }]
-                    }}
-                    options={{
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      plugins: {
-                        legend: {
-                          display: true,
-                          position: 'top'
-                        }
-                      },
-                      scales: {
-                        y: {
-                          beginAtZero: false,
-                          min: trendHistoryDialog.type === 'spo2' ? 90 : 60,
-                          max: trendHistoryDialog.type === 'spo2' ? 100 : 90
-                        }
-                      }
-                    }}
-                  />
-                </Box>
-                <Typography variant="body2" color="textSecondary">
-                  {trendHistoryDialog.type === 'spo2' 
-                    ? 'La tendencia muestra una estabilidad general en los niveles de saturación de oxígeno, con variaciones mínimas entre sesiones.'
-                    : 'Se observa una tendencia a la baja en la frecuencia cardíaca, indicando una mejora en el acondicionamiento cardiovascular.'}
-                </Typography>
-              </>
-            )}
-
-            {(trendHistoryDialog.type === 'spo2_events' || trendHistoryDialog.type === 'fc_events') && (
-              <>
-                <Typography variant="subtitle1" gutterBottom>
-                  Registro de eventos
-                </Typography>
-                <Box sx={{ mb: 3, maxHeight: 400, overflow: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead>
-                      <tr style={{ backgroundColor: COLORS.veryLightBlue, borderBottom: `1px solid ${COLORS.gridLine}` }}>
-                        <th style={{ padding: '10px', textAlign: 'left' }}>Fecha</th>
-                        <th style={{ padding: '10px', textAlign: 'left' }}>Hora</th>
-                        <th style={{ padding: '10px', textAlign: 'left' }}>Valor</th>
-                        <th style={{ padding: '10px', textAlign: 'left' }}>Duración</th>
-                        <th style={{ padding: '10px', textAlign: 'left' }}>Sesión</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {trendHistoryDialog.type === 'spo2_events' ? (
-                        <>
-                          <tr style={{ borderBottom: `1px solid ${COLORS.gridLine}` }}>
-                            <td style={{ padding: '10px' }}>15/03/2024</td>
-                            <td style={{ padding: '10px' }}>10:23 AM</td>
-                            <td style={{ padding: '10px', color: 'red' }}>88%</td>
-                            <td style={{ padding: '10px' }}>45 segundos</td>
-                            <td style={{ padding: '10px' }}>
-                              <Button 
-                                sx={{ 
-                                  color: COLORS.primary, 
-                                  textTransform: 'none',
-                                  p: 0,
-                                  fontWeight: 'normal',
-                                  '&:hover': {
-                                    textDecoration: 'underline',
-                                    background: 'transparent'
-                                  }
-                                }}
-                                onClick={() => handleSessionSelect('12', '15/03/2024')}
-                              >
-                                Sesión #12
-                              </Button>
-                            </td>
-                          </tr>
-                          <tr style={{ borderBottom: `1px solid ${COLORS.gridLine}` }}>
-                            <td style={{ padding: '10px' }}>28/02/2024</td>
-                            <td style={{ padding: '10px' }}>11:05 AM</td>
-                            <td style={{ padding: '10px', color: 'red' }}>89%</td>
-                            <td style={{ padding: '10px' }}>30 segundos</td>
-                            <td style={{ padding: '10px' }}>
-                              <Button 
-                                sx={{ 
-                                  color: COLORS.primary, 
-                                  textTransform: 'none',
-                                  p: 0,
-                                  fontWeight: 'normal',
-                                  '&:hover': {
-                                    textDecoration: 'underline',
-                                    background: 'transparent'
-                                  }
-                                }}
-                                onClick={() => handleSessionSelect('8', '28/02/2024')}
-                              >
-                                Sesión #8
-                              </Button>
-                            </td>
-                          </tr>
-                        </>
-                      ) : (
-                        <>
-                          <tr style={{ borderBottom: `1px solid ${COLORS.gridLine}` }}>
-                            <td style={{ padding: '10px' }}>01/03/2024</td>
-                            <td style={{ padding: '10px' }}>09:45 AM</td>
-                            <td style={{ padding: '10px', color: 'blue' }}>102 LPM</td>
-                            <td style={{ padding: '10px' }}>1 min 20 seg</td>
-                            <td style={{ padding: '10px' }}>
-                              <Button 
-                                sx={{ 
-                                  color: COLORS.primary, 
-                                  textTransform: 'none',
-                                  p: 0,
-                                  fontWeight: 'normal',
-                                  '&:hover': {
-                                    textDecoration: 'underline',
-                                    background: 'transparent'
-                                  }
-                                }}
-                                onClick={() => handleSessionSelect('9', '01/03/2024')}
-                              >
-                                Sesión #9
-                              </Button>
-                            </td>
-                          </tr>
-                          <tr style={{ borderBottom: `1px solid ${COLORS.gridLine}` }}>
-                            <td style={{ padding: '10px' }}>15/02/2024</td>
-                            <td style={{ padding: '10px' }}>10:10 AM</td>
-                            <td style={{ padding: '10px', color: 'blue' }}>105 LPM</td>
-                            <td style={{ padding: '10px' }}>55 segundos</td>
-                            <td style={{ padding: '10px' }}>
-                              <Button 
-                                sx={{ 
-                                  color: COLORS.primary, 
-                                  textTransform: 'none',
-                                  p: 0,
-                                  fontWeight: 'normal',
-                                  '&:hover': {
-                                    textDecoration: 'underline',
-                                    background: 'transparent'
-                                  }
-                                }}
-                                onClick={() => handleSessionSelect('6', '15/02/2024')}
-                              >
-                                Sesión #6
-                              </Button>
-                            </td>
-                          </tr>
-                          <tr style={{ borderBottom: `1px solid ${COLORS.gridLine}` }}>
-                            <td style={{ padding: '10px' }}>01/02/2024</td>
-                            <td style={{ padding: '10px' }}>11:30 AM</td>
-                            <td style={{ padding: '10px', color: 'blue' }}>110 LPM</td>
-                            <td style={{ padding: '10px' }}>2 min 10 seg</td>
-                            <td style={{ padding: '10px' }}>
-                              <Button 
-                                sx={{ 
-                                  color: COLORS.primary, 
-                                  textTransform: 'none',
-                                  p: 0,
-                                  fontWeight: 'normal',
-                                  '&:hover': {
-                                    textDecoration: 'underline',
-                                    background: 'transparent'
-                                  }
-                                }}
-                                onClick={() => handleSessionSelect('3', '01/02/2024')}
-                              >
-                                Sesión #3
-                              </Button>
-                            </td>
-                          </tr>
-                        </>
-                      )}
-                    </tbody>
-                  </table>
-                </Box>
-                <Typography variant="body2" color="textSecondary">
-                  {trendHistoryDialog.type === 'spo2_events' 
-                    ? 'Se han registrado 2 eventos donde la saturación de oxígeno cayó por debajo del 90%. Estos episodios fueron transitorios y se resolvieron espontáneamente.'
-                    : 'Se han registrado 3 eventos donde la frecuencia cardíaca superó los 100 LPM. Estos episodios generalmente ocurrieron durante actividad física ligera.'}
-                </Typography>
-              </>
-            )}
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ p: 2, borderTop: `1px solid ${COLORS.gridLine}` }}>
-          <Button onClick={() => setTrendHistoryDialog({ ...trendHistoryDialog, open: false })} sx={{ color: COLORS.primary }}>
-            Cerrar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
+      {/* Por sesión - Según sesión seleccionada */}
       {selectedTab === 0 && selectedVitalsView === 'session' && (
         <Paper sx={{ mb: 4, p: 3, borderRadius: 2, boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.08)' }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -3525,6 +2887,636 @@ const LightDashboard: FC<DashboardProps> = ({ oxygenSaturationData, heartRateDat
           </Grid>
         </Paper>
       )}
+
+      {/* Diálogo de detalle para mostrar el gráfico ampliado */}
+      <Dialog 
+        open={detailDialog.open}
+        onClose={handleCloseDetail}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          p: 2,
+          bgcolor: 'white',
+          borderBottom: `1px solid ${COLORS.gridLine}`
+        }}>
+          <Box>
+            <Typography variant="h6" fontWeight="bold" color="textPrimary">
+              {detailDialog.title}
+            </Typography>
+            <Box sx={valuePillStyle} style={{ marginTop: 8 }}>{detailDialog.value}</Box>
+          </Box>
+          <IconButton edge="end" color="inherit" onClick={handleCloseDetail} aria-label="close">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ p: 3, bgcolor: COLORS.lightGrey }}>
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="body1" color="textSecondary">
+              {detailDialog.description}
+            </Typography>
+          </Box>
+          <Box sx={{ 
+            height: 400, 
+            bgcolor: 'white',
+            borderRadius: 2,
+            p: 3,
+            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.05)'
+          }}>
+            {detailDialog.chartType === 'spo2' && (
+              <>
+              <Line
+                data={{
+                  ...oxygenSaturationChartData,
+                  datasets: [{
+                    ...oxygenSaturationChartData.datasets[0],
+                    pointRadius: 3
+                  }]
+                }}
+                options={detailedLineOptions}
+                  ref={detailSpo2ChartRef}
+                />
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                  <Button 
+                    onClick={() => resetZoomForChart(detailSpo2ChartRef)}
+                    variant="text" 
+                    sx={{ 
+                      color: COLORS.secondary, 
+                      textTransform: 'none',
+                      fontWeight: 'normal',
+                      fontSize: '0.85rem'
+                    }}
+                  >
+                    Resetear Zoom
+                  </Button>
+                </Box>
+              </>
+            )}
+            {detailDialog.chartType === 'heartRate' && (
+              <>
+              <Line
+                data={{
+                  ...heartRateChartData,
+                  datasets: [{
+                    ...heartRateChartData.datasets[0],
+                    pointRadius: 3
+                  }]
+                }}
+                options={detailedLineOptions}
+                  ref={detailHeartRateChartRef}
+                />
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                  <Button 
+                    onClick={() => resetZoomForChart(detailHeartRateChartRef)}
+                    variant="text" 
+                    sx={{ 
+                      color: COLORS.secondary, 
+                      textTransform: 'none',
+                      fontWeight: 'normal',
+                      fontSize: '0.85rem'
+                    }}
+                  >
+                    Resetear Zoom
+                  </Button>
+                </Box>
+              </>
+            )}
+            {detailDialog.chartType === 'respRate' && (
+              <>
+              <Line
+                data={{
+                  ...respiratoryRateChartData,
+                  datasets: [{
+                    ...respiratoryRateChartData.datasets[0],
+                    pointRadius: 3
+                  }]
+                }}
+                options={detailedLineOptions}
+                  ref={detailRespRateChartRef}
+                />
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                  <Button 
+                    onClick={() => resetZoomForChart(detailRespRateChartRef)}
+                    variant="text" 
+                    sx={{ 
+                      color: COLORS.secondary, 
+                      textTransform: 'none',
+                      fontWeight: 'normal',
+                      fontSize: '0.85rem'
+                    }}
+                  >
+                    Resetear Zoom
+                  </Button>
+                </Box>
+              </>
+            )}
+            {detailDialog.chartType === 'inertial' && (
+              <>
+              <Bar
+                data={{
+                  labels: generateSessionDateLabels().slice(0, 10),
+                  datasets: [
+                    {
+                      label: 'Eventos anómalos por sesión',
+                      data: generateMotionAnomalyEvents(),
+                      backgroundColor: COLORS.primary,
+                      borderColor: COLORS.primary,
+                      borderWidth: 1,
+                      barThickness: 30,
+                      hoverBackgroundColor: COLORS.secondary,
+                    }
+                  ]
+                }}
+                options={{
+                  ...detailedLineOptions,
+                  plugins: {
+                    ...detailedLineOptions.plugins,
+                    title: {
+                      ...detailedLineOptions.plugins?.title,
+                      text: 'Histograma de Eventos Anómalos de Movimiento',
+                    },
+                    legend: {
+                      display: true,
+                      position: 'top'
+                    }
+                  },
+                  scales: {
+                    ...detailedLineOptions.scales,
+                    y: {
+                      ...detailedLineOptions.scales?.y,
+                      beginAtZero: true,
+                      max: 10,
+                      ticks: {
+                        stepSize: 1
+                      },
+                      title: {
+                        display: true,
+                        text: 'Número de eventos',
+                        font: {
+                          size: 14,
+                          weight: 'bold'
+                        }
+                      }
+                    },
+                    x: {
+                      ...detailedLineOptions.scales?.x,
+                      title: {
+                        display: true,
+                        text: 'Sesiones',
+                        font: {
+                          size: 14,
+                          weight: 'bold'
+                        }
+                      }
+                    }
+                  }
+                }}
+                ref={detailInertialChartRef}
+              />
+              <Box sx={{ mt: 4 }}>
+                <Typography variant="subtitle1" fontWeight="medium" gutterBottom>
+                  Resumen de Anomalías por Sesión
+                </Typography>
+                <Typography variant="body2" sx={{ mb: 2 }}>
+                  El histograma muestra la cantidad de eventos anómalos detectados en el movimiento del paciente durante cada sesión. Los eventos incluyen movimientos bruscos, posturas incorrectas y períodos de inactividad.
+                </Typography>
+                <Typography variant="body2">
+                  <strong>Observaciones destacadas:</strong>
+                </Typography>
+                <ul style={{ margin: '8px 0', paddingLeft: '20px' }}>
+                  <li><Typography variant="body2">La sesión 9 (01/03/2024) muestra el mayor número de anomalías (8 eventos)</Typography></li>
+                  <li><Typography variant="body2">Las sesiones 4 y 7 también presentan múltiples eventos anómalos</Typography></li>
+                  <li><Typography variant="body2">En general, se observa una tendencia a la disminución de eventos en las sesiones más recientes</Typography></li>
+                </ul>
+              </Box>
+              </>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ p: 2, borderTop: `1px solid ${COLORS.gridLine}` }}>
+          <Button onClick={handleCloseDetail} sx={{ color: COLORS.primary }}>
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Diálogo de observaciones de sensores inerciales */}
+      <Dialog 
+        open={inertialObservationsOpen}
+        onClose={() => setInertialObservationsOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          p: 2,
+          bgcolor: 'white',
+          borderBottom: `1px solid ${COLORS.gridLine}`
+        }}>
+          <Typography variant="h6" fontWeight="bold" color="textPrimary">
+            Detalle de Eventos Detectados por Sensores Inerciales
+          </Typography>
+          <IconButton edge="end" color="inherit" onClick={() => setInertialObservationsOpen(false)} aria-label="close">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ p: 3, bgcolor: COLORS.lightGrey }}>
+          <Grid container spacing={3}>
+            {/* Resumen general de eventos */}
+            <Grid item xs={12}>
+              <Paper sx={{ p: 2, mb: 3 }}>
+                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
+                  Resumen de Eventos por Categoría
+                </Typography>
+                <Typography variant="body2" sx={{ mb: 2 }}>
+                  Los sensores inerciales registraron un total de 28 eventos anómalos durante las últimas 10 sesiones, distribuidos en las siguientes categorías:
+                </Typography>
+                
+                <Grid container spacing={2}>
+                  <Grid item xs={6} md={3}>
+                    <Box sx={{ 
+                      textAlign: 'center', 
+                      p: 2, 
+                      bgcolor: 'rgba(19, 72, 185, 0.1)', 
+                      borderRadius: 1 
+                    }}>
+                      <Typography variant="h5" color={COLORS.primary} fontWeight="bold">12</Typography>
+                      <Typography variant="body2">Desvíos posturales</Typography>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={6} md={3}>
+                    <Box sx={{ 
+                      textAlign: 'center', 
+                      p: 2, 
+                      bgcolor: 'rgba(255, 69, 105, 0.1)', 
+                      borderRadius: 1 
+                    }}>
+                      <Typography variant="h5" color={COLORS.redLine} fontWeight="bold">8</Typography>
+                      <Typography variant="body2">Temblores</Typography>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={6} md={3}>
+                    <Box sx={{ 
+                      textAlign: 'center', 
+                      p: 2, 
+                      bgcolor: 'rgba(31, 200, 227, 0.1)', 
+                      borderRadius: 1 
+                    }}>
+                      <Typography variant="h5" color={COLORS.cyanLine} fontWeight="bold">5</Typography>
+                      <Typography variant="body2">Movimientos bruscos</Typography>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={6} md={3}>
+                    <Box sx={{ 
+                      textAlign: 'center', 
+                      p: 2, 
+                      bgcolor: 'rgba(76, 175, 80, 0.1)', 
+                      borderRadius: 1 
+                    }}>
+                      <Typography variant="h5" color={COLORS.greenLine} fontWeight="bold">3</Typography>
+                      <Typography variant="body2">Interrupciones</Typography>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Paper>
+            </Grid>
+            
+            {/* Sesiones con mayor incidencia */}
+            <Grid item xs={12}>
+              <Paper sx={{ p: 2, mb: 3 }}>
+                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
+                  Sesiones con Mayor Incidencia de Eventos
+                </Typography>
+                
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle2" fontWeight="medium" sx={{ mb: 1, color: COLORS.primary }}>
+                    Sesión #9 - 01/03/2024 (8 eventos)
+                  </Typography>
+                  <Box sx={{ p: 2, bgcolor: 'rgba(19, 72, 185, 0.05)', borderRadius: 1, mb: 1 }}>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      <strong>Patrón principal:</strong> Desvíos posturales laterales durante ejercicios de rehabilitación respiratoria.
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>Observación clínica:</strong> La paciente mostró tendencia a inclinarse hacia la derecha durante los ejercicios de respiración profunda, posiblemente indicando debilidad muscular en el hemicuerpo izquierdo o compensación por dolor.
+                    </Typography>
+                  </Box>
+                </Box>
+                
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle2" fontWeight="medium" sx={{ mb: 1, color: COLORS.redLine }}>
+                    Sesión #4 - 05/02/2024 (6 eventos)
+                  </Typography>
+                  <Box sx={{ p: 2, bgcolor: 'rgba(255, 69, 105, 0.05)', borderRadius: 1, mb: 1 }}>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      <strong>Patrón principal:</strong> Temblores de baja intensidad pero persistentes durante periodos de reposo.
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>Observación clínica:</strong> Los temblores coincidieron con periodos de mayor ansiedad reportada por la paciente. Se recomienda evaluar componente ansioso y posible relación con medicación.
+                    </Typography>
+                  </Box>
+                </Box>
+                
+                <Box>
+                  <Typography variant="subtitle2" fontWeight="medium" sx={{ mb: 1, color: COLORS.cyanLine }}>
+                    Sesión #7 - 20/02/2024 (5 eventos)
+                  </Typography>
+                  <Box sx={{ p: 2, bgcolor: 'rgba(31, 200, 227, 0.05)', borderRadius: 1 }}>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      <strong>Patrón principal:</strong> Movimientos bruscos y pequeñas interrupciones en la continuidad del monitoreo.
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>Observación clínica:</strong> Los movimientos bruscos se asociaron temporalmente con episodios de tos. La paciente reportó molestias en la garganta durante esta sesión.
+                    </Typography>
+                  </Box>
+                </Box>
+              </Paper>
+            </Grid>
+            
+            {/* Tendencias y análisis */}
+            <Grid item xs={12}>
+              <Paper sx={{ p: 2 }}>
+                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
+                  Análisis y Tendencias
+                </Typography>
+                
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body2" sx={{ mb: 2 }}>
+                    El análisis de los datos recogidos por los sensores inerciales muestra las siguientes tendencias significativas:
+                  </Typography>
+                  
+                  <Box sx={{ mb: 2, p: 2, bgcolor: 'rgba(246, 246, 246, 0.7)', borderRadius: 1, border: '1px dashed rgba(0, 0, 0, 0.12)' }}>
+                    <Typography variant="body2" fontWeight="medium" sx={{ mb: 1 }}>
+                      1. Correlación entre eventos posturales y fatiga
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      Se observa un aumento de desvíos posturales después de 20 minutos de actividad, sugiriendo fatiga muscular progresiva.
+                    </Typography>
+                  </Box>
+                  
+                  <Box sx={{ mb: 2, p: 2, bgcolor: 'rgba(246, 246, 246, 0.7)', borderRadius: 1, border: '1px dashed rgba(0, 0, 0, 0.12)' }}>
+                    <Typography variant="body2" fontWeight="medium" sx={{ mb: 1 }}>
+                      2. Disminución de eventos en las últimas sesiones
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      Se registra una disminución general del 25% en eventos de temblores en las últimas 3 sesiones, indicando posible mejora en la estabilidad.
+                    </Typography>
+                  </Box>
+                  
+                  <Box sx={{ p: 2, bgcolor: 'rgba(246, 246, 246, 0.7)', borderRadius: 1, border: '1px dashed rgba(0, 0, 0, 0.12)' }}>
+                    <Typography variant="body2" fontWeight="medium" sx={{ mb: 1 }}>
+                      3. Recomendaciones clínicas
+                    </Typography>
+                    <Typography variant="body2">
+                      Se sugiere incorporar ejercicios específicos de fortalecimiento del core y propiocepción para mejorar la estabilidad postural. Considerar evaluación neurológica para valorar los temblores de baja intensidad.
+                    </Typography>
+                  </Box>
+                </Box>
+              </Paper>
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions sx={{ p: 2, borderTop: `1px solid ${COLORS.gridLine}` }}>
+          <Button onClick={() => setInertialObservationsOpen(false)} sx={{ color: COLORS.primary }}>
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Diálogo para historial de tendencias */}
+      <Dialog
+        open={trendHistoryDialog.open}
+        onClose={() => setTrendHistoryDialog({ ...trendHistoryDialog, open: false })}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          p: 2,
+          bgcolor: 'white',
+          borderBottom: `1px solid ${COLORS.gridLine}`
+        }}>
+          <Typography variant="h6" fontWeight="bold">
+            {trendHistoryDialog.type === 'spo2' && 'Historial de Tendencias - SpO2'}
+            {trendHistoryDialog.type === 'fc' && 'Historial de Tendencias - Frecuencia Cardíaca'}
+            {trendHistoryDialog.type === 'spo2_events' && 'Historial de Eventos - SpO2 < 90%'}
+            {trendHistoryDialog.type === 'fc_events' && 'Historial de Eventos - FC > 100 LPM'}
+          </Typography>
+          <IconButton edge="end" color="inherit" onClick={() => setTrendHistoryDialog({ ...trendHistoryDialog, open: false })} aria-label="close">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ p: 3, bgcolor: COLORS.lightGrey }}>
+          <Box sx={{ bgcolor: 'white', p: 3, borderRadius: 2 }}>
+            {(trendHistoryDialog.type === 'spo2' || trendHistoryDialog.type === 'fc') && (
+              <>
+                <Typography variant="subtitle1" gutterBottom>
+                  Últimas 10 sesiones
+                </Typography>
+                <Box sx={{ height: 300, mb: 3 }}>
+                  <Line
+                    data={{
+                      labels: ['Sesión 1', 'Sesión 2', 'Sesión 3', 'Sesión 4', 'Sesión 5', 'Sesión 6', 'Sesión 7', 'Sesión 8', 'Sesión 9', 'Sesión 10'],
+                      datasets: [{
+                        label: trendHistoryDialog.type === 'spo2' ? 'SpO2 (%)' : 'FC (LPM)',
+                        data: trendHistoryDialog.type === 'spo2' 
+                          ? [95, 94, 96, 95, 97, 94, 95, 96, 95, 96]
+                          : [82, 78, 75, 73, 76, 74, 72, 75, 73, 72],
+                        borderColor: trendHistoryDialog.type === 'spo2' ? COLORS.primary : COLORS.redLine,
+                        backgroundColor: 'transparent',
+                        tension: 0.4
+                      }]
+                    }}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: {
+                          display: true,
+                          position: 'top'
+                        }
+                      },
+                      scales: {
+                        y: {
+                          beginAtZero: false,
+                          min: trendHistoryDialog.type === 'spo2' ? 90 : 60,
+                          max: trendHistoryDialog.type === 'spo2' ? 100 : 90
+                        }
+                      }
+                    }}
+                  />
+                </Box>
+                <Typography variant="body2" color="textSecondary">
+                  {trendHistoryDialog.type === 'spo2' 
+                    ? 'La tendencia muestra una estabilidad general en los niveles de saturación de oxígeno, con variaciones mínimas entre sesiones.'
+                    : 'Se observa una tendencia a la baja en la frecuencia cardíaca, indicando una mejora en el acondicionamiento cardiovascular.'}
+                </Typography>
+              </>
+            )}
+
+            {(trendHistoryDialog.type === 'spo2_events' || trendHistoryDialog.type === 'fc_events') && (
+              <>
+                <Typography variant="subtitle1" gutterBottom>
+                  Registro de eventos
+                </Typography>
+                <Box sx={{ mb: 3, maxHeight: 400, overflow: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr style={{ backgroundColor: COLORS.veryLightBlue, borderBottom: `1px solid ${COLORS.gridLine}` }}>
+                        <th style={{ padding: '10px', textAlign: 'left' }}>Fecha</th>
+                        <th style={{ padding: '10px', textAlign: 'left' }}>Hora</th>
+                        <th style={{ padding: '10px', textAlign: 'left' }}>Valor</th>
+                        <th style={{ padding: '10px', textAlign: 'left' }}>Duración</th>
+                        <th style={{ padding: '10px', textAlign: 'left' }}>Sesión</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {trendHistoryDialog.type === 'spo2_events' ? (
+                        <>
+                          <tr style={{ borderBottom: `1px solid ${COLORS.gridLine}` }}>
+                            <td style={{ padding: '10px' }}>15/03/2024</td>
+                            <td style={{ padding: '10px' }}>10:23 AM</td>
+                            <td style={{ padding: '10px', color: 'red' }}>88%</td>
+                            <td style={{ padding: '10px' }}>45 segundos</td>
+                            <td style={{ padding: '10px' }}>
+                              <Button 
+                                sx={{ 
+                                  color: COLORS.primary, 
+                                  textTransform: 'none',
+                                  p: 0,
+                                  fontWeight: 'normal',
+                                  '&:hover': {
+                                    textDecoration: 'underline',
+                                    background: 'transparent'
+                                  }
+                                }}
+                                onClick={() => handleSessionSelect('12', '15/03/2024')}
+                              >
+                                Sesión #12
+                              </Button>
+                            </td>
+                          </tr>
+                          <tr style={{ borderBottom: `1px solid ${COLORS.gridLine}` }}>
+                            <td style={{ padding: '10px' }}>28/02/2024</td>
+                            <td style={{ padding: '10px' }}>11:05 AM</td>
+                            <td style={{ padding: '10px', color: 'red' }}>89%</td>
+                            <td style={{ padding: '10px' }}>30 segundos</td>
+                            <td style={{ padding: '10px' }}>
+                              <Button 
+                                sx={{ 
+                                  color: COLORS.primary, 
+                                  textTransform: 'none',
+                                  p: 0,
+                                  fontWeight: 'normal',
+                                  '&:hover': {
+                                    textDecoration: 'underline',
+                                    background: 'transparent'
+                                  }
+                                }}
+                                onClick={() => handleSessionSelect('8', '28/02/2024')}
+                              >
+                                Sesión #8
+                              </Button>
+                            </td>
+                          </tr>
+                        </>
+                      ) : (
+                        <>
+                          <tr style={{ borderBottom: `1px solid ${COLORS.gridLine}` }}>
+                            <td style={{ padding: '10px' }}>01/03/2024</td>
+                            <td style={{ padding: '10px' }}>09:45 AM</td>
+                            <td style={{ padding: '10px', color: 'blue' }}>102 LPM</td>
+                            <td style={{ padding: '10px' }}>1 min 20 seg</td>
+                            <td style={{ padding: '10px' }}>
+                              <Button 
+                                sx={{ 
+                                  color: COLORS.primary, 
+                                  textTransform: 'none',
+                                  p: 0,
+                                  fontWeight: 'normal',
+                                  '&:hover': {
+                                    textDecoration: 'underline',
+                                    background: 'transparent'
+                                  }
+                                }}
+                                onClick={() => handleSessionSelect('9', '01/03/2024')}
+                              >
+                                Sesión #9
+                              </Button>
+                            </td>
+                          </tr>
+                          <tr style={{ borderBottom: `1px solid ${COLORS.gridLine}` }}>
+                            <td style={{ padding: '10px' }}>15/02/2024</td>
+                            <td style={{ padding: '10px' }}>10:10 AM</td>
+                            <td style={{ padding: '10px', color: 'blue' }}>105 LPM</td>
+                            <td style={{ padding: '10px' }}>55 segundos</td>
+                            <td style={{ padding: '10px' }}>
+                              <Button 
+                                sx={{ 
+                                  color: COLORS.primary, 
+                                  textTransform: 'none',
+                                  p: 0,
+                                  fontWeight: 'normal',
+                                  '&:hover': {
+                                    textDecoration: 'underline',
+                                    background: 'transparent'
+                                  }
+                                }}
+                                onClick={() => handleSessionSelect('6', '15/02/2024')}
+                              >
+                                Sesión #6
+                              </Button>
+                            </td>
+                          </tr>
+                          <tr style={{ borderBottom: `1px solid ${COLORS.gridLine}` }}>
+                            <td style={{ padding: '10px' }}>01/02/2024</td>
+                            <td style={{ padding: '10px' }}>11:30 AM</td>
+                            <td style={{ padding: '10px', color: 'blue' }}>110 LPM</td>
+                            <td style={{ padding: '10px' }}>2 min 10 seg</td>
+                            <td style={{ padding: '10px' }}>
+                              <Button 
+                                sx={{ 
+                                  color: COLORS.primary, 
+                                  textTransform: 'none',
+                                  p: 0,
+                                  fontWeight: 'normal',
+                                  '&:hover': {
+                                    textDecoration: 'underline',
+                                    background: 'transparent'
+                                  }
+                                }}
+                                onClick={() => handleSessionSelect('3', '01/02/2024')}
+                              >
+                                Sesión #3
+                              </Button>
+                            </td>
+                          </tr>
+                        </>
+                      )}
+                    </tbody>
+                  </table>
+                </Box>
+                <Typography variant="body2" color="textSecondary">
+                  {trendHistoryDialog.type === 'spo2_events' 
+                    ? 'Se han registrado 2 eventos donde la saturación de oxígeno cayó por debajo del 90%. Estos episodios fueron transitorios y se resolvieron espontáneamente.'
+                    : 'Se han registrado 3 eventos donde la frecuencia cardíaca superó los 100 LPM. Estos episodios generalmente ocurrieron durante actividad física ligera.'}
+                </Typography>
+              </>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ p: 2, borderTop: `1px solid ${COLORS.gridLine}` }}>
+          <Button onClick={() => setTrendHistoryDialog({ ...trendHistoryDialog, open: false })} sx={{ color: COLORS.primary }}>
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Diálogo para historial de observaciones */}
       <Dialog
