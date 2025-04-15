@@ -3,6 +3,7 @@ import {
   Grid,
   Stepper,
   Step,
+  StepLabel,
   Button,
   Box,
   Avatar,
@@ -14,50 +15,19 @@ import {
   Tooltip,
   Paper,
   Divider,
-  StepButton,
-  StepConnector,
-  stepConnectorClasses,
-  styled,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import { useTranslation } from "react-i18next";
 import PatientContactDetailForm from "./PatientContactDetailForm";
 import PatientPersonalDetailsForm from "./PatientPersonalDetailsForm";
-import PatientEmergencyContactsForm from "./PatientEmergencyContactsForm";
 import { PatientFormData } from "../../../Models/Forms/PatientForm";
 import { Patient } from "fhir/r4";
-import { useState } from "react";
 
 const steps = [
   { id: "personalDetails", label: "Información básica" },
   { id: "contactDetails", label: "Datos de contacto" }
 ];
-
-// Conector personalizado para centrar la línea entre pasos
-const CustomConnector = styled(StepConnector)(({ theme }) => ({
-  [`&.${stepConnectorClasses.alternativeLabel}`]: {
-    top: 15, // Ajusta esta altura según necesites para centrar la línea
-    left: "calc(-50% + 10px)",
-    right: "calc(50% + 40px)",
-  },
-  [`&.${stepConnectorClasses.active}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: theme.palette.primary.main,
-    },
-  },
-  [`&.${stepConnectorClasses.completed}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: theme.palette.primary.main,
-    },
-  },
-  [`& .${stepConnectorClasses.line}`]: {
-    borderColor:
-      theme.palette.mode === "dark" ? theme.palette.grey[800] : "#eaeaf0",
-    borderTopWidth: 3,
-    borderRadius: 1,
-  },
-}));
 
 export default function PatientCreateForm({
   formId,
@@ -85,25 +55,8 @@ export default function PatientCreateForm({
   isPosting: boolean;
   isEditing?: boolean;
   selectedPatient?: Patient | undefined;
-  //avatar?: File | null;
-  //handleAvatarChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  //isPosting: boolean;
-  //setActiveStep: (step: number) => void;
 }) {
   const { t } = useTranslation();
-  const [optionalStep, setOptionalStep] = useState(false);
-
-  // Función para manejar el clic en un paso
-  const handleStepClick = (step: number) => {
-    // Solo permitir ir a pasos anteriores o iguales al actual
-    if (step <= activeStep) {
-      setActiveStep(step);
-      // Si volvemos al paso 1 desde el paso de emergencia, reseteamos optionalStep
-      if (step === 0 && optionalStep) {
-        setOptionalStep(false);
-      }
-    }
-  };
 
   const handleBack = () => {
     setActiveStep((prevStep) => prevStep - 1);
@@ -277,19 +230,12 @@ export default function PatientCreateForm({
               />
             )}
 
-            {activeStep === 1 && optionalStep === false && (
+            {activeStep === 1 && (
               <PatientContactDetailForm
                 patient={patient}
                 formId={`${formId}-1`}
                 submitForm={submitForm}
                 isEditing={isEditing}
-              />
-            )}
-            {activeStep === 1 && optionalStep === true && (
-              <PatientEmergencyContactsForm
-                patient={patient}
-                formId={`${formId}-emergency`}
-                submitForm={submitForm}
               />
             )}
             {activeStep === 2 && successView()}
@@ -375,25 +321,6 @@ export default function PatientCreateForm({
                     }}
                   >
                     {t("patientCreateForm.viewProfile")}
-                  </Button>
-                )}
-                {activeStep === steps.length - 1 && optionalStep === false && (
-                  <Button
-                    sx={{
-                      bottom: 0,
-                      right: 200,
-                      width: 200,
-                      borderBottomRightRadius: 18,
-                      borderTopLeftRadius: 18,
-                      position: "absolute",
-                    }}
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => {
-                      setOptionalStep(true);
-                    }}
-                  >
-                    {t("patientCreateForm.newButton")}
                   </Button>
                 )}
               </Box>

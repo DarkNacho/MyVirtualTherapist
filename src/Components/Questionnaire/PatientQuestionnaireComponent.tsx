@@ -34,14 +34,12 @@ export default function PatientQuestionnaireComponent({
 
   const fetchQuestionnaireResponses = async () => {
     try {
-      //setLoading(true); // Start loading
       const responseBundle = await questionnaireResponseService.getResources({
         subject: patientID,
         encounter: encounterID!,
       });
       if (!responseBundle.success) throw Error(responseBundle.error);
 
-      console.log("Questionnaire Responses", responseBundle.data);
       setQuestionnaireResponses(responseBundle.data as QuestionnaireResponse[]);
       const updatedQuestionnaires: Record<string, Questionnaire> = {};
 
@@ -54,11 +52,8 @@ export default function PatientQuestionnaireComponent({
           updatedQuestionnaires[quesR_id] = res.data as Questionnaire;
       }
       setQuestionnaires(updatedQuestionnaires);
-      console.log("Questionnaires", updatedQuestionnaires);
     } catch {
-      console.log("entro al catch");
-    } finally {
-      //setLoading(false); // Stop loading
+      console.log("Error al cargar las evaluaciones");
     }
   };
 
