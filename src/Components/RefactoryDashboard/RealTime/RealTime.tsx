@@ -75,7 +75,8 @@ export default function RealTime({
     }
   }, [sensorDataByDevice]);
 
-  // Calculate current values from sensor data - following WebSocketChart approach
+  // Update the useMemo section with better debugging
+
   const { currentSpo2, currentHeartRate, currentRespRate, hasData, chartData } =
     useMemo(() => {
       // Default return with empty data
@@ -106,23 +107,80 @@ export default function RealTime({
       const heartRateData = device?.["Frecuencia Cardíaca"]?.data;
       const respRateData = device?.["Frecuencia Respiratoria"]?.data;
 
+      // Debug data structure
+      console.log("Device name:", deviceName);
+      console.log(
+        "SpO2 data exists:",
+        !!spo2Data,
+        spo2Data ? spo2Data.length : 0
+      );
+      console.log(
+        "Heart rate data exists:",
+        !!heartRateData,
+        heartRateData ? heartRateData.length : 0
+      );
+      console.log(
+        "Resp rate data exists:",
+        !!respRateData,
+        respRateData ? respRateData.length : 0
+      );
+
+      // If we have SpO2 but not the others, inspect the structure
+      if (spo2Data && (!heartRateData || !respRateData)) {
+        console.log("SpO2 data first item:", spo2Data[0]);
+        console.log("Available sensors:", Object.keys(device));
+
+        // Check directly if specific keys exist in the device
+        const cardiacSensorExists = "Frecuencia Cardíaca" in device;
+        const respSensorExists = "Frecuencia Respiratoria" in device;
+
+        console.log("Cardiac sensor key exists:", cardiacSensorExists);
+        console.log("Respiratory sensor key exists:", respSensorExists);
+
+        // If the keys exist but data access fails, check their structure
+        if (cardiacSensorExists) {
+          console.log(
+            "Cardiac sensor structure:",
+            device["Frecuencia Cardíaca"]
+          );
+        }
+
+        if (respSensorExists) {
+          console.log(
+            "Respiratory sensor structure:",
+            device["Frecuencia Respiratoria"]
+          );
+        }
+      }
+
       // Calculate averages using the last 5 values if data exists (following WebSocketChart logic)
       const calculateAverage = (dataArray) => {
         if (!dataArray || !Array.isArray(dataArray) || dataArray.length === 0) {
           return "N/A";
         }
 
-        const lastFiveData = dataArray.slice(-5);
-        const avgValue =
-          lastFiveData.reduce((sum, data) => sum + data.value, 0) /
-          lastFiveData.length;
-        return Math.round(avgValue).toString();
+        try {
+          const lastFiveData = dataArray.slice(-5);
+          const avgValue =
+            lastFiveData.reduce((sum, data) => sum + data.value, 0) /
+            lastFiveData.length;
+          return Math.round(avgValue).toString();
+        } catch (error) {
+          console.error("Error calculating average:", error);
+          console.log("Data causing error:", dataArray.slice(-5));
+          return "N/A";
+        }
       };
 
       // Extract values for charts (similar to WebSocketChart)
       const extractChartValues = (dataArray) => {
         if (!dataArray || !Array.isArray(dataArray)) return [];
-        return dataArray.map((item) => item.value);
+        try {
+          return dataArray.map((item) => item.value);
+        } catch (error) {
+          console.error("Error extracting chart values:", error);
+          return [];
+        }
       };
 
       // Check if we have any valid data
@@ -142,7 +200,6 @@ export default function RealTime({
         },
       };
     }, [sensorDataByDevice]);
-
   // Generate labels similar to WebSocketChart for time display
   const generateLabels = (device, sensor) => {
     if (!sensorDataByDevice?.[device]?.[sensor]?.data) return [];
@@ -233,12 +290,60 @@ export default function RealTime({
 
       {/* Debug info - remove in production */}
       {import.meta.env.DEV && (
-        <Alert severity="info" sx={{ mb: 3 }}>
-          Debug: Devices: {debugInfo.deviceNames.join(", ")} | SpO2:{" "}
-          {debugInfo.hasSpo2 ? "Yes" : "No"} | HR:{" "}
-          {debugInfo.hasHeartRate ? "Yes" : "No"} | RR:{" "}
-          {debugInfo.hasRespRate ? "Yes" : "No"}
-        </Alert>
+        <Grid item xs={12}>
+          <Box
+            sx={{
+              p: 2,
+              bgcolor: "#f5f5f5",
+              borderRadius: 1,
+              mb: 2,
+              overflow: "auto",
+            }}
+          >
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              Debug Data Structure:
+            </Typography>
+
+            {Object.keys(sensorDataByDevice || {}).map((deviceName) => (
+              <Box key={deviceName} sx={{ mb: 2 }}>
+                <Typography variant="body2" fontWeight="bold">
+                  Device: {deviceName}
+                </Typography>
+
+                <Box component="ul" sx={{ m: 0, pl: 2 }}>
+                  {Object.keys(sensorDataByDevice[deviceName] || {}).map(
+                    (sensorName) => (
+                      <Box component="li" key={sensorName} sx={{ mb: 1 }}>
+                        <Typography variant="caption" display="block">
+                          Sensor: {sensorName}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          display="block"
+                          sx={{ ml: 2 }}
+                        >
+                          Has data:{" "}
+                          {sensorDataByDevice[deviceName][sensorName]?.data
+                            ? "Yes"
+                            : "No"}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          display="block"
+                          sx={{ ml: 2 }}
+                        >
+                          Data count:{" "}
+                          {sensorDataByDevice[deviceName][sensorName]?.data
+                            ?.length || 0}
+                        </Typography>
+                      </Box>
+                    )
+                  )}
+                </Box>
+              </Box>
+            ))}
+          </Box>
+        </Grid>
       )}
 
       <Grid container spacing={5}>
