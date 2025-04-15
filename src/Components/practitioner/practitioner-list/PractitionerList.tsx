@@ -69,12 +69,17 @@ export default function PractitionerList({
 
   const handleNewResources = async (direction: "next" | "previous") => {
     setLoading(true);
-    await HandleResult.handleOperation(
+    /*await HandleResult.handleOperation(
       () => fhirService.getNewResources(direction),
       t("practitionerList.receivedSuccessfully"),
       t("practitionerList.obtaining"),
       setResources
+    );*/
+    await HandleResult.handleOperationWithErrorOnly(
+      () => fhirService.getNewResources(direction),
+      setResources
     );
+
     setLoading(false);
   };
 

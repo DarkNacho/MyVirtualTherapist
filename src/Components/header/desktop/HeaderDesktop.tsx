@@ -16,6 +16,7 @@ import LogoSVG from "../../../assets/logo.svg";
 import styles from "./HeaderDesktop.module.css";
 import { Patient, Practitioner } from "fhir/r4";
 import { useTranslation } from "react-i18next";
+import { isPatient, isAdminOrPractitioner } from "../../../Utils/RolUser";
 
 interface HeaderDesktopProps {
   user?: Patient | Practitioner;
@@ -46,6 +47,9 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
   const { t, i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
+  const isPatientUser = isPatient();
+  const isAdminOrPractitionerUser = isAdminOrPractitioner();
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -59,13 +63,23 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
     handleClose();
   };
 
-  const NavItem = ({ text, href }: { text: string; href?: string }) => (
+  const NavItem = ({
+    text,
+    href,
+    target,
+    onClick,
+  }: {
+    text: string;
+    href?: string;
+    target?: string;
+    onClick?: () => void;
+  }) => (
     <Typography
       component={"a"}
       href={href ? href : `/#${text}`}
       variant="h6"
-      target={href ? "_blank" : undefined}
-      onClick={href ? undefined : () => handleSetLocation(text)}
+      target={target}
+      onClick={onClick ? onClick : () => handleSetLocation(text)}
       sx={{
         cursor: "pointer",
         color: selectedItem === text ? "#344293" : "#2c427e",
@@ -99,8 +113,15 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
                 alt="My Virtual Therapist"
                 className={styles.logo}
                 onClick={() => {
-                  handleSetLocation(t("header.patients"));
-                  window.location.href = "/";
+                  if (isAdminOrPractitionerUser) {
+                    handleSetLocation(t("header.patients"));
+                    window.location.href = "/";
+                  }
+                  if (isPatientUser) {
+                    window.location.href = `/Patient/${localStorage.getItem(
+                      "id"
+                    )}`;
+                  }
                 }}
               />
             </Grid>
@@ -127,12 +148,23 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
               </Toolbar>
               <Toolbar className={styles.navigationRow}>
                 <Box className={styles.navLinks}>
-                  <NavItem text={t("header.patients")} />
+                  {isPatientUser && (
+                    <NavItem
+                      text={t("header.me")}
+                      href={`/Patient/${localStorage.getItem("id")}`}
+                      onClick={() => {}}
+                    />
+                  )}
+                  {isAdminOrPractitionerUser && (
+                    <NavItem text={t("header.patients")} />
+                  )}
                   <NavItem text={t("header.practitioners")} />
                   <NavItem text={t("header.encounters")} />
                   <NavItem
                     text={t("header.contact")}
                     href="https://wa.me/+56931416677"
+                    target="_blank"
+                    onClick={() => {}}
                   />
                 </Box>
               </Toolbar>

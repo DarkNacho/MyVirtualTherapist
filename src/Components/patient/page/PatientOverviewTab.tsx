@@ -20,6 +20,7 @@ import MedicationCreateComponent from "../../medication/MedicationCreateComponen
 import { useResource } from "../../ResourceContext";
 import ClinicalImpressionCreateComponent from "../../clinical-impression/ClinicalImpressionCreateComponent";
 import { useTranslation } from "react-i18next";
+import { isAdminOrPractitioner } from "../../../Utils/RolUser";
 
 function getEvolutionDisplay(evolution: ClinicalImpression) {
   return {
@@ -65,15 +66,19 @@ export default function PatientOverviewTab({
   const [id, setId] = useState<string | undefined>(undefined);
   const { resource } = useResource<Patient>();
 
+  const isAdminOrPractitionerUser = isAdminOrPractitioner();
   const { t } = useTranslation();
 
   const fetchEvolution = async (id: string) => {
     const fhirService =
       FhirResourceService.getInstance<ClinicalImpression>("ClinicalImpression");
-    const response = await HandleResult.handleOperation(
+    /*const response = await HandleResult.handleOperation(
       () => fhirService.getResources({ patient: id }),
       "Evolution fetched successfully",
       "Fetching Evolution"
+    );*/
+    const response = await HandleResult.handleOperationWithErrorOnly(() =>
+      fhirService.getResources({ patient: id })
     );
     if (response.success) {
       setEvolution(response.data);
@@ -82,10 +87,13 @@ export default function PatientOverviewTab({
 
   const fetchConditions = async (id: string) => {
     const fhirService = FhirResourceService.getInstance<Condition>("Condition");
-    const response = await HandleResult.handleOperation(
+    /*const response = await HandleResult.handleOperation(
       () => fhirService.getResources({ patient: id }),
       "Conditions fetched successfully",
       "Fetching conditions"
+    );*/
+    const response = await HandleResult.handleOperationWithErrorOnly(() =>
+      fhirService.getResources({ patient: id })
     );
     if (response.success) {
       setConditions(response.data);
@@ -96,10 +104,14 @@ export default function PatientOverviewTab({
     const fhirService = FhirResourceService.getInstance<MedicationStatement>(
       "MedicationStatement"
     );
-    const response = await HandleResult.handleOperation(
+
+    /*const response = await HandleResult.handleOperation(
       () => fhirService.getResources({ patient: id }),
       "Medications fetched successfully",
       "Fetching medications"
+    );*/
+    const response = await HandleResult.handleOperationWithErrorOnly(() =>
+      fhirService.getResources({ patient: id })
     );
     if (response.success) {
       setMedications(response.data);
@@ -162,7 +174,9 @@ export default function PatientOverviewTab({
             resources={evolution}
             onClick={handleEvolutionClick}
             getDisplay={getEvolutionDisplay}
-            onAddClick={handleAddEvolutionClick}
+            onAddClick={
+              isAdminOrPractitionerUser ? handleAddEvolutionClick : undefined
+            }
           />
         </Grid>
         <Grid item xs={12} md={4}>
@@ -172,7 +186,9 @@ export default function PatientOverviewTab({
             resources={conditions}
             onClick={handleConditionClick}
             getDisplay={getConditionDisplay}
-            onAddClick={handleAddConditionClick}
+            onAddClick={
+              isAdminOrPractitionerUser ? handleAddConditionClick : undefined
+            }
           />
         </Grid>
         <Grid item xs={12} md={4}>
@@ -182,11 +198,13 @@ export default function PatientOverviewTab({
             resources={medications}
             onClick={handleMedicationClick}
             getDisplay={getMedicationDisplay}
-            onAddClick={handleAddMedicationClick}
+            onAddClick={
+              isAdminOrPractitionerUser ? handleAddMedicationClick : undefined
+            }
           />
         </Grid>
       </Grid>
-      {id && (
+      {id && isAdminOrPractitionerUser && (
         <>
           <ConditionCreateComponent
             patientId={id}

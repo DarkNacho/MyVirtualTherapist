@@ -29,10 +29,13 @@ export default function PatientPage() {
 
   const fetchPatient = async (id: string) => {
     const fhirService = FhirResourceService.getInstance<Patient>("Patient");
-    const response = await HandleResult.handleOperation(
+    /*const response = await HandleResult.handleOperation(
       () => fhirService.getById(id),
       "Patient fetched successfully",
       "Fetching patient"
+    );*/
+    const response = await HandleResult.handleOperationWithErrorOnly(() =>
+      fhirService.getById(id)
     );
     if (response.success) {
       setResource(response.data);

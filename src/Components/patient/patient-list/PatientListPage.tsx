@@ -3,7 +3,7 @@ import { Patient } from "fhir/r4";
 import PatientSearchComponent from "../patient-search-component/PatientSearchComponent";
 
 import Grid from "@mui/material/Grid";
-import { Box, useMediaQuery, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
 import PatientCreateForm from "../patient-create/PatientCreateForm";
 import { PatientFormData } from "../../../Models/Forms/PatientForm";
 import PersonUtil from "../../../Services/Utils/PersonUtils";
@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { CacheUtils } from "../../../Utils/Cache";
 import PatientRefer from "../patient-refer/PatientRefer";
+import { loadUserRoleFromLocalStorage } from "../../../Utils/RolUser";
 
 // Definición de la interfaz Result para manejar respuestas de operaciones
 interface Result<T> {
@@ -42,10 +43,19 @@ export default function PatientListPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>();
 
-  const [searchParam, setSearchParam] = useState<SearchParams | undefined>();
+  const userRol = loadUserRoleFromLocalStorage();
 
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [defaultSearchParam] = useState<SearchParams | undefined>(
+    userRol === "Practitioner"
+      ? {
+          "general-practitioner": `${localStorage.getItem("id")}`,
+        }
+      : {}
+  );
+
+  const [searchParam, setSearchParam] = useState<SearchParams | undefined>(
+    defaultSearchParam
+  );
 
   const handleOpenCreate = () => {
     setIsEditing(false);
@@ -61,6 +71,7 @@ export default function PatientListPage() {
     setOpenRefer(false);
     setIsEditing(false);
     setSelectedPatient(undefined);
+    setActiveStep(0);
   };
 
   const handleOpenRefer = (open: boolean) => {
@@ -99,6 +110,10 @@ export default function PatientListPage() {
     if (event.target.files) {
       setAvatar(event.target.files[0]);
     }
+  };
+
+  const handleSetActiveStep = (step: number) => {
+    setActiveStep(step);
   };
 
   const submitForm = async (data: PatientFormData) => {
@@ -267,6 +282,7 @@ export default function PatientListPage() {
               <PatientSearchComponent
                 handleAddPatient={handleOpenCreate}
                 setSearchParam={setSearchParam}
+                defaultSearchParam={defaultSearchParam}
               />
             </Grid>
             <Grid
@@ -300,6 +316,7 @@ export default function PatientListPage() {
         isPosting={isPosting}
         isEditing={isEditing}
         selectedPatient={selectedPatient}
+        //setActiveStep={handleSetActiveStep}
       />
       {selectedPatient && (
         <PatientRefer

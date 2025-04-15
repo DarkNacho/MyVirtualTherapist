@@ -1,13 +1,10 @@
-import EncounterList from "./EncounterList";
 import { Encounter } from "fhir/r4";
 
 import Grid from "@mui/material/Grid";
-import { Box, useMediaQuery, useTheme } from "@mui/material";
-import { SearchParams } from "fhir-kit-client";
-import { useState } from "react";
-import EncounterSearchComponent from "../encounter-search-component/EncounterSearchComponent";
-import EncounterCreateComponent from "../encounter-create/EncounterCreateComponent";
+import { Box } from "@mui/material";
+
 import EncounterCalendar from "./EncounterCalendar";
+import { loadUserRoleFromLocalStorage } from "../../../Utils/RolUser";
 
 const handleEditClick = (person: Encounter) => {
   console.log("Edit clicked for:", person);
@@ -16,16 +13,8 @@ const handleEditClick = (person: Encounter) => {
 const handleDeleteClick = (person: Encounter) => {
   console.log("Delete clicked for:", person);
 };
-export default function PatientListPage() {
-  const [searchParam, setSearchParam] = useState<SearchParams | undefined>();
-  const [openCreate, setOpenCreate] = useState(false);
-
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
-  const handleOpenCreate = () => {
-    setOpenCreate(true);
-  };
+export default function EncounterListPage() {
+  const userRol = loadUserRoleFromLocalStorage();
 
   return (
     <Box>
@@ -49,18 +38,16 @@ export default function PatientListPage() {
               <EncounterCalendar
                 onEditClick={handleEditClick}
                 onDeleteClick={handleDeleteClick}
-                searchParam={searchParam}
+                searchParam={
+                  userRol === "Practitioner"
+                    ? { participant: `${localStorage.getItem("id")}` }
+                    : { patient: localStorage.getItem("id")! }
+                }
               />
             </Grid>
           </Grid>
         </Grid>
       </Grid>
-      <EncounterCreateComponent
-        onOpen={function (isOpen: boolean): void {
-          setOpenCreate(isOpen);
-        }}
-        isOpen={openCreate}
-      />
     </Box>
   );
 }

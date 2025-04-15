@@ -20,7 +20,8 @@
     "practitioners": "PROFESIONALES",
     "encounters": "SESIONES",
     "contact": "CONTACTO",
-    "sessionExpired": "Su sesión ha expirado, por favor inicie sesión nuevamente."
+    "sessionExpired": "Su sesión ha expirado, por favor inicie sesión nuevamente.",
+    "me": "Yo"
   },
   "patientContactDetailForm": {
     "addPatient": "CONTACTO DE PACIENTE",
@@ -227,13 +228,12 @@
 
   "terminology": {
     "maritalOptions": {
-      "S": "Nunca Casado",
-      "A": "Anulado",
-      "D": "Divorciado",
-      "I": "Interlocutorio",
-      "L": "Legalmente Separado",
+      "S": "Soltero",
       "M": "Casado",
-      "C": "Unión de Hecho",
+      "C": "Conviviente",
+      "L": "Separado",
+      "D": "Divorciado",
+      "W": "Viudo",
       "UNK": "Desconocido"
     },
     "genderOptions": {

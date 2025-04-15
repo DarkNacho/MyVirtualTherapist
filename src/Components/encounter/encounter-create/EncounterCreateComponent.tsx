@@ -26,10 +26,14 @@ export default function EncounterCreateComponent({
   onOpen,
   isOpen,
   patientId,
+  start,
+  end,
 }: {
   onOpen: (isOpen: boolean) => void;
   isOpen: boolean;
   patientId?: string;
+  start?: Date;
+  end?: Date;
 }) {
   useEffect(() => {
     onOpen(isOpen);
@@ -130,6 +134,8 @@ export default function EncounterCreateComponent({
               submitForm={onSubmitForm}
               practitionerId={practitionerId!}
               patientId={patientId}
+              start={start}
+              end={end}
             ></EncounterFormComponent>
           </Container>
         </DialogContent>

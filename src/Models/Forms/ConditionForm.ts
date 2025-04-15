@@ -14,7 +14,8 @@ export interface ConditionFormData {
     display: string;
   };
   encounterId: string;
-  code: Coding;
+  code: Coding[];
   note: string; // https://hl7.org/fhir/datatypes.html#Annotation
   clinicalStatus: string;
+  conditionCodes: Coding[];
 }

@@ -26,7 +26,7 @@ export default function PatientReportModal({
   encounterId,
 }: ReportModalProps) {
   const [reportOptions, setReportOptions] = useState({
-    obs: false,
+    clinic: false,
     sensor: false,
     med: false,
     cond: false,
@@ -150,12 +150,12 @@ export default function PatientReportModal({
         <FormControlLabel
           control={
             <Checkbox
-              checked={reportOptions.obs}
+              checked={reportOptions.clinic}
               onChange={handleCheckboxChange}
-              name="obs"
+              name="clinic"
             />
           }
-          label="Observaciones"
+          label="Evoluciones"
         />
         <FormControlLabel
           control={

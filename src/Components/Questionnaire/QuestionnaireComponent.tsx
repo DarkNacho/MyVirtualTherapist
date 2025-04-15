@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Condition,
   FhirResource,
@@ -23,6 +22,7 @@ import { isAdminOrPractitioner } from "../../Utils/RolUser";
 import ObservationUtils from "../../Services/Utils/ObservationUtils";
 import HandleResult from "../../Utils/HandleResult";
 import { useTranslation } from "react-i18next";
+import QuestionnaireReportModal from "./QuestionnaireReportModal";
 //import "./QuestionnaireComponent.css";
 
 const fhirService =
@@ -48,6 +48,8 @@ export default function QuestionnaireComponent({
   const formContainerRef = useRef(null);
   const { t } = useTranslation();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const formContainer = formContainerRef.current;
@@ -433,6 +435,13 @@ export default function QuestionnaireComponent({
 
   return (
     <div>
+      {questionnaireResponse.id && (
+        <QuestionnaireReportModal
+          questionnaireResponseId={questionnaireResponse.id}
+          open={open}
+          handleClose={() => setOpen(false)}
+        ></QuestionnaireReportModal>
+      )}
       <div ref={formContainerRef}></div>
       {isAdminOrPractitioner() && (
         <div
@@ -485,6 +494,15 @@ export default function QuestionnaireComponent({
               </Dialog>
             </>
           )}
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setOpen(true)}
+            disabled={!questionnaireResponse.id}
+            sx={{ marginLeft: "right" }}
+          >
+            Generar Reporte
+          </Button>
           <Button
             variant="contained"
             color="primary"

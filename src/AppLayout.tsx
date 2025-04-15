@@ -29,11 +29,6 @@ const router = createBrowserRouter([
     path: "/Encounter/:id",
     element: <EncounterPage />,
   },
-
-  {
-    path: "/list",
-    element: <ResourceListPage />,
-  },
   {
     path: "/NotFound",
     element: <NotFound />,

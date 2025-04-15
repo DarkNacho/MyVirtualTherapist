@@ -20,6 +20,7 @@ import LogoSVG from "../../../assets/logo.svg";
 import styles from "./HeaderMobile.module.css";
 import { Patient, Practitioner } from "fhir/r4";
 import { useTranslation } from "react-i18next";
+import { isAdminOrPractitioner, isPatient } from "../../../Utils/RolUser";
 
 interface HeaderMobileProps {
   user?: Patient | Practitioner;
@@ -39,19 +40,34 @@ const HeaderMobile: React.FC<HeaderMobileProps> = ({
   const { t, i18n } = useTranslation();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
-  const NavItem = ({ text, href }: { text: string; href?: string }) => (
+  const isPatientUser = isPatient();
+  const isAdminOrPractitionerUser = isAdminOrPractitioner();
+
+  const NavItem = ({
+    text,
+    href,
+    target,
+    onClick,
+  }: {
+    text: string;
+    href?: string;
+    target?: string;
+    onClick?: () => void;
+  }) => (
     <Typography
       component={"a"}
       href={href ? href : `/#${text}`}
-      target={href ? "_blank" : undefined}
       variant="h6"
-      onClick={href ? undefined : () => handleSetLocation(text)}
+      target={target}
+      onClick={onClick ? onClick : () => handleSetLocation(text)}
       sx={{
         cursor: "pointer",
-        color: selectedItem === text ? "#4864cc" : "#2c427e",
+        color: selectedItem === text ? "#344293" : "#2c427e",
         textDecoration: selectedItem === text ? "underline" : "none",
         textDecorationThickness: "0.1em",
         textUnderlineOffset: "0.2em",
+        fontWeight: selectedItem === text ? "bold" : "normal",
+        fontSize: "11pt",
         "&:hover": {
           textDecoration: "underline",
           textDecorationThickness: "0.1em",
@@ -77,8 +93,15 @@ const HeaderMobile: React.FC<HeaderMobileProps> = ({
                 alt="My Virtual Therapist"
                 className={styles.logo}
                 onClick={() => {
-                  handleSetLocation(t("header.patients"));
-                  window.location.href = "/";
+                  if (isAdminOrPractitionerUser) {
+                    handleSetLocation(t("header.patients"));
+                    window.location.href = "/";
+                  }
+                  if (isPatientUser) {
+                    window.location.href = `/Patient/${localStorage.getItem(
+                      "id"
+                    )}`;
+                  }
                 }}
               />
             </Grid>
@@ -139,10 +162,20 @@ const HeaderMobile: React.FC<HeaderMobileProps> = ({
                 </ListItemAvatar>
                 <ListItemText primary={user?.name?.[0]?.text || "User"} />
               </ListItem>
-
               <ListItem>
-                <NavItem text={t("header.patients")} />
+                {isPatientUser && (
+                  <NavItem
+                    text={t("header.me")}
+                    href={`/Patient/${localStorage.getItem("id")}`}
+                    onClick={() => {}}
+                  />
+                )}
               </ListItem>
+              {isAdminOrPractitionerUser && (
+                <ListItem>
+                  <NavItem text={t("header.patients")} />
+                </ListItem>
+              )}
               <ListItem>
                 <NavItem text={t("header.practitioners")} />
               </ListItem>
