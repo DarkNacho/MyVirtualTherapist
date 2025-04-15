@@ -14,6 +14,7 @@ import PatientPage from "./Components/patient/page/PatientPage";
 import NotFound from "./Components/not-found/NotFound";
 import ConfirmPasswordComponent from "./Components/password/ConfirmPasswordComponent";
 import EncounterPage from "./Components/encounter/encounter-page/EncounterPage";
+import DashboardPage from "./Components/RefactoryDashboard/DashboardPage";
 
 const router = createBrowserRouter([
   {
@@ -29,9 +30,18 @@ const router = createBrowserRouter([
     path: "/Encounter/:id",
     element: <EncounterPage />,
   },
+
+  {
+    path: "/list",
+    element: <ResourceListPage />,
+  },
   {
     path: "/NotFound",
     element: <NotFound />,
+  },
+  {
+    path: "/Dashboard",
+    element: <DashboardPage />,
   },
   {
     path: "*",
