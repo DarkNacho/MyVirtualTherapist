@@ -1,9 +1,30 @@
-import React, { useRef } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { useMemo, useRef, memo } from "react";
+import { Box, Typography, Paper } from "@mui/material";
 import { Line } from "react-chartjs-2";
-import { COLORS } from "../constants";
-import { lineOptions } from "../chartConfig";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+  ChartOptions,
+} from "chart.js";
 
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 interface SensorChartProps {
   title: string;
   sensorName: string;
@@ -11,159 +32,148 @@ interface SensorChartProps {
   currentValue: string;
   valueUnit: string;
   color: string;
-  generateLabels: (device: string, sensor: string) => string[];
+  generateLabels: (deviceName: string, sensorName: string) => string[];
   hasData: boolean;
   deviceName: string;
-  minValue?: number;
-  maxValue?: number;
+  minValue: number;
+  maxValue: number;
 }
 
-const SensorChart: React.FC<SensorChartProps> = ({
-  title,
-  sensorName,
-  data,
-  currentValue,
-  valueUnit,
-  color,
-  generateLabels,
-  hasData,
-  deviceName,
-  minValue,
-  maxValue,
-}) => {
-  const chartRef = useRef(null);
+// Memoize the chart component to prevent unnecessary re-renders
+const SensorChart = memo<SensorChartProps>(
+  ({
+    title,
+    sensorName,
+    data,
+    currentValue,
+    valueUnit,
+    color,
+    generateLabels,
+    hasData,
+    deviceName,
+    minValue,
+    maxValue,
+  }) => {
+    const chartRef = useRef(null);
 
-  const resetZoom = () => {
-    if (chartRef.current) {
-      chartRef.current.resetZoom();
-    }
-  };
+    // Memoize chart data to avoid recreating on every render
+    const chartData = useMemo(() => {
+      // Only generate labels if we have data
+      const labels =
+        data.length > 0 ? generateLabels(deviceName, sensorName) : [];
 
-  return (
-    <Box
-      sx={{
-        p: 2,
-        bgcolor: COLORS.veryLightBlue,
-        borderRadius: 1,
-        mb: 2,
-        height: "430px",
-      }}
-    >
-      <Typography variant="subtitle1" fontWeight="medium" mb={2}>
-        {title}
-      </Typography>
-      <Box sx={{ width: "100%", height: "310px" }}>
-        {!hasData || data.length === 0 ? (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "100%",
-              color: "text.secondary",
-              flexDirection: "column",
-            }}
-          >
-            <Typography variant="body1" sx={{ mb: 1 }}>
-              No se están recibiendo datos
-            </Typography>
-            <Typography variant="caption">
-              Esperando información del sensor...
-            </Typography>
-          </Box>
-        ) : (
-          <Line
-            data={{
-              labels: generateLabels(deviceName, sensorName),
-              datasets: [
-                {
-                  label: `${title} (${valueUnit})`,
-                  data: data,
-                  borderColor: color,
-                  borderWidth: 2,
-                  pointRadius: 0,
-                  fill: false,
-                  tension: 0.4,
-                },
-              ],
-            }}
-            options={{
-              ...lineOptions,
-              responsive: true,
-              maintainAspectRatio: false,
-              animation: {
-                duration: 0,
-              },
-              plugins: {
-                ...lineOptions.plugins,
-                legend: {
-                  display: true,
-                  position: "top",
-                },
-                title: {
-                  display: true,
-                  text: `${title} Promedio: ${currentValue}${valueUnit}`,
-                },
-              },
-              scales: {
-                ...lineOptions.scales,
-                x: {
-                  ...lineOptions.scales?.x,
-                  display: true,
-                  title: {
-                    display: true,
-                    text: "Tiempo",
-                  },
-                  ticks: {
-                    maxRotation: 45,
-                    minRotation: 45,
-                    callback: function (_, index) {
-                      // Show fewer labels for clarity
-                      const labels = generateLabels(deviceName, sensorName);
-                      return index % 5 === 0 ? labels[index] : "";
-                    },
-                    color: COLORS.darkGray,
-                    font: {
-                      size: 10,
-                    },
-                  },
-                  grid: {
-                    display: true,
-                    color: "rgba(0, 0, 0, 0.05)",
-                  },
-                },
-                y: {
-                  ...lineOptions.scales?.y,
-                  min: minValue,
-                  max: maxValue,
-                  title: {
-                    display: true,
-                    text: `${title} (${valueUnit})`,
-                  },
-                },
-              },
-            }}
-            ref={chartRef}
-          />
-        )}
-      </Box>
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-        <Button
-          onClick={resetZoom}
-          variant="text"
-          disabled={!hasData || data.length === 0}
+      return {
+        labels,
+        datasets: [
+          {
+            label: title,
+            data: data,
+            fill: false,
+            borderColor: color,
+            borderWidth: 2,
+            tension: 0.3,
+            pointRadius: 0, // No points for better performance
+            pointHoverRadius: 4,
+          },
+        ],
+      };
+    }, [data, deviceName, sensorName, generateLabels, title, color]);
+
+    // Memoize chart options
+    const options = useMemo<ChartOptions<"line">>(
+      () => ({
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 0,
+        },
+        plugins: {
+          legend: {
+            display: false,
+          },
+          tooltip: {
+            enabled: true,
+            intersect: false,
+            mode: "index",
+          },
+        },
+        scales: {
+          y: {
+            min: minValue,
+            max: maxValue,
+            beginAtZero: false,
+          },
+          x: {
+            ticks: {
+              maxTicksLimit: 10,
+              maxRotation: 0,
+            },
+          },
+        },
+        elements: {
+          line: {
+            cubicInterpolationMode: "monotone",
+          },
+        },
+        interaction: {
+          mode: "index",
+          intersect: false,
+        },
+      }),
+      [minValue, maxValue]
+    );
+
+    // Display "No Data" message when appropriate
+    if (!hasData) {
+      return (
+        <Paper
+          elevation={0}
           sx={{
-            color: COLORS.secondary,
-            textTransform: "none",
-            fontWeight: "normal",
-            fontSize: "0.85rem",
+            p: 2,
+            height: 300,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "1px solid rgba(0, 0, 0, 0.12)",
+            borderRadius: 2,
           }}
         >
-          Resetear Zoom
-        </Button>
-      </Box>
-    </Box>
-  );
-};
+          <Typography variant="body1" color="text.secondary">
+            No hay datos disponibles
+          </Typography>
+        </Paper>
+      );
+    }
+
+    return (
+      <Paper
+        elevation={0}
+        sx={{
+          p: 2,
+          borderRadius: 2,
+          border: "1px solid rgba(0, 0, 0, 0.12)",
+        }}
+      >
+        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+          <Typography variant="subtitle1" fontWeight="medium">
+            {title}
+          </Typography>
+          <Typography variant="h6" fontWeight="bold" sx={{ color }}>
+            {currentValue !== "N/A" ? `${currentValue} ${valueUnit}` : "N/A"}
+          </Typography>
+        </Box>
+
+        <Box sx={{ height: 240, position: "relative" }}>
+          <Line
+            ref={chartRef}
+            data={chartData}
+            options={options}
+            height={240}
+          />
+        </Box>
+      </Paper>
+    );
+  }
+);
 
 export default SensorChart;

@@ -1,12 +1,15 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useMemo, useEffect, useState, useCallback } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import { COLORS } from "../constants";
-import useWebSocket from "../../charts/useWebSocket";
+import useThrottledWebSocket from "../../charts/useThrottledWebSocket";
 import ConnectionStatus from "./ConnectionStatus";
 import SensorReadings from "./SensorReadings";
 import DebugInfo from "./DebugInfo";
 import SensorChart from "./SensorChart";
 import AlertMessages from "./AlertMessages";
+
+// Maximum number of data points to display in charts
+const MAX_DATA_POINTS = 100;
 
 export default function RealTime({
   patientId,
@@ -15,9 +18,6 @@ export default function RealTime({
   patientId?: string;
   token?: string;
 }) {
-  console.log("WebSocketChart - patientId:", patientId);
-  console.log("WebSocketChart - token:", token);
-
   // For debugging
   const [debugInfo, setDebugInfo] = useState({
     hasDevices: false,
@@ -37,11 +37,14 @@ export default function RealTime({
     }/dashboard_ws_public?token=${token}`;
   }
 
-  const [sensorDataByDevice, isConnected] = useWebSocket(webSocketUrl);
+  const [sensorDataByDevice, isConnected] = useThrottledWebSocket(
+    webSocketUrl,
+    500
+  );
 
-  // Debug logging to understand data structure
+  // Debug logging to understand data structure - only in development mode
   useEffect(() => {
-    if (sensorDataByDevice) {
+    if (import.meta.env.DEV && sensorDataByDevice) {
       const deviceNames = Object.keys(sensorDataByDevice);
       const primaryDevice = deviceNames[0] || ""; // Usually "Pulsioxímetro"
 
@@ -56,19 +59,8 @@ export default function RealTime({
           primaryDevice &&
           !!sensorDataByDevice[primaryDevice]?.["Frecuencia Respiratoria"],
       });
-
-      console.log("WebSocket Data Structure:", sensorDataByDevice);
-      if (primaryDevice) {
-        console.log("Primary Device:", primaryDevice);
-        console.log(
-          "Available Sensors:",
-          Object.keys(sensorDataByDevice[primaryDevice] || {})
-        );
-      }
     }
   }, [sensorDataByDevice]);
-
-  // ...existing code...
 
   const {
     currentSpo2,
@@ -131,29 +123,6 @@ export default function RealTime({
       }
     });
 
-    // Debug data structure
-    console.log("Debug Data Structure:");
-    if (spo2Device) {
-      console.log(`Device: ${spo2Device}`);
-      console.log(`\nSensor: SpO2`);
-      console.log(`Has data: ${!!spo2Data}`);
-      console.log(`Data count: ${spo2Data ? spo2Data.length : 0}`);
-    }
-
-    if (heartRateDevice) {
-      console.log(`Device: ${heartRateDevice}`);
-      console.log(`\nSensor: Frecuencia Cardíaca`);
-      console.log(`Has data: ${!!heartRateData}`);
-      console.log(`Data count: ${heartRateData ? heartRateData.length : 0}`);
-    }
-
-    if (respRateDevice) {
-      console.log(`Device: ${respRateDevice}`);
-      console.log(`\nSensor: Frecuencia Respiratoria`);
-      console.log(`Has data: ${!!respRateData}`);
-      console.log(`Data count: ${respRateData ? respRateData.length : 0}`);
-    }
-
     // Calculate averages using the last 5 values if data exists
     const calculateAverage = (dataArray) => {
       if (!dataArray || !Array.isArray(dataArray) || dataArray.length === 0) {
@@ -167,19 +136,22 @@ export default function RealTime({
           lastFiveData.length;
         return Math.round(avgValue).toString();
       } catch (error) {
-        console.error("Error calculating average:", error);
-        console.log("Data causing error:", dataArray.slice(-5));
+        if (import.meta.env.DEV) {
+          console.error("Error calculating average:", error);
+        }
         return "N/A";
       }
     };
 
-    // Extract values for charts
+    // Extract values for charts - limit to MAX_DATA_POINTS
     const extractChartValues = (dataArray) => {
       if (!dataArray || !Array.isArray(dataArray)) return [];
       try {
-        return dataArray.map((item) => item.value);
+        return dataArray.slice(-MAX_DATA_POINTS).map((item) => item.value);
       } catch (error) {
-        console.error("Error extracting chart values:", error);
+        if (import.meta.env.DEV) {
+          console.error("Error extracting chart values:", error);
+        }
         return [];
       }
     };
@@ -205,26 +177,28 @@ export default function RealTime({
     };
   }, [sensorDataByDevice]);
 
-  const generateLabels = (device, sensor) => {
-    if (!sensorDataByDevice?.[device]?.[sensor]?.data) return [];
+  const generateLabels = useCallback(
+    (device, sensor) => {
+      if (!sensorDataByDevice?.[device]?.[sensor]?.data) return [];
 
-    const data = sensorDataByDevice[device][sensor].data;
-    return data.map((item) => {
-      const time = new Date(item.timestamp_epoch * 1000);
-      const milliseconds = item.timestamp_millis;
-      return (
-        time.toLocaleTimeString("es-CL", {
+      // Get only the latest data points that match our chart data
+      const data = sensorDataByDevice[device][sensor].data.slice(
+        -MAX_DATA_POINTS
+      );
+
+      // Format timestamps with cached formatter
+      return data.map((item) => {
+        const time = new Date(item.timestamp_epoch * 1000);
+        // Only include seconds for smoother rendering
+        return time.toLocaleTimeString("es-CL", {
           minute: "numeric",
           second: "numeric",
           timeZone: "America/Santiago",
-        }) +
-        "." +
-        milliseconds.toString().padStart(3, "0")
-      );
-    });
-  };
-
-  const deviceName = Object.keys(sensorDataByDevice || {})[0] || "";
+        });
+      });
+    },
+    [sensorDataByDevice]
+  );
 
   return (
     <Box
