@@ -12,8 +12,9 @@ import PatientSensorTab from "./PatientSensorTab";
 import PatientFormsTab from "./PatientFormsTab";
 import { useResourceHook } from "../../ResourceHook";
 import { useTranslation } from "react-i18next";
-import LightDashboard from "../../Dashboard/LightDashboard";
+
 import Telemonitoreo from "../../Dashboard/Telemonitoreo";
+import DashboardPage from "../../RefactoryDashboard/DashboardPage";
 
 export default function PatientPage() {
   const { id } = useParams<{ id: string }>();
@@ -64,16 +65,21 @@ export default function PatientPage() {
         sx={{ fontSize: "1.2rem" }}
       >
         <Tab label={t("patientPage.overview")} sx={{ fontSize: "1.2rem" }} />
-        <Tab label={t("patientPage.appointments")} sx={{ fontSize: "1.2rem" }} />
-        <Tab label={t("patientPage.forms")} sx={{ fontSize: "1.2rem" }} />   
-        <Tab label="TELEMONITOREO" sx={{ fontSize: "1.2rem" }} />     
+        <Tab
+          label={t("patientPage.appointments")}
+          sx={{ fontSize: "1.2rem" }}
+        />
+        <Tab label={t("patientPage.forms")} sx={{ fontSize: "1.2rem" }} />
+        <Tab label="TELEMONITOREO" sx={{ fontSize: "1.2rem" }} />
         <Tab label={t("patientPage.sensor")} sx={{ fontSize: "1.2rem" }} />
+        <Tab label="TELEMONITOREO2" sx={{ fontSize: "1.2rem" }} />
       </Tabs>
       {selectedTab === 0 && <PatientOverviewTab />}
       {selectedTab === 1 && <PatientAppointmentsTab id={id!} />}
-      {selectedTab === 2 && <PatientFormsTab id={id!} />}      
+      {selectedTab === 2 && <PatientFormsTab id={id!} />}
       {selectedTab === 3 && <Telemonitoreo />}
-      {selectedTab === 4 && <PatientSensorTab patientId="7" />}
+      {selectedTab === 4 && <PatientSensorTab patientId={id!} />}
+      {selectedTab === 5 && <DashboardPage patientId={id!} />}
     </Box>
   );
 }
