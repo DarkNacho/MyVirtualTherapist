@@ -4,34 +4,23 @@ export class CacheUtils {
   private static storageKey: string = "cache";
 
   private static getCache(): Record<string, any> {
-    const cache = localStorage.getItem(this.storageKey);
-    return cache ? JSON.parse(cache) : {};
+    // Retorna siempre un objeto vacío
+    return {};
   }
 
   private static saveCache(cache: Record<string, any>): void {
-    localStorage.setItem(this.storageKey, JSON.stringify(cache));
+    // No hacer nada
+    console.log("Cache guardado desactivado");
   }
 
   public static loadFromCache<T>(key: string): T | null {
-    const cache = this.getCache();
-    const cached = cache[key];
-    if (cached) {
-      const now = Date.now();
-      if (now - cached.timestamp < this.cacheDuration) {
-        return cached.data;
-      } else {
-        delete cache[key];
-        this.saveCache(cache);
-      }
-    }
+    // Siempre retorna null (caché no encontrado)
     return null;
   }
 
   public static saveToCache<T>(key: string, data: T): void {
-    const cache = this.getCache();
-    const now = Date.now();
-    cache[key] = { data, timestamp: now };
-    this.saveCache(cache);
+    // No hacer nada
+    console.log("Guardado en caché desactivado");
   }
 
   public static clearCache(): void {
@@ -39,11 +28,7 @@ export class CacheUtils {
   }
 
   public static clearCacheByKeySubstring(substring: string): void {
-    const cache = this.getCache();
-    const keysToDelete = Object.keys(cache).filter((key) =>
-      key.includes(substring)
-    );
-    keysToDelete.forEach((key) => delete cache[key]);
-    this.saveCache(cache);
+    // No hacer nada
+    console.log("Limpieza de caché desactivada");
   }
 }
