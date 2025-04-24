@@ -34,7 +34,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import DownloadIcon from "@mui/icons-material/Download";
 import ShareIcon from "@mui/icons-material/Share";
 import { COLORS } from "./constants";
-import { lineOptions, barOptions } from "./chartConfig";
+import { lineOptions, barOptions } from "./Charts/chartConfig";
 import RealTime from "../RefactoryDashboard/RealTime/RealTime";
 import Summary from "../RefactoryDashboard/Summary/Summary";
 
@@ -71,9 +71,6 @@ const DashboardPage: FC<DashboardPage> = ({ patientId }) => {
   // Render buttons for view switching
   const renderVitalsViewButtons = () => (
     <>
-      <div>
-        <h1>holi</h1>
-      </div>
       <Box
         sx={{
           display: "flex",

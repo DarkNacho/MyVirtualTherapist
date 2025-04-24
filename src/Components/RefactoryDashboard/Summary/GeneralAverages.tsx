@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Grid } from "@mui/material";
+import { Box, Typography, Grid, Skeleton } from "@mui/material";
 import { COLORS } from "../constants";
 
 export interface GeneralAveragesData {
@@ -28,9 +28,58 @@ export interface GeneralAveragesData {
 
 interface GeneralAveragesProps {
   data: GeneralAveragesData;
+  isLoading?: boolean; // New prop for loading state
 }
 
-const GeneralAverages: React.FC<GeneralAveragesProps> = ({ data }) => {
+const GeneralAverages: React.FC<GeneralAveragesProps> = ({
+  data,
+  isLoading = false, // Default to false if not provided
+}) => {
+  if (isLoading) {
+    return (
+      <Box sx={{ p: 2, bgcolor: COLORS.veryLightBlue, borderRadius: 1, mb: 2 }}>
+        <Skeleton width={300} height={24} sx={{ mb: 1 }} />
+        <Grid container spacing={2}>
+          {/* SpO2 Skeleton */}
+          <Grid item xs={6} sm={3}>
+            <Box sx={{ textAlign: "center", p: 1 }}>
+              <Skeleton width="80%" height={20} sx={{ mx: "auto" }} />
+              <Skeleton width="50%" height={32} sx={{ mx: "auto", my: 1 }} />
+              <Skeleton width="70%" height={16} sx={{ mx: "auto" }} />
+            </Box>
+          </Grid>
+
+          {/* Heart Rate Skeleton */}
+          <Grid item xs={6} sm={3}>
+            <Box sx={{ textAlign: "center", p: 1 }}>
+              <Skeleton width="80%" height={20} sx={{ mx: "auto" }} />
+              <Skeleton width="50%" height={32} sx={{ mx: "auto", my: 1 }} />
+              <Skeleton width="70%" height={16} sx={{ mx: "auto" }} />
+            </Box>
+          </Grid>
+
+          {/* Respiratory Rate Skeleton */}
+          <Grid item xs={6} sm={3}>
+            <Box sx={{ textAlign: "center", p: 1 }}>
+              <Skeleton width="80%" height={20} sx={{ mx: "auto" }} />
+              <Skeleton width="50%" height={32} sx={{ mx: "auto", my: 1 }} />
+              <Skeleton width="70%" height={16} sx={{ mx: "auto" }} />
+            </Box>
+          </Grid>
+
+          {/* Total Time Skeleton */}
+          <Grid item xs={6} sm={3}>
+            <Box sx={{ textAlign: "center", p: 1 }}>
+              <Skeleton width="80%" height={20} sx={{ mx: "auto" }} />
+              <Skeleton width="60%" height={32} sx={{ mx: "auto", my: 1 }} />
+              <Skeleton width="70%" height={16} sx={{ mx: "auto" }} />
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ p: 2, bgcolor: COLORS.veryLightBlue, borderRadius: 1, mb: 2 }}>
       <Typography variant="subtitle1" fontWeight="medium" mb={1}>

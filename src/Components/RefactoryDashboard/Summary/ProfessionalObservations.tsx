@@ -3,12 +3,27 @@ import { Box, Typography, Button } from "@mui/material";
 import { COLORS } from "../constants";
 
 interface ProfessionalObservationsProps {
+  observation: string;
+  lastUpdatedDate?: string;
+  lastUpdatedBy?: string;
   onOpenObservationsHistory: () => void;
+  onEdit?: () => void;
 }
 
 const ProfessionalObservations: React.FC<ProfessionalObservationsProps> = ({
+  observation,
+  lastUpdatedDate = "",
+  lastUpdatedBy = "",
   onOpenObservationsHistory,
+  onEdit = () => {},
 }) => {
+  const lastUpdateInfo =
+    lastUpdatedDate || lastUpdatedBy
+      ? `Última actualización: ${lastUpdatedDate}${
+          lastUpdatedBy ? ` por ${lastUpdatedBy}` : ""
+        }`
+      : "";
+
   return (
     <Box
       sx={{
@@ -51,25 +66,23 @@ const ProfessionalObservations: React.FC<ProfessionalObservationsProps> = ({
               textTransform: "none",
               fontSize: "0.75rem",
             }}
+            onClick={onEdit}
           >
             Editar
           </Button>
         </Box>
       </Box>
       <Box sx={{ p: 1 }}>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ fontStyle: "italic", mb: 1 }}
-        >
-          Última actualización: 20/03/2024 por Dr. Martínez
-        </Typography>
-        <Typography variant="body1">
-          La paciente muestra una evolución favorable en los parámetros
-          cardiovasculares. Los episodios de desaturación son aislados y no
-          persistentes. Se recomienda continuar con el mismo esquema de
-          monitorización y mantener la frecuencia de las sesiones actuales.
-        </Typography>
+        {lastUpdateInfo && (
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ fontStyle: "italic", mb: 1 }}
+          >
+            {lastUpdateInfo}
+          </Typography>
+        )}
+        <Typography variant="body1">{observation}</Typography>
       </Box>
     </Box>
   );

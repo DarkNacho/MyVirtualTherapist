@@ -1,25 +1,60 @@
-import React, { useMemo, useEffect, useState, useCallback } from "react";
+import { useMemo, useEffect, useState, useCallback } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import { COLORS } from "../constants";
 import useThrottledWebSocket from "../../charts/useThrottledWebSocket";
 import ConnectionStatus from "./ConnectionStatus";
 import SensorReadings from "./SensorReadings";
 import DebugInfo from "./DebugInfo";
-import SensorChart from "./SensorChart";
+import SensorChart from "../Charts/SensorChart";
 import AlertMessages from "./AlertMessages";
+import DeviceConnectionStatus from "./DeviceConnectionStatus";
 
 // Maximum number of data points to display in charts
 const MAX_DATA_POINTS = 100;
 
-export default function RealTime({
-  patientId,
-  token,
-}: {
+// Define interfaces for the data structure
+interface SensorDataPoint {
+  value: number;
+  timestamp_epoch: number;
+}
+
+interface DebugInfoState {
+  hasDevices: boolean;
+  deviceNames: string[];
+  hasSpo2: boolean;
+  hasHeartRate: boolean;
+  hasRespRate: boolean;
+}
+
+interface ChartData {
+  spo2: number[];
+  heartRate: number[];
+  respRate: number[];
+}
+
+interface SensorDevices {
+  spo2Device: string;
+  heartRateDevice: string;
+  respRateDevice: string;
+}
+
+interface ProcessedSensorData {
+  currentSpo2: string;
+  currentHeartRate: string;
+  currentRespRate: string;
+  hasData: boolean;
+  chartData: ChartData;
+  sensorDevices: SensorDevices;
+}
+
+interface RealTimeProps {
   patientId?: string;
   token?: string;
-}) {
+}
+
+export default function RealTime({ patientId, token }: RealTimeProps) {
   // For debugging
-  const [debugInfo, setDebugInfo] = useState({
+  const [debugInfo, setDebugInfo] = useState<DebugInfoState>({
     hasDevices: false,
     deviceNames: [],
     hasSpo2: false,
@@ -29,7 +64,9 @@ export default function RealTime({
 
   let webSocketUrl = `${
     import.meta.env.VITE_CHART_SERVER_URL
-  }/dashboard_ws?token=${localStorage.getItem("access_token")}&patient_id=7`; //${patientId}
+  }/dashboard_ws?token=${localStorage.getItem(
+    "access_token"
+  )}&patient_id=${patientId}`; //${patientId}
 
   if (!patientId && token) {
     webSocketUrl = `${
@@ -69,9 +106,9 @@ export default function RealTime({
     hasData,
     chartData,
     sensorDevices,
-  } = useMemo(() => {
+  } = useMemo<ProcessedSensorData>(() => {
     // Default return with empty data
-    const emptyResult = {
+    const emptyResult: ProcessedSensorData = {
       currentSpo2: "N/A",
       currentHeartRate: "N/A",
       currentRespRate: "N/A",
@@ -93,9 +130,9 @@ export default function RealTime({
     }
 
     // Initialize variables to store data from different devices
-    let spo2Data = null;
-    let heartRateData = null;
-    let respRateData = null;
+    let spo2Data: SensorDataPoint[] | null = null;
+    let heartRateData: SensorDataPoint[] | null = null;
+    let respRateData: SensorDataPoint[] | null = null;
     let spo2Device = "";
     let heartRateDevice = "";
     let respRateDevice = "";
@@ -124,7 +161,7 @@ export default function RealTime({
     });
 
     // Calculate averages using the last 5 values if data exists
-    const calculateAverage = (dataArray) => {
+    const calculateAverage = (dataArray: SensorDataPoint[] | null): string => {
       if (!dataArray || !Array.isArray(dataArray) || dataArray.length === 0) {
         return "N/A";
       }
@@ -144,7 +181,9 @@ export default function RealTime({
     };
 
     // Extract values for charts - limit to MAX_DATA_POINTS
-    const extractChartValues = (dataArray) => {
+    const extractChartValues = (
+      dataArray: SensorDataPoint[] | null
+    ): number[] => {
       if (!dataArray || !Array.isArray(dataArray)) return [];
       try {
         return dataArray.slice(-MAX_DATA_POINTS).map((item) => item.value);
@@ -178,7 +217,7 @@ export default function RealTime({
   }, [sensorDataByDevice]);
 
   const generateLabels = useCallback(
-    (device, sensor) => {
+    (device: string, sensor: string): string[] => {
       if (!sensorDataByDevice?.[device]?.[sensor]?.data) return [];
 
       // Get only the latest data points that match our chart data
@@ -288,6 +327,42 @@ export default function RealTime({
             deviceName={sensorDevices.respRateDevice}
             minValue={8}
             maxValue={30}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <DeviceConnectionStatus
+            devices={[
+              {
+                name: "Pulsioxímetro",
+                status: "ONLINE",
+                deviceId: "SMARTM-OX22",
+                signalQuality: "Excelente",
+                batteryPercentage: 85,
+                lastCommunication: "hace 2 segundos",
+                sessionStart: "15:30",
+              },
+              {
+                name: "Sensor Inercial",
+                status: "ONLINE",
+                deviceId: "SMARTM-INR15",
+                signalQuality: "Buena",
+                batteryPercentage: 72,
+                lastCommunication: "hace 5 segundos",
+                sessionStart: "15:30",
+              },
+              {
+                name: "Mascarilla",
+                status: "BATERÍA BAJA",
+                deviceId: "SMARTM-ECG08",
+                signalQuality: "Buena",
+                batteryPercentage: 18,
+                lastCommunication: "hace 8 segundos",
+                sessionStart: "15:30",
+                isWarning: true,
+              },
+            ]}
+            onUpdate={() => alert("Actualizando conexión...")}
+            onAddDevice={() => alert("Agregar nuevo dispositivo...")}
           />
         </Grid>
       </Grid>

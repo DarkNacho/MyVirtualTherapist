@@ -1,30 +1,30 @@
-import { ChartOptions } from 'chart.js';
-import { COLORS } from './constants';
+import { ChartOptions } from "chart.js";
+import { COLORS } from "../constants";
 
-export const lineOptions: ChartOptions<'line'> = {
+export const lineOptions: ChartOptions<"line"> = {
   responsive: true,
   maintainAspectRatio: false,
   scales: {
     x: {
       grid: {
         color: COLORS.gridLine,
-        display: false
+        display: false,
       },
       ticks: {
         color: COLORS.textColor,
-      }
+      },
     },
     y: {
-      type: 'linear',
+      type: "linear",
       beginAtZero: true,
       grid: {
         color: COLORS.gridLine,
-        display: false
+        display: false,
       },
       ticks: {
         color: COLORS.textColor,
-      }
-    }
+      },
+    },
   },
   plugins: {
     legend: {
@@ -32,23 +32,23 @@ export const lineOptions: ChartOptions<'line'> = {
     },
     tooltip: {
       enabled: true,
-      mode: 'index',
+      mode: "index",
       intersect: false,
       displayColors: false,
-      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      backgroundColor: "rgba(255, 255, 255, 0.9)",
       titleColor: COLORS.primary,
       bodyColor: COLORS.textColor,
       padding: 12,
       callbacks: {
-        label: function(context) {
+        label: function (context) {
           return `${context.dataset.label}: ${context.parsed.y}`;
-        }
-      }
+        },
+      },
     },
     zoom: {
       pan: {
         enabled: true,
-        mode: 'xy',
+        mode: "xy",
       },
       zoom: {
         wheel: {
@@ -57,9 +57,9 @@ export const lineOptions: ChartOptions<'line'> = {
         pinch: {
           enabled: true,
         },
-        mode: 'xy',
+        mode: "xy",
       },
-    }
+    },
   },
   elements: {
     line: {
@@ -71,39 +71,39 @@ export const lineOptions: ChartOptions<'line'> = {
       hoverRadius: 5,
       backgroundColor: COLORS.primary,
       borderWidth: 2,
-      borderColor: '#ffffff',
-    }
+      borderColor: "#ffffff",
+    },
   },
   interaction: {
     intersect: false,
-    mode: 'index',
-  }
+    mode: "index",
+  },
 };
 
-export const barOptions: ChartOptions<'bar'> = {
+export const barOptions: ChartOptions<"bar"> = {
   responsive: true,
   maintainAspectRatio: false,
   scales: {
     x: {
       grid: {
         color: COLORS.gridLine,
-        display: false
+        display: false,
       },
       ticks: {
         color: COLORS.textColor,
-      }
+      },
     },
     y: {
-      type: 'linear',
+      type: "linear",
       beginAtZero: true,
       grid: {
         color: COLORS.gridLine,
-        display: false
+        display: false,
       },
       ticks: {
         color: COLORS.textColor,
-      }
-    }
+      },
+    },
   },
   plugins: {
     legend: {
@@ -111,18 +111,18 @@ export const barOptions: ChartOptions<'bar'> = {
     },
     tooltip: {
       enabled: true,
-      mode: 'index',
+      mode: "index",
       intersect: false,
       displayColors: false,
-      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      backgroundColor: "rgba(255, 255, 255, 0.9)",
       titleColor: COLORS.primary,
       bodyColor: COLORS.textColor,
       padding: 12,
       callbacks: {
-        label: function(context) {
+        label: function (context) {
           return `${context.dataset.label}: ${context.parsed.y}`;
-        }
-      }
-    }
-  }
-}; 
+        },
+      },
+    },
+  },
+};
