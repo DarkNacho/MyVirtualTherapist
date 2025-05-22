@@ -25,6 +25,8 @@ import { useTranslation } from "react-i18next";
 import QuestionnaireReportModal from "./QuestionnaireReportModal";
 //import "./QuestionnaireComponent.css";
 
+import { applyCustomLogic } from "./questionnaireCustomLogic";
+
 const fhirService =
   FhirResourceService.getInstance<FhirResource>("FhirResource");
 const questionnaireResponseService =
@@ -57,7 +59,6 @@ export default function QuestionnaireComponent({
       addCancelButton: false,
       addBackButton: false,
       formReadOnly: false,
-      //formStatus: readonly ? 'display' : 'preview'
     };
 
     const lformsQ = window.LForms.Util.convertFHIRQuestionnaireToLForms(
@@ -75,7 +76,6 @@ export default function QuestionnaireComponent({
       formContainer,
       formOptions
     );
-    //window.LForms.Util.addFormToPage(questionnaire, formContainer, formOptions);
   }, [questionnaire, questionnaireResponse]);
 
   // Función para actualizar las observaciones originales con las nuevas
@@ -322,6 +322,8 @@ export default function QuestionnaireComponent({
       formContainer
     ) as QuestionnaireResponse;
 
+    applyCustomLogic(questionnaire.id!, qr, questionnaire);
+
     const originalObservation = (await getObservations()) as FhirResource[]; //obtiene obsevaciones desde Observation,  quizás llamar al inicio
     const origianlCondition = (await getConditions()) as FhirResource[];
 
@@ -371,7 +373,7 @@ export default function QuestionnaireComponent({
 
   const handleDelete = async () => {
     if (!questionnaireResponse.id) return;
-    
+
     try {
       // Primero eliminamos las observaciones relacionadas
       const observations = await getObservations();
@@ -394,8 +396,10 @@ export default function QuestionnaireComponent({
       }
 
       // Finalmente eliminamos el QuestionnaireResponse
-      const result = await questionnaireResponseService.deleteResource(questionnaireResponse.id);
-      
+      const result = await questionnaireResponseService.deleteResource(
+        questionnaireResponse.id
+      );
+
       if (result.success) {
         // Mostrar mensaje de éxito
         HandleResult.handleOperation(
@@ -450,7 +454,7 @@ export default function QuestionnaireComponent({
             alignItems: "center",
             justifyContent: "flex-end",
             gap: "1rem",
-            marginTop: "1rem"
+            marginTop: "1rem",
           }}
         >
           {questionnaireResponse.id && (
@@ -480,11 +484,11 @@ export default function QuestionnaireComponent({
                   <Button onClick={handleCloseDeleteDialog}>
                     {t("questionnaireComponent.cancel")}
                   </Button>
-                  <Button 
+                  <Button
                     onClick={() => {
                       handleCloseDeleteDialog();
                       handleDelete();
-                    }} 
+                    }}
                     color="error"
                     autoFocus
                   >
@@ -503,11 +507,7 @@ export default function QuestionnaireComponent({
           >
             Generar Reporte
           </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={postData}
-          >
+          <Button variant="contained" color="primary" onClick={postData}>
             {t("questionnaireComponent.save")}
           </Button>
         </div>
