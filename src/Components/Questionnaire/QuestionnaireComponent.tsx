@@ -25,7 +25,7 @@ import { useTranslation } from "react-i18next";
 import QuestionnaireReportModal from "./QuestionnaireReportModal";
 //import "./QuestionnaireComponent.css";
 
-import { applyCustomLogic } from "./questionnaireCustomLogic";
+import { applyCustomLogic } from "./QuestionnaireCustomLogic";
 
 const fhirService =
   FhirResourceService.getInstance<FhirResource>("FhirResource");
