@@ -18,10 +18,6 @@ import { loadUserRoleFromLocalStorage } from "../../../Utils/RolUser";
 
 let patientFormData: PatientFormData;
 
-const handleEditClick = (person: Patient) => {
-  alert(`Edit clicked for id:${person.id} `);
-};
-
 const handleDeleteClick = (person: Patient) => {
   alert(`Delete clicked for id: ${person.id}`);
 };
@@ -31,7 +27,7 @@ export default function PatientListPage() {
 
   const [openCreate, setOpenCreate] = useState(false);
   const [openRefer, setOpenRefer] = useState(false);
-
+  const [isEditing, setIsEditing] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [avatar, setAvatar] = useState<File | null>(null);
   const [isPosting, setIsPosting] = useState(false);
@@ -52,12 +48,19 @@ export default function PatientListPage() {
   );
 
   const handleOpenCreate = () => {
+    setIsEditing(false);
+    setSelectedPatient(undefined);
+    setActiveStep(0);
+    setAvatar(null);
+    patientFormData = {} as PatientFormData;
     setOpenCreate(true);
   };
 
   const handleClose = () => {
     setOpenCreate(false);
     setOpenRefer(false);
+    setIsEditing(false);
+    setSelectedPatient(undefined);
     setActiveStep(0);
   };
 
@@ -70,14 +73,76 @@ export default function PatientListPage() {
     setOpenRefer(true);
   };
 
-  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  /*const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       setAvatar(event.target.files[0]);
+    }
+  };*/
+
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2MB
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      if (file.size > MAX_IMAGE_SIZE) {
+        alert("La imagen es demasiado grande. El tamaño máximo es 2MB.");
+        event.target.value = ""; // Limpia el input
+        return;
+      }
+      setAvatar(file);
     }
   };
 
   const handleSetActiveStep = (step: number) => {
     setActiveStep(step);
+  };
+
+  const updatePatient = async (
+    data: PatientFormData
+  ): Promise<Result<Patient>> => {
+    if (!selectedPatient || !selectedPatient.id) {
+      return {
+        success: false,
+        error: t("patientPage.noPatientSelected"),
+      };
+    }
+
+    data.id = selectedPatient.id;
+    const rut = data.rut.replace(/\./g, "").replace(/-/g, "").toUpperCase();
+    data.rut = rut;
+
+    const patient = await PersonUtil.PatientFormToPatient(data);
+    console.log("patient a actualizar:", patient);
+    if (!patient) {
+      return {
+        success: false,
+        error: t("patientPage.errorConvertingForm"),
+      };
+    }
+
+    // Mantener el generalPractitioner del paciente original si existe
+    if (
+      selectedPatient.generalPractitioner &&
+      selectedPatient.generalPractitioner.length > 0
+    ) {
+      patient.generalPractitioner = selectedPatient.generalPractitioner;
+    } else {
+      // Si no tiene un médico asignado, usar el actual
+      patient.generalPractitioner = [
+        { reference: `Practitioner/${localStorage.getItem("id")}` },
+      ];
+    }
+
+    // Actualizar en HAPI FHIR
+    const fhirService = FhirResourceService.getInstance<Patient>("Patient");
+    const responseFhir = await fhirService.updateResource(patient);
+
+    if (!responseFhir.success) return responseFhir;
+
+    // También podríamos actualizar la información del usuario en el servidor de autenticación
+    // si fuera necesario, por ejemplo, el email o teléfono
+
+    CacheUtils.clearCache();
+    return responseFhir;
   };
 
   const submitForm = async (data: PatientFormData) => {
@@ -88,22 +153,29 @@ export default function PatientListPage() {
         patientFormData.avatar = avatar;
       }
       console.log("patientFormData:", patientFormData);
-      // Add any additional logic if needed
+
       if (activeStep < 1) {
         setActiveStep((prev) => prev + 1);
       } else {
-        //await postPatient(patientFormData);
+        const operation = isEditing
+          ? () => updatePatient(patientFormData)
+          : () => postPatient(patientFormData);
+
+        const message = isEditing
+          ? t("patientPage.patientUpdated")
+          : t("patientPage.patientCreated");
+
         const response = await HandleResult.handleOperation(
-          () => postPatient(patientFormData),
-          t("patientPage.patientCreated"),
+          operation,
+          message,
           t("patientPage.sending")
         );
+
         if (response.success) setActiveStep((prev) => prev + 1);
         else setActiveStep(0);
-
-        await new Promise((resolve) => setTimeout(resolve, 2000)); // wait for 1 second
       }
     } finally {
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
       setIsPosting(false);
     }
   };
@@ -182,6 +254,30 @@ export default function PatientListPage() {
     return responseFhir;
   };
 
+  const handleEditPatient = async (person: Patient) => {
+    try {
+      setIsEditing(true);
+      setSelectedPatient(person);
+      setActiveStep(0);
+
+      // Convertir el patient FHIR a PatientFormData
+      const formData = await PersonUtil.PatientToPatientForm(person);
+      patientFormData = formData;
+
+      console.log("patientFormData:", patientFormData);
+
+      // Si hay foto, preparar para mostrarla
+      if (person.photo && person.photo.length > 0 && person.photo[0].data) {
+        // La foto está en base64, pero no podemos convertirla directamente a File
+        // En el componente se mostrará usando la propiedad photo del patient
+      }
+
+      setOpenCreate(true);
+    } catch (error) {
+      console.error("Error preparing patient for edit:", error);
+    }
+  };
+
   return (
     <Box>
       <Grid container spacing={2}>
@@ -204,7 +300,7 @@ export default function PatientListPage() {
             >
               <PatientList
                 onReferClick={handleReferClick}
-                onEditClick={handleEditClick}
+                onEditClick={handleEditPatient}
                 onDeleteClick={handleDeleteClick}
                 searchParam={searchParam}
               />
@@ -223,6 +319,8 @@ export default function PatientListPage() {
         handleAvatarChange={handleAvatarChange}
         isPosting={isPosting}
         setActiveStep={handleSetActiveStep}
+        isEditing={isEditing}
+        selectedPatient={selectedPatient}
       />
       {selectedPatient && (
         <PatientRefer

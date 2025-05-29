@@ -149,7 +149,7 @@ export default function PatientPersonalDetailsForm({
           <TextField
             select
             label={t("patientPersonalDetailsForm.gender")}
-            defaultValue="unknown"
+            defaultValue={patient?.genero || "unknown"}
             {...register("genero", {
               required: t("patientPersonalDetailsForm.genderRequired"),
             })}

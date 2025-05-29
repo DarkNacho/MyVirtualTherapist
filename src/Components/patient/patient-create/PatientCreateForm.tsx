@@ -23,6 +23,7 @@ import PatientPersonalDetailsForm from "./PatientPersonalDetailsForm";
 import PatientEmergencyContactsForm from "./PatientEmergencyContactsForm";
 import { PatientFormData } from "../../../Models/Forms/PatientForm";
 import { useState } from "react";
+import { Patient } from "fhir/r4";
 
 const steps = ["personalDetails", "contactDetails"];
 
@@ -62,6 +63,8 @@ export default function PatientCreateForm({
   handleAvatarChange,
   isPosting = false,
   setActiveStep,
+  isEditing = false,
+  selectedPatient = undefined,
 }: {
   formId: string;
   submitForm: SubmitHandler<PatientFormData>;
@@ -73,6 +76,8 @@ export default function PatientCreateForm({
   handleAvatarChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isPosting: boolean;
   setActiveStep: (step: number) => void;
+  isEditing?: boolean;
+  selectedPatient?: Patient | undefined;
 }) {
   const { t } = useTranslation();
   const [optionalStep, setOptionalStep] = useState(false);
@@ -100,7 +105,9 @@ export default function PatientCreateForm({
           textUnderlineOffset: "0.2em",
         }}
       >
-        {t("patientCreateForm.patientCreated")}
+        {isEditing
+          ? t("patientCreateForm.patientUpdated")
+          : t("patientCreateForm.patientCreated")}
       </Typography>
       <Typography
         variant="h6"
@@ -111,9 +118,16 @@ export default function PatientCreateForm({
         {patient?.nombre} {patient?.segundoNombre} {patient?.apellidoPaterno}{" "}
         {patient?.apellidoMaterno}
       </Typography>
-      {t("patientCreateForm.verifyEmail")}
+      {!isEditing && (
+        <Typography variant="body1" sx={{ color: "#666" }}>
+          {t("patientCreateForm.verifyEmail")}
+        </Typography>
+      )}
     </>
   );
+
+  const hasPatientPhoto =
+    selectedPatient?.photo?.[0]?.data || selectedPatient?.photo?.[0]?.url;
 
   const renderAvatarUpload = () => (
     <Box
@@ -143,6 +157,19 @@ export default function PatientCreateForm({
           {avatar ? (
             <Avatar
               src={URL.createObjectURL(avatar)}
+              sx={{
+                width: 150,
+                height: 150,
+                cursor: "pointer",
+              }}
+            />
+          ) : hasPatientPhoto ? (
+            <Avatar
+              src={
+                selectedPatient?.photo?.[0]?.data
+                  ? `data:${selectedPatient.photo[0].contentType};base64,${selectedPatient.photo[0].data}`
+                  : selectedPatient?.photo?.[0]?.url
+              }
               sx={{
                 width: 150,
                 height: 150,

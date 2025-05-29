@@ -1,0 +1,989 @@
+import { FC, useRef, useState } from 'react';
+import { 
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ChartOptions
+} from 'chart.js';
+import { Line, Bar } from 'react-chartjs-2';
+import { Grid, Paper, Typography, Box, Tab, Tabs, Button, IconButton, Tooltip as MuiTooltip, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import zoomPlugin from 'chartjs-plugin-zoom';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import CloseIcon from '@mui/icons-material/Close';
+
+// Registrar los componentes necesarios de Chart.js
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  zoomPlugin
+);
+
+// Interfaces para los datos
+interface DashboardProps {
+  yearlyData: number[];
+  monthlySales: number[];
+  dailySales: number[];
+}
+
+// NOTA: Estos son datos dummy que reemplazan la conexión al servidor FHIR
+const dummyPatient = {
+  id: "dummy-patient-001",
+  name: [{
+    given: ["Juan"],
+    family: "Pérez"
+  }],
+  birthDate: "1990-01-01",
+  gender: "male",
+  address: [{
+    line: ["Calle Principal 123"],
+    city: "Ciudad Ejemplo",
+    postalCode: "12345"
+  }]
+};
+
+// NOTA: Estos son datos dummy que reemplazan los encuentros del servidor FHIR
+const dummyEncounters = [
+  {
+    id: "enc-001",
+    period: { start: "2024-03-15T10:00:00Z" },
+    type: [{ text: "Consulta de rutina" }],
+    status: "finished"
+  },
+  {
+    id: "enc-002",
+    period: { start: "2024-03-10T15:30:00Z" },
+    type: [{ text: "Control de signos vitales" }],
+    status: "finished"
+  }
+];
+
+// NOTA: Estos son datos dummy que reemplazan los cuestionarios del servidor FHIR
+const dummyQuestionnaires = [
+  {
+    id: "q-001",
+    title: "Evaluación de síntomas",
+    date: "2024-03-15",
+    status: "completed"
+  },
+  {
+    id: "q-002",
+    title: "Escala de dolor",
+    date: "2024-03-10",
+    status: "completed"
+  }
+];
+
+const LightDashboard: FC<DashboardProps> = ({ yearlyData, monthlySales, dailySales }) => {
+  const chartRef = useRef<ChartJS<"line">>(null);
+  const [selectedTab, setSelectedTab] = useState(0);
+  
+  // Estado para controlar qué gráfico se muestra en detalle
+  const [detailDialog, setDetailDialog] = useState({
+    open: false,
+    title: '',
+    value: '',
+    chartType: '', // Para identificar qué gráfico mostrar
+    description: ''
+  });
+
+  // Descripciones para cada gráfico
+  const chartDescriptions = {
+    spo2: "La saturación de oxígeno en sangre (SpO2) es una medida de la cantidad de oxígeno transportada en la sangre. Valores normales son entre 95-100%. Valores por debajo de 90% pueden indicar hipoxemia.",
+    heartRate: "La frecuencia cardíaca indica cuántas veces late el corazón por minuto. El rango normal para adultos en reposo es de 60-100 latidos por minuto. Variaciones pueden indicar actividad física, estrés o condiciones médicas.",
+    respRate: "La frecuencia respiratoria mide la cantidad de respiraciones por minuto. Para adultos en reposo, lo normal es entre 12-20 respiraciones/minuto. Valores fuera de este rango pueden indicar problemas respiratorios o metabólicos.",
+    inertial: "Los sensores inerciales miden movimiento y orientación a través de acelerómetros, giroscopios y magnetómetros. Estos datos son útiles para evaluar patrones de movimiento, postura y actividad física del paciente."
+  };
+  
+  // Meses del año
+  const months = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+  
+  // Días de la semana para las ventas diarias
+  const days = ['LUN', 'MAR', 'MIE', 'JUE', 'VIE', 'SAB', 'DOM'];
+
+  // Paleta de colores de MVT (similar a la imagen)
+  const COLORS = {
+    primary: '#1348b9',           // Azul principal
+    secondary: '#4680ff',         // Azul secundario
+    accent: '#4680ff',            // Azul acento
+    lightBlue: 'rgba(70, 128, 255, 0.2)', // Azul claro para fondos
+    veryLightBlue: 'rgba(220, 230, 255, 0.4)', // Azul muy claro para fondo de gráficos
+    lightGrey: '#f6f8fc',         // Gris claro para fondos
+    gridLine: 'rgba(225, 230, 245, 0.6)', // Color para líneas de cuadrícula
+    textColor: '#4a5568',         // Color para texto
+    redLine: '#ff4569',           // Rojo para líneas alternativas
+    greenLine: '#4caf50',         // Verde para líneas alternativas
+    cyanLine: '#1fc8e3',          // Cyan para líneas alternativas
+  };
+
+  // Opciones compartidas para los gráficos de línea
+  const lineOptions: ChartOptions<'line'> = {
+    responsive: true,
+    maintainAspectRatio: true,
+    scales: {
+      y: {
+        beginAtZero: false,
+        grid: {
+          color: COLORS.gridLine,
+          drawBorder: false,
+        },
+        ticks: {
+          color: COLORS.textColor,
+          padding: 10,
+          font: {
+            size: 11,
+          }
+        },
+        border: {
+          display: false,
+        }
+      },
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: COLORS.textColor,
+          padding: 10,
+          font: {
+            size: 11,
+          }
+        },
+        border: {
+          display: false,
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        titleColor: COLORS.primary,
+        bodyColor: COLORS.textColor,
+        titleFont: {
+          size: 13,
+          weight: 'bold',
+        },
+        bodyFont: {
+          size: 12,
+        },
+        padding: 12,
+        borderColor: 'rgba(70, 128, 255, 0.3)',
+        borderWidth: 1,
+        displayColors: false,
+        cornerRadius: 8,
+        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+      },
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: 'xy',
+        },
+        zoom: {
+          wheel: {
+            enabled: true,
+          },
+          pinch: {
+            enabled: true,
+          },
+          mode: 'xy',
+        },
+      },
+    },
+    elements: {
+      line: {
+        tension: 0.4, // Curva más suave, como en la imagen
+        borderWidth: 2,
+      },
+      point: {
+        radius: 0, // Ocultar puntos por defecto
+        hoverRadius: 5, // Mostrar puntos al hacer hover
+        backgroundColor: COLORS.primary,
+        borderWidth: 2,
+        borderColor: '#ffffff',
+      }
+    },
+    layout: {
+      padding: {
+        top: 20,
+        right: 20,
+        bottom: 20,
+        left: 20
+      }
+    },
+    interaction: {
+      intersect: false,
+      mode: 'index',
+    },
+  };
+
+  // Opciones para el gráfico de barras
+  const barOptions: ChartOptions<'bar'> = {
+    responsive: true,
+    maintainAspectRatio: true,
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: COLORS.gridLine,
+          drawBorder: false,
+        },
+        ticks: {
+          color: COLORS.textColor,
+          padding: 10,
+          font: {
+            size: 11,
+          }
+        },
+        border: {
+          display: false,
+        }
+      },
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: COLORS.textColor,
+          padding: 10,
+          font: {
+            size: 11,
+          }
+        },
+        border: {
+          display: false,
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        titleColor: COLORS.primary,
+        bodyColor: COLORS.textColor,
+        titleFont: {
+          size: 13,
+          weight: 'bold',
+        },
+        bodyFont: {
+          size: 12,
+        },
+        padding: 12,
+        borderColor: 'rgba(70, 128, 255, 0.3)',
+        borderWidth: 1,
+        displayColors: false,
+        cornerRadius: 8,
+      },
+    },
+    layout: {
+      padding: {
+        top: 20,
+        right: 20,
+        bottom: 20,
+        left: 20
+      }
+    },
+  };
+
+  // Configuración visual para crear el degradado en los gráficos de línea
+  const createGradient = (ctx: CanvasRenderingContext2D, color: string): CanvasGradient => {
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, `${color}40`); // 25% transparencia
+    gradient.addColorStop(1, `${color}05`); // 2% transparencia
+    return gradient;
+  };
+
+  // Datos del gráfico de rendimiento anual
+  const yearlyPerformanceData = {
+    labels: months,
+    datasets: [
+      {
+        data: yearlyData,
+        borderColor: COLORS.primary,
+        backgroundColor: function(context: any) {
+          const chart = context.chart;
+          const {ctx} = chart;
+          return createGradient(ctx, COLORS.primary);
+        },
+        borderWidth: 2,
+        pointBackgroundColor: COLORS.primary,
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 2,
+        pointRadius: 0,
+        pointHoverRadius: 6,
+        pointHoverBorderWidth: 3,
+        pointHoverBackgroundColor: COLORS.primary,
+        pointHoverBorderColor: '#ffffff',
+        fill: true,
+      },
+    ],
+  };
+
+  // Datos del gráfico de ventas mensuales
+  const monthlySalesData = {
+    labels: months,
+    datasets: [
+      {
+        data: monthlySales,
+        borderColor: COLORS.primary,
+        backgroundColor: function(context: any) {
+          const chart = context.chart;
+          const {ctx} = chart;
+          return createGradient(ctx, COLORS.primary);
+        },
+        borderWidth: 2,
+        pointBackgroundColor: COLORS.primary,
+        pointRadius: 0,
+        pointHoverRadius: 6,
+        fill: true,
+      },
+    ],
+  };
+
+  // Datos de ventas diarias (gráfico de barras)
+  const dailySalesData = {
+    labels: days,
+    datasets: [
+      {
+        data: dailySales,
+        backgroundColor: COLORS.primary,
+        borderRadius: 6,
+        barThickness: 20,
+        hoverBackgroundColor: COLORS.secondary,
+      },
+    ],
+  };
+
+  // Datos de tendencia por hora (gráfico de línea multicolor)
+  const hourlyTrendData = {
+    labels: ['8AM', '10AM', '12PM', '2PM', '4PM', '6PM', '8PM'],
+    datasets: [
+      {
+        data: [25, 40, 30, 45, 35, 55, 50],
+        borderColor: COLORS.redLine,
+        backgroundColor: 'transparent',
+        borderWidth: 2.5,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        fill: false,
+        label: 'Eje X',
+      },
+      {
+        data: [40, 55, 45, 60, 50, 55, 45],
+        borderColor: COLORS.cyanLine,
+        backgroundColor: 'transparent',
+        borderWidth: 2.5,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        fill: false,
+        label: 'Eje Y',
+      },
+      {
+        data: [30, 35, 40, 35, 25, 35, 30],
+        borderColor: COLORS.primary,
+        backgroundColor: 'transparent',
+        borderWidth: 2.5,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        fill: false,
+        label: 'Eje Z',
+      },
+    ],
+  };
+
+  // Función para resetear el zoom
+  const resetZoom = () => {
+    if (chartRef.current) {
+      chartRef.current.resetZoom();
+    }
+  };
+
+  // Estilos para los encabezados de las tarjetas
+  const cardHeaderStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    mb: 2
+  };
+
+  // Estilos para las pills que muestran valores principales
+  const valuePillStyle = {
+    display: 'inline-block',
+    backgroundColor: COLORS.primary,
+    color: 'white',
+    py: 0.5,
+    px: 2,
+    borderRadius: 3,
+    fontWeight: 'bold',
+    fontSize: '1rem',
+    my: 1
+  };
+
+  // Función para abrir el diálogo de detalle
+  const handleOpenDetail = (title: string, value: string, chartType: string, description: string) => {
+    setDetailDialog({
+      open: true,
+      title,
+      value,
+      chartType,
+      description
+    });
+  };
+
+  // Función para cerrar el diálogo
+  const handleCloseDetail = () => {
+    setDetailDialog({
+      ...detailDialog,
+      open: false
+    });
+  };
+
+  // Opciones extendidas para gráficos en vista detallada
+  const detailedLineOptions: ChartOptions<'line'> = {
+    ...lineOptions,
+    plugins: {
+      ...lineOptions.plugins,
+      title: {
+        display: true,
+        text: 'Detalle histórico',
+        font: {
+          size: 16,
+          weight: 'bold'
+        },
+        color: COLORS.primary,
+        padding: {
+          top: 10,
+          bottom: 20
+        }
+      },
+      legend: {
+        display: true,
+        position: 'top',
+      },
+      tooltip: {
+        ...lineOptions.plugins?.tooltip,
+        callbacks: {
+          label: function(context) {
+            return `Valor: ${context.raw}`;
+          }
+        }
+      }
+    },
+    scales: {
+      ...lineOptions.scales,
+      y: {
+        ...lineOptions.scales?.y,
+        ticks: {
+          ...lineOptions.scales?.y?.ticks,
+          font: {
+            size: 12
+          }
+        }
+      },
+      x: {
+        ...lineOptions.scales?.x,
+        ticks: {
+          ...lineOptions.scales?.x?.ticks,
+          font: {
+            size: 12
+          }
+        }
+      }
+    }
+  };
+
+  // Manejador para cambios de pestaña
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setSelectedTab(newValue);
+  };
+
+  // Componente para mostrar la información del paciente
+  const PatientInfo = () => (
+    <Paper sx={{ p: 3, mb: 3, borderRadius: 2, bgcolor: 'white' }}>
+      <Typography variant="h6" fontWeight="bold" mb={2}>Información del Paciente</Typography>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
+          <Typography variant="body1">
+            <strong>Nombre:</strong> {dummyPatient.name[0].given.join(' ')} {dummyPatient.name[0].family}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Fecha de nacimiento:</strong> {new Date(dummyPatient.birthDate).toLocaleDateString()}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Género:</strong> {dummyPatient.gender === 'male' ? 'Masculino' : 'Femenino'}
+          </Typography>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Typography variant="body1">
+            <strong>Dirección:</strong> {dummyPatient.address[0].line}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Ciudad:</strong> {dummyPatient.address[0].city}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Código Postal:</strong> {dummyPatient.address[0].postalCode}
+          </Typography>
+        </Grid>
+      </Grid>
+    </Paper>
+  );
+
+  // Componente para mostrar los encuentros
+  const EncountersList = () => (
+    <Paper sx={{ p: 3, mb: 3, borderRadius: 2, bgcolor: 'white' }}>
+      <Typography variant="h6" fontWeight="bold" mb={2}>Encuentros Recientes</Typography>
+      {dummyEncounters.map(encounter => (
+        <Box key={encounter.id} sx={{ 
+          p: 2, 
+          mb: 1, 
+          borderRadius: 1, 
+          bgcolor: COLORS.veryLightBlue,
+          '&:hover': { bgcolor: COLORS.lightBlue }
+        }}>
+          <Typography variant="subtitle1" fontWeight="medium">
+            {encounter.type[0].text}
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            Fecha: {new Date(encounter.period.start).toLocaleDateString()}
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            Estado: {encounter.status === 'finished' ? 'Completado' : 'Pendiente'}
+          </Typography>
+        </Box>
+      ))}
+    </Paper>
+  );
+
+  // Componente para mostrar los cuestionarios
+  const QuestionnairesList = () => (
+    <Paper sx={{ p: 3, mb: 3, borderRadius: 2, bgcolor: 'white' }}>
+      <Typography variant="h6" fontWeight="bold" mb={2}>Cuestionarios</Typography>
+      {dummyQuestionnaires.map(questionnaire => (
+        <Box key={questionnaire.id} sx={{ 
+          p: 2, 
+          mb: 1, 
+          borderRadius: 1, 
+          bgcolor: COLORS.veryLightBlue,
+          '&:hover': { bgcolor: COLORS.lightBlue }
+        }}>
+          <Typography variant="subtitle1" fontWeight="medium">
+            {questionnaire.title}
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            Fecha: {questionnaire.date}
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            Estado: {questionnaire.status === 'completed' ? 'Completado' : 'Pendiente'}
+          </Typography>
+        </Box>
+      ))}
+    </Paper>
+  );
+
+  return (
+    <Box sx={{ p: 3, backgroundColor: '#f5f7fa', minHeight: '100vh' }}>
+      {/* Título y pestañas */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Box>
+          <Typography variant="subtitle2" color="textSecondary">Dashboard</Typography>
+          <Typography variant="h5" fontWeight="bold" color="textPrimary">Monitoreo del Paciente</Typography>
+        </Box>
+        <Tabs 
+          value={selectedTab} 
+          onChange={handleTabChange}
+          sx={{ 
+            '& .MuiTabs-indicator': { backgroundColor: COLORS.primary }, 
+            '& .Mui-selected': { color: COLORS.primary } 
+          }}
+        >
+          <Tab label="Signos Vitales" sx={{ textTransform: 'none' }} />
+          <Tab label="Información" sx={{ textTransform: 'none' }} />
+          <Tab label="Encuentros" sx={{ textTransform: 'none' }} />
+          <Tab label="Cuestionarios" sx={{ textTransform: 'none' }} />
+        </Tabs>
+      </Box>
+
+      {/* Contenido basado en la pestaña seleccionada */}
+      {selectedTab === 0 && (
+        <Grid container spacing={3}>
+          {/* Saturación de oxígeno */}
+          <Grid item xs={12} md={6}>
+            <Paper 
+              sx={{ 
+                p: 3, 
+                borderRadius: 2, 
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.05)',
+                height: '100%',
+                bgcolor: 'white',
+                overflow: 'hidden'
+              }}
+            >
+              <Box sx={cardHeaderStyle}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Typography variant="h6" fontWeight="bold" color="textPrimary">SATURACIÓN DE OXÍGENO (%)</Typography>
+                  <MuiTooltip title={chartDescriptions.spo2} arrow placement="top">
+                    <IconButton size="small" sx={{ ml: 1 }}>
+                      <HelpOutlineIcon fontSize="small" color="primary" />
+                    </IconButton>
+                  </MuiTooltip>
+                </Box>
+                <Box sx={valuePillStyle}>86%</Box>
+              </Box>
+              <Box sx={{ 
+                borderRadius: 1, 
+                backgroundColor: COLORS.veryLightBlue,
+                p: 1,
+                mb: 1
+              }}>
+                <Line
+                  data={yearlyPerformanceData}
+                  options={{
+                    ...lineOptions,
+                    elements: {
+                      ...lineOptions.elements,
+                      point: {
+                        ...lineOptions.elements?.point,
+                        radius: (ctx) => ctx.dataIndex === ctx.dataset.data.length - 1 ? 5 : 0
+                      }
+                    }
+                  }}
+                  ref={chartRef}
+                />
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                <Button 
+                  variant="text" 
+                  sx={{ 
+                    color: COLORS.primary, 
+                    textTransform: 'none',
+                    fontWeight: 'normal',
+                    fontSize: '0.85rem'
+                  }}
+                  onClick={() => handleOpenDetail(
+                    'SATURACIÓN DE OXÍGENO (%)', 
+                    '86%', 
+                    'spo2',
+                    chartDescriptions.spo2
+                  )}
+                >
+                  Ver detalles
+                </Button>
+              </Box>
+            </Paper>
+          </Grid>
+
+          {/* Frecuencia cardiaca */}
+          <Grid item xs={12} md={6}>
+            <Paper 
+              sx={{ 
+                p: 3, 
+                borderRadius: 2, 
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.05)',
+                height: '100%',
+                bgcolor: 'white',
+                overflow: 'hidden'
+              }}
+            >
+              <Box sx={cardHeaderStyle}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Typography variant="h6" fontWeight="bold" color="textPrimary">FRECUENCIA CARDIACA (LPM)</Typography>
+                  <MuiTooltip title={chartDescriptions.heartRate} arrow placement="top">
+                    <IconButton size="small" sx={{ ml: 1 }}>
+                      <HelpOutlineIcon fontSize="small" color="primary" />
+                    </IconButton>
+                  </MuiTooltip>
+                </Box>
+                <Box sx={valuePillStyle}>85LPM</Box>
+              </Box>
+              <Box sx={{ 
+                borderRadius: 1, 
+                backgroundColor: COLORS.veryLightBlue,
+                p: 1,
+                mb: 1
+              }}>
+                <Line data={monthlySalesData} options={lineOptions} />
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                <Button 
+                  variant="text" 
+                  sx={{ 
+                    color: COLORS.primary, 
+                    textTransform: 'none',
+                    fontWeight: 'normal',
+                    fontSize: '0.85rem'
+                  }}
+                  onClick={() => handleOpenDetail(
+                    'FRECUENCIA CARDIACA (LPM)', 
+                    '85LPM', 
+                    'heartRate',
+                    chartDescriptions.heartRate
+                  )}
+                >
+                  Ver detalles
+                </Button>
+              </Box>
+            </Paper>
+          </Grid>
+
+          {/* Ventas diarias - Gráfico de barras */}
+          <Grid item xs={12} md={6}>
+            <Paper 
+              sx={{ 
+                p: 3, 
+                borderRadius: 2, 
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.05)',
+                height: '100%',
+                bgcolor: 'white',
+                overflow: 'hidden'
+              }}
+            >
+              <Box sx={cardHeaderStyle}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Typography variant="h6" fontWeight="bold" color="textPrimary">FRECUENCIA RESPIRATORIA (RPM)</Typography>
+                  <MuiTooltip title={chartDescriptions.respRate} arrow placement="top">
+                    <IconButton size="small" sx={{ ml: 1 }}>
+                      <HelpOutlineIcon fontSize="small" color="primary" />
+                    </IconButton>
+                  </MuiTooltip>
+                </Box>
+                <Box sx={valuePillStyle}>12RPM</Box>
+              </Box>
+              <Box sx={{ 
+                borderRadius: 1, 
+                backgroundColor: COLORS.veryLightBlue,
+                p: 1,
+                mb: 1
+              }}>
+                <Line data={dailySalesData} options={{
+                  ...lineOptions,
+                  elements: {
+                    ...lineOptions.elements,
+                    line: {
+                      tension: 0.4
+                    }
+                  }
+                }} />
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                <Button 
+                  variant="text" 
+                  sx={{ 
+                    color: COLORS.primary, 
+                    textTransform: 'none',
+                    fontWeight: 'normal',
+                    fontSize: '0.85rem'
+                  }}
+                  onClick={() => handleOpenDetail(
+                    'FRECUENCIA RESPIRATORIA (RPM)', 
+                    '12RPM', 
+                    'respRate',
+                    chartDescriptions.respRate
+                  )}
+                >
+                  Ver detalles
+                </Button>
+              </Box>
+            </Paper>
+          </Grid>
+
+          {/* Tendencia por hora - Gráfico de línea multicolor */}
+          <Grid item xs={12} md={6}>
+            <Paper 
+              sx={{ 
+                p: 3, 
+                borderRadius: 2, 
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.05)',
+                height: '100%',
+                bgcolor: 'white',
+                overflow: 'hidden'
+              }}
+            >
+              <Box sx={cardHeaderStyle}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Typography variant="h6" fontWeight="bold" color="textPrimary">SENSORES INERCIALES</Typography>
+                  <MuiTooltip title={chartDescriptions.inertial} arrow placement="top">
+                    <IconButton size="small" sx={{ ml: 1 }}>
+                      <HelpOutlineIcon fontSize="small" color="primary" />
+                    </IconButton>
+                  </MuiTooltip>
+                </Box>
+                <Box sx={valuePillStyle}>ESTADO: BUENO</Box>
+              </Box>
+              <Box sx={{ 
+                borderRadius: 1, 
+                backgroundColor: COLORS.veryLightBlue,
+                p: 1,
+                mb: 1
+              }}>
+                <Line 
+                  data={hourlyTrendData} 
+                  options={{
+                    ...lineOptions,
+                    plugins: {
+                      ...lineOptions.plugins,
+                      legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                          boxWidth: 12,
+                          padding: 20,
+                          font: {
+                            size: 12
+                          }
+                        }
+                      }
+                    }
+                  }} 
+                />
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                <Button 
+                  variant="text" 
+                  sx={{ 
+                    color: COLORS.primary, 
+                    textTransform: 'none',
+                    fontWeight: 'normal',
+                    fontSize: '0.85rem'
+                  }}
+                  onClick={() => handleOpenDetail(
+                    'SENSORES INERCIALES', 
+                    'ESTADO: BUENO', 
+                    'inertial',
+                    chartDescriptions.inertial
+                  )}
+                >
+                  Ver detalles
+                </Button>
+              </Box>
+            </Paper>
+          </Grid>
+        </Grid>
+      )}
+
+      {selectedTab === 1 && <PatientInfo />}
+      {selectedTab === 2 && <EncountersList />}
+      {selectedTab === 3 && <QuestionnairesList />}
+
+      {/* Diálogo de detalle para mostrar el gráfico ampliado */}
+      <Dialog 
+        open={detailDialog.open}
+        onClose={handleCloseDetail}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          p: 2,
+          bgcolor: 'white',
+          borderBottom: `1px solid ${COLORS.gridLine}`
+        }}>
+          <Box>
+            <Typography variant="h6" fontWeight="bold" color="textPrimary">
+              {detailDialog.title}
+            </Typography>
+            <Box sx={valuePillStyle} style={{ marginTop: 8 }}>{detailDialog.value}</Box>
+          </Box>
+          <IconButton edge="end" color="inherit" onClick={handleCloseDetail} aria-label="close">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ p: 3, bgcolor: COLORS.lightGrey }}>
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="body1" color="textSecondary">
+              {detailDialog.description}
+            </Typography>
+          </Box>
+          <Box sx={{ 
+            height: 400, 
+            bgcolor: 'white',
+            borderRadius: 2,
+            p: 3,
+            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.05)'
+          }}>
+            {detailDialog.chartType === 'spo2' && (
+              <Line
+                data={{
+                  ...yearlyPerformanceData,
+                  datasets: [{
+                    ...yearlyPerformanceData.datasets[0],
+                    pointRadius: 3
+                  }]
+                }}
+                options={detailedLineOptions}
+              />
+            )}
+            {detailDialog.chartType === 'heartRate' && (
+              <Line
+                data={{
+                  ...monthlySalesData,
+                  datasets: [{
+                    ...monthlySalesData.datasets[0],
+                    pointRadius: 3
+                  }]
+                }}
+                options={detailedLineOptions}
+              />
+            )}
+            {detailDialog.chartType === 'respRate' && (
+              <Line
+                data={{
+                  ...dailySalesData,
+                  datasets: [{
+                    ...dailySalesData.datasets[0],
+                    pointRadius: 3
+                  }]
+                }}
+                options={detailedLineOptions}
+              />
+            )}
+            {detailDialog.chartType === 'inertial' && (
+              <Line
+                data={hourlyTrendData}
+                options={{
+                  ...detailedLineOptions,
+                  plugins: {
+                    ...detailedLineOptions.plugins,
+                    legend: {
+                      display: true,
+                      position: 'top'
+                    }
+                  }
+                }}
+              />
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ p: 2, borderTop: `1px solid ${COLORS.gridLine}` }}>
+          <Button onClick={handleCloseDetail} sx={{ color: COLORS.primary }}>
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
+  );
+};
+
+export default LightDashboard; 
