@@ -52,6 +52,7 @@ export default function QuestionnaireComponent({
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const [open, setOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const formContainer = formContainerRef.current;
@@ -311,33 +312,35 @@ export default function QuestionnaireComponent({
   };
 
   const postData = async () => {
+    if (isSubmitting) return; // Prevenir múltiples envíos
     const formContainer = formContainerRef.current;
 
     const val = window.LForms.Util.checkValidity(formContainer);
     if (val) return; //TODO: show message
 
-    const qr = window.LForms.Util.getFormFHIRData(
-      "QuestionnaireResponse",
-      "R4",
-      formContainer
-    ) as QuestionnaireResponse;
+    try {
+      const qr = window.LForms.Util.getFormFHIRData(
+        "QuestionnaireResponse",
+        "R4",
+        formContainer
+      ) as QuestionnaireResponse;
 
-    applyCustomLogic(questionnaire.id!, qr, questionnaire);
+      applyCustomLogic(questionnaire.id!, qr, questionnaire);
 
-    const originalObservation = (await getObservations()) as FhirResource[]; //obtiene obsevaciones desde Observation,  quizás llamar al inicio
-    const origianlCondition = (await getConditions()) as FhirResource[];
+      const originalObservation = (await getObservations()) as FhirResource[]; //obtiene obsevaciones desde Observation,  quizás llamar al inicio
+      const origianlCondition = (await getConditions()) as FhirResource[];
 
-    const originalResources = [...origianlCondition, ...originalObservation];
+      const originalResources = [...origianlCondition, ...originalObservation];
 
-    console.log("original resource: ", originalResources);
+      console.log("original resource: ", originalResources);
 
-    HandleResult.handleOperation(
-      () => sendQuestionnaireResponse(qr),
-      "Formulario Guardado Exitosamente",
-      "Enviado..."
-    );
+      HandleResult.handleOperation(
+        () => sendQuestionnaireResponse(qr),
+        "Formulario Guardado Exitosamente",
+        "Enviado..."
+      );
 
-    /*sendQuestionnaireResponse(qr).then((res) => {
+      /*sendQuestionnaireResponse(qr).then((res) => {
       if (res.success) {
         questionnaireResponse = res.data as QuestionnaireResponse;
         const responsesObservation = responseAsObservations(qr);
@@ -359,7 +362,7 @@ export default function QuestionnaireComponent({
     });
     */
 
-    /*
+      /*
     const originalObservation = await getObservations();
     const newObservation = responseAsObservations(qr);
     const finalObservation = generateUpdateObservations(
@@ -369,6 +372,11 @@ export default function QuestionnaireComponent({
 
     sendQuestionnaireResponse(qr).then(res => res.success ? sendObservations(finalObservation): console.error(res.error));
     */
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleDelete = async () => {
@@ -505,9 +513,14 @@ export default function QuestionnaireComponent({
             disabled={!questionnaireResponse.id}
             sx={{ marginLeft: "right" }}
           >
-            Generar Reporte
+            {t("questionnaireComponent.report")}
           </Button>
-          <Button variant="contained" color="primary" onClick={postData}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={postData}
+            disabled={isSubmitting}
+          >
             {t("questionnaireComponent.save")}
           </Button>
         </div>

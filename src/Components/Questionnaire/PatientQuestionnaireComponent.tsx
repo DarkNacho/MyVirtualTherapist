@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Questionnaire, QuestionnaireResponse } from "fhir/r4";
 import QuestionnaireComponent from "../Questionnaire/QuestionnaireComponent";
 import QuestionnaireListComponent from "../Questionnaire/QuestionnaireListDialogComponent";
+import QuestionnaireModalComponent from "./QuestionnaireModalComponent";
 import {
   Accordion,
   AccordionDetails,
@@ -34,21 +35,27 @@ export default function PatientQuestionnaireComponent({
   const [questionnaires, setQuestionnaires] = useState<
     Record<string, Questionnaire>
   >({});
-  const [newQuestionnaires, setNewQuestionnaires] = useState<Questionnaire[]>(
-    []
-  );
-  const [loading, setLoading] = useState<boolean>(true); // Loading state
+  const [selectedQuestionnaire, setSelectedQuestionnaire] =
+    useState<Questionnaire | null>(null);
+  const [questionnaireDialogOpen, setQuestionnaireDialogOpen] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const { t } = useTranslation();
 
   const handleQuesSelect = (ques: Questionnaire) => {
-    setNewQuestionnaires((prevQuestionnaires) => [ques, ...prevQuestionnaires]);
-    console.log("Questionario seleccionado", ques);
+    setSelectedQuestionnaire(ques);
+    setQuestionnaireDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setQuestionnaireDialogOpen(false);
+    // Optional: clear the selected questionnaire when dialog is closed
+    // setSelectedQuestionnaire(null);
   };
 
   const fetchQuestionnaireResponses = async () => {
     try {
-      setLoading(true); // Start loading
+      setLoading(true);
       const responseBundle = await questionnaireResponseService.getResources({
         subject: patientID,
         encounter: encounterID!,
@@ -72,7 +79,7 @@ export default function PatientQuestionnaireComponent({
     } catch {
       console.log("entro al catch");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
@@ -89,7 +96,7 @@ export default function PatientQuestionnaireComponent({
         <div>
           <QuestionnaireListComponent
             onQuestionnaireSelect={handleQuesSelect}
-          ></QuestionnaireListComponent>
+          />
         </div>
       )}
       <div>
@@ -113,138 +120,119 @@ export default function PatientQuestionnaireComponent({
             />
           </Box>
         ) : (
-          <>
-            {newQuestionnaires.length > 0 && (
-              <Accordion sx={{ backgroundColor: "transparent" }}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1-content-new"
-                  id="panel1-header-new"
-                >
-                  <h1 style={{ textDecoration: "underline" }}>
-                    {t("patientQuestionnaireComponent.newForms")}
-                  </h1>
-                </AccordionSummary>
-                <AccordionDetails>
-                  {newQuestionnaires.map((newQues, index) => (
-                    <div key={index}>
-                      <QuestionnaireComponent
-                        questionnaire={newQues}
-                        subjectId={patientID}
-                        encounterId={encounterID}
-                      ></QuestionnaireComponent>
-                    </div>
-                  ))}
-                </AccordionDetails>
-              </Accordion>
-            )}
-            <div>
-              {Object.keys(questionnaires).length > 0 && (
-                <div>
-                  {Object.entries(questionnaires).map(
-                    ([questionnaireId, questionnaire]) => (
-                      <Accordion
-                        key={questionnaireId}
+          <div>
+            {Object.keys(questionnaires).length > 0 && (
+              <div>
+                {Object.entries(questionnaires).map(
+                  ([questionnaireId, questionnaire]) => (
+                    <Accordion
+                      key={questionnaireId}
+                      sx={{
+                        backgroundColor: "#E3F2FD",
+                        borderRadius: "8px",
+                        boxShadow: "none",
+                        marginBottom: "10px",
+                        "&:before": {
+                          display: "none",
+                        },
+                      }}
+                    >
+                      <AccordionSummary
+                        expandIcon={
+                          <ExpandMoreIcon sx={{ color: "#FFFFFF" }} />
+                        }
+                        aria-controls={`panel-${questionnaireId}-content`}
+                        id={`panel-${questionnaireId}-header`}
                         sx={{
-                          backgroundColor: "#E3F2FD", // Light blue background
+                          background: {
+                            xs: "linear-gradient(to right, #FFFFFF 75%, #1976D2 25%)",
+                            sm: "linear-gradient(to right, #FFFFFF 90%, #1976D2 10%)",
+                          },
+                          color: "#000000",
                           borderRadius: "8px",
-                          boxShadow: "none",
-                          marginBottom: "10px",
-                          "&:before": {
-                            display: "none",
+                          padding: "10px 16px",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          "& .MuiAccordionSummary-content": {
+                            margin: 0,
                           },
                         }}
                       >
-                        <AccordionSummary
-                          expandIcon={
-                            <ExpandMoreIcon sx={{ color: "#FFFFFF" }} />
-                          }
-                          aria-controls={`panel-${questionnaireId}-content`}
-                          id={`panel-${questionnaireId}-header`}
-                          sx={{
-                            background: {
-                              xs: "linear-gradient(to right, #FFFFFF 75%, #1976D2 25%)", // For smaller screens
-                              sm: "linear-gradient(to right, #FFFFFF 90%, #1976D2 10%)", // For medium and larger screens
-                            },
-                            color: "#000000",
-                            borderRadius: "8px",
-                            padding: "10px 16px",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            "& .MuiAccordionSummary-content": {
-                              margin: 0,
-                            },
+                        <span style={{ fontWeight: "bold", fontSize: "1rem" }}>
+                          {questionnaire.title ||
+                            t("patientQuestionnaireComponent.untitled")}
+                        </span>
+                        <span
+                          style={{
+                            marginLeft: "auto",
+                            fontSize: "0.9rem",
+                            color: "#FFFFFF",
+                            textDecoration: "underline",
                           }}
                         >
-                          <span
-                            style={{ fontWeight: "bold", fontSize: "1rem" }}
-                          >
-                            {questionnaire.title ||
-                              t("patientQuestionnaireComponent.untitled")}
-                          </span>
-                          <span
-                            style={{
-                              marginLeft: "auto",
-                              fontSize: "0.9rem",
-                              color: "#FFFFFF",
-                              textDecoration: "underline",
-                            }}
-                          >
-                            Ver más
-                          </span>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          {questionnaireResponses
-                            .filter(
-                              (quesRes) =>
-                                quesRes.questionnaire === questionnaireId
-                            )
-                            .map((quesRes, index) => (
-                              <Accordion
-                                key={index}
-                                sx={{
-                                  backgroundColor: "transparent",
-                                  marginBottom: "10px",
-                                }}
+                          Ver más
+                        </span>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        {questionnaireResponses
+                          .filter(
+                            (quesRes) =>
+                              quesRes.questionnaire === questionnaireId
+                          )
+                          .map((quesRes, index) => (
+                            <Accordion
+                              key={index}
+                              sx={{
+                                backgroundColor: "transparent",
+                                marginBottom: "10px",
+                              }}
+                            >
+                              <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls={`panel-${questionnaireId}-${index}-content`}
+                                id={`panel-${questionnaireId}-${index}-header`}
                               >
-                                <AccordionSummary
-                                  expandIcon={<ExpandMoreIcon />}
-                                  aria-controls={`panel-${questionnaireId}-${index}-content`}
-                                  id={`panel-${questionnaireId}-${index}-header`}
-                                >
-                                  <h2 style={{ color: "#1976D2" }}>
-                                    {quesRes.authored
-                                      ? new Date(
-                                          quesRes.authored
-                                        ).toLocaleString()
-                                      : t(
-                                          "patientQuestionnaireComponent.unknownDate"
-                                        )}
-                                  </h2>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                  <div style={{ paddingBottom: "20px" }}>
-                                    <QuestionnaireComponent
-                                      questionnaire={questionnaire}
-                                      questionnaireResponse={quesRes}
-                                      subjectId={patientID}
-                                      encounterId={encounterID}
-                                    />
-                                  </div>
-                                </AccordionDetails>
-                              </Accordion>
-                            ))}
-                        </AccordionDetails>
-                      </Accordion>
-                    )
-                  )}
-                </div>
-              )}
-            </div>
-          </>
+                                <h2 style={{ color: "#1976D2" }}>
+                                  {quesRes.authored
+                                    ? new Date(
+                                        quesRes.authored
+                                      ).toLocaleString()
+                                    : t(
+                                        "patientQuestionnaireComponent.unknownDate"
+                                      )}
+                                </h2>
+                              </AccordionSummary>
+                              <AccordionDetails>
+                                <div style={{ paddingBottom: "20px" }}>
+                                  <QuestionnaireComponent
+                                    questionnaire={questionnaire}
+                                    questionnaireResponse={quesRes}
+                                    subjectId={patientID}
+                                    encounterId={encounterID}
+                                  />
+                                </div>
+                              </AccordionDetails>
+                            </Accordion>
+                          ))}
+                      </AccordionDetails>
+                    </Accordion>
+                  )
+                )}
+              </div>
+            )}
+          </div>
         )}
       </div>
+
+      {/* Use the new QuestionnaireModalComponent */}
+      <QuestionnaireModalComponent
+        open={questionnaireDialogOpen}
+        onClose={handleCloseDialog}
+        questionnaire={selectedQuestionnaire}
+        subjectId={patientID}
+        encounterId={encounterID}
+      />
     </div>
   );
 }

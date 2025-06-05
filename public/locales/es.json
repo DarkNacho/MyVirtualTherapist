@@ -188,11 +188,12 @@
 
   "patientQuestionnaireComponent": {
     "newForms": "Nuevas Evaluaciones :",
-    "loadedForms": "Evaluaciones  cargados del paciente:"
+    "loadedForms": "Evaluaciones  cargados del paciente:",
+    "close": "Cerrar"
   },
 
   "questionnaireListDialogComponent": {
-    "showQuestionnaires": "Mostrar Evaluaciones ",
+    "showQuestionnaires": "Agregar nueva evaluación",
     "availableEvaluations": "Evaluaciones Disponibles",
     "searchFormByTitle": "Buscar por título",
     "tags": "Tags",
@@ -208,6 +209,16 @@
     "nothingHere": "¡Aquí no hay nada!",
     "linkNotCorrect": "El enlace no está correcto o aún no habilita está sección",
     "backToHome": "Volver a la página de inicio."
+  },
+
+  "questionnaireComponent": {
+    "delete": "Eliminar",
+    "confirmDeleteTitle": "Confirmar eliminación",
+    "confirmDeleteMessage": "¿Está seguro que desea eliminar esta evaluación? Esta acción no se puede deshacer.",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "report": "Informe",
+    "save": "Guardar"
   },
 
   "terminology": {

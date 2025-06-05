@@ -12,6 +12,7 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
+  Box,
 } from "@mui/material";
 import { useState } from "react";
 import HandleResult from "../../../Utils/HandleResult";
@@ -53,6 +54,13 @@ export default function PatientReportModal({
     sensor2: false,
     sensor3: false,
   });
+
+  // Nuevos estados para los gráficos de evaluaciones
+  const [questionnaireChartOptions, setQuestionnaireChartOptions] = useState({
+    include_bar_chart: false,
+    include_line_chart: false,
+  });
+
   const [selectedEncounter, setSelectedEncounter] = useState<{
     id: string;
     display: string;
@@ -71,6 +79,17 @@ export default function PatientReportModal({
   ) => {
     const { name, checked } = event.target;
     setExcludedSensorTypes((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
+  };
+
+  // Nuevo manejador para los checkboxes de gráficos de evaluaciones
+  const handleQuestionnaireChartChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, checked } = event.target;
+    setQuestionnaireChartOptions((prev) => ({
       ...prev,
       [name]: checked,
     }));
@@ -106,6 +125,16 @@ export default function PatientReportModal({
       },
       {} as Record<string, string>
     );
+
+    // Agregar los nuevos parámetros de gráficos si evaluaciones está activado
+    if (reportOptions.questionnaire) {
+      stringifiedOptions.include_bar_chart = String(
+        questionnaireChartOptions.include_bar_chart
+      );
+      stringifiedOptions.include_line_chart = String(
+        questionnaireChartOptions.include_line_chart
+      );
+    }
 
     stringifiedOptions.date_filter = dateFilter;
     if (dateFilter === "range") {
@@ -216,42 +245,45 @@ export default function PatientReportModal({
           }
           label="Sensor"
         />
+        {/* Sensores a excluir modificado para seguir el mismo estilo */}
         {reportOptions.sensor && (
-          <FormGroup row>
-            <Typography variant="h6" gutterBottom>
+          <Box sx={{ ml: 4, mt: 1, mb: 2 }}>
+            <Typography variant="subtitle2" gutterBottom>
               Sensores a excluir:
             </Typography>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={excludedSensorTypes.Temperatura}
-                  onChange={handleSensorCheckboxChange}
-                  name="Temperatura"
-                />
-              }
-              label="Temperatura"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={excludedSensorTypes.sensor2}
-                  onChange={handleSensorCheckboxChange}
-                  name="sensor2"
-                />
-              }
-              label="Sensor 2"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={excludedSensorTypes.sensor3}
-                  onChange={handleSensorCheckboxChange}
-                  name="sensor3"
-                />
-              }
-              label="Sensor 3"
-            />
-          </FormGroup>
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={excludedSensorTypes.Temperatura}
+                    onChange={handleSensorCheckboxChange}
+                    name="Temperatura"
+                  />
+                }
+                label="Temperatura"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={excludedSensorTypes.sensor2}
+                    onChange={handleSensorCheckboxChange}
+                    name="sensor2"
+                  />
+                }
+                label="Sensor 2"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={excludedSensorTypes.sensor3}
+                    onChange={handleSensorCheckboxChange}
+                    name="sensor3"
+                  />
+                }
+                label="Sensor 3"
+              />
+            </FormGroup>
+          </Box>
         )}
         <FormControlLabel
           control={
@@ -283,6 +315,38 @@ export default function PatientReportModal({
           }
           label="Evaluaciones"
         />
+
+        {/* Nuevos checkboxes para gráficos de evaluaciones */}
+        {reportOptions.questionnaire && (
+          <Box sx={{ ml: 4, mt: 1, mb: 2 }}>
+            <Typography variant="subtitle2" gutterBottom>
+              Opciones de gráficos:
+            </Typography>
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={questionnaireChartOptions.include_bar_chart}
+                    onChange={handleQuestionnaireChartChange}
+                    name="include_bar_chart"
+                  />
+                }
+                label="Incluir gráfico de barras"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={questionnaireChartOptions.include_line_chart}
+                    onChange={handleQuestionnaireChartChange}
+                    name="include_line_chart"
+                  />
+                }
+                label="Incluir gráfico de líneas"
+              />
+            </FormGroup>
+          </Box>
+        )}
+
         <div style={{ marginTop: 16, marginBottom: 8 }}>
           <Typography variant="subtitle1">Filtrar por fecha:</Typography>
           <Select

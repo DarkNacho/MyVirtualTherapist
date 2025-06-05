@@ -195,11 +195,12 @@
 
   "patientQuestionnaireComponent": {
     "newForms": "New Forms:",
-    "loadedForms": "Loaded Patient Forms:"
+    "loadedForms": "Loaded Patient Forms:",
+    "close": "Close"
   },
 
   "questionnaireListDialogComponent": {
-    "showQuestionnaires": "Show Forms",
+    "showQuestionnaires": "Add new Evaluation",
     "availableEvaluations": "Available Evaluations",
     "searchFormByTitle": "Search Form by Title",
     "tags": "Tags",
@@ -207,6 +208,15 @@
     "requestForm": "Request Form",
     "previousPage": "Previous Page",
     "nextPage": "Next Page"
+  },
+  "questionnaireComponent": {
+    "delete": "Delete",
+    "confirmDeleteTitle": "Confirm Deletion",
+    "confirmDeleteMessage": "Are you sure you want to delete this assessment? This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "report": "Report",
+    "save": "Save"
   },
 
   "terminology": {
