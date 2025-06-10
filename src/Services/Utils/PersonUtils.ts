@@ -291,6 +291,18 @@ export default class PersonUtil {
         coding: data.maritalStatus ? [data.maritalStatus] : undefined,
       },
       photo: avatar,
+      address: [
+        {
+          type: "physical", // Tipo de dirección (física)
+          use: "home", // Uso de la dirección (domicilio)
+          line: [data.direccion], // Calle y número
+          city: data.ciudad, // Ciudad
+          state: data.region, // Región/estado/provincia
+          country: "CL", // País (Chile por defecto)
+          text: `${data.direccion}, ${data.ciudad}, ${data.region}`, // Texto completo para facilitar visualización
+        },
+      ],
+
       contact: data.contact?.map((contact) => {
         return {
           name: {
@@ -336,6 +348,8 @@ export default class PersonUtil {
     const avatarAttachment = patient.photo?.[0];
     const avatar = this.attachmentToFile(avatarAttachment!);
 
+    const address = patient.address?.[0] ?? {};
+
     return {
       id: patient.id,
       rut: rut,
@@ -352,6 +366,11 @@ export default class PersonUtil {
       maritalStatus: patient.maritalStatus?.coding?.[0] || {},
       avatar: avatar,
       //photo: patient.photo?.[0].url || "",
+
+      region: address.state || "",
+      ciudad: address.city || "",
+      direccion: address.line?.[0] || "",
+
       contact:
         patient.contact?.map((contact) => {
           const contactName = contact.name || {};

@@ -22,10 +22,11 @@ import PatientContactDetailForm from "./PatientContactDetailForm";
 import PatientPersonalDetailsForm from "./PatientPersonalDetailsForm";
 import PatientEmergencyContactsForm from "./PatientEmergencyContactsForm";
 import { PatientFormData } from "../../../Models/Forms/PatientForm";
-import { useState } from "react";
+
 import { Patient } from "fhir/r4";
 
-const steps = ["personalDetails", "contactDetails"];
+// Actualizar los pasos para incluir los contactos de emergencia como un paso propio
+const steps = ["personalDetails", "contactDetails", "emergencyContacts"];
 
 // Conector personalizado para centrar la línea entre pasos
 const CustomConnector = styled(StepConnector)(({ theme }) => ({
@@ -80,17 +81,12 @@ export default function PatientCreateForm({
   selectedPatient?: Patient | undefined;
 }) {
   const { t } = useTranslation();
-  const [optionalStep, setOptionalStep] = useState(false);
 
   // Función para manejar el clic en un paso
   const handleStepClick = (step: number) => {
     // Solo permitir ir a pasos anteriores o iguales al actual
     if (step <= activeStep) {
       setActiveStep(step);
-      // Si volvemos al paso 1 desde el paso de emergencia, reseteamos optionalStep
-      if (step === 0 && optionalStep) {
-        setOptionalStep(false);
-      }
     }
   };
 
@@ -234,21 +230,24 @@ export default function PatientCreateForm({
               />
             )}
 
-            {activeStep === 1 && optionalStep === false && (
+            {activeStep === 1 && (
               <PatientContactDetailForm
                 patient={patient}
                 formId={`${formId}-1`}
                 submitForm={submitForm}
               />
             )}
-            {activeStep === 1 && optionalStep === true && (
+
+            {activeStep === 2 && (
               <PatientEmergencyContactsForm
                 patient={patient}
-                formId={`${formId}-emergency`}
+                formId={`${formId}-2`}
                 submitForm={submitForm}
               />
             )}
-            {activeStep === 2 && successView()}
+
+            {activeStep === 3 && successView()}
+
             <Box
               sx={{
                 display: "flex",
@@ -322,23 +321,22 @@ export default function PatientCreateForm({
                     {t("patientCreateForm.viewProfile")}
                   </Button>
                 )}
-                {activeStep === steps.length - 1 && optionalStep === false && (
+                {activeStep > 0 && (
                   <Button
+                    variant="contained"
+                    color="primary"
+                    form={`${formId}-${activeStep}`}
+                    onClick={() => setActiveStep(activeStep - 1)}
+                    disabled={isPosting}
                     sx={{
                       bottom: 0,
-                      right: 200,
+                      left: 0,
                       width: 200,
-                      borderBottomRightRadius: 18,
-                      borderTopLeftRadius: 18,
+                      borderTopRightRadius: 18,
                       position: "absolute",
                     }}
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => {
-                      setOptionalStep(true);
-                    }}
                   >
-                    {t("patientCreateForm.newButton")}
+                    {t("patientCreateForm.back")}
                   </Button>
                 )}
               </Box>

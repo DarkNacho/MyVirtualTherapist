@@ -34,7 +34,14 @@
     "nameRequired": "El Nombre es necesario",
     "name": "Nombre",
     "relation": "Relación",
-    "submit": "Enviar"
+    "submit": "Enviar",
+    "address": "Dirección",
+    "region": "Región",
+    "city": "Ciudad",
+    "streetAddress": "Dirección",
+    "regionRequired": "La región es requerida",
+    "cityRequired": "La ciudad es requerida",
+    "streetAddressRequired": "La dirección es requerida"
   },
   "patientCreateForm": {
     "personalDetails": "Datos Personales",
@@ -44,7 +51,10 @@
     "back": "Atrás",
     "next": "Siguiente",
     "submit": "Enviar",
-    "viewProfile": "Ver Perfil"
+    "viewProfile": "Ver Perfil",
+    "patientUpdated": "PACIENTE ACTUALIZADO CON ÉXITO",
+    "patientNotFound": "Paciente no encontrado",
+    "patientNotFoundMessage": "El paciente que está buscando no existe o ha sido eliminado."
   },
   "patientPersonalDetailsForm": {
     "addPatient": "AGREGAR PACIENTE",
@@ -68,6 +78,7 @@
     "sensor": "Sensor",
     "forms": "Evaluaciones",
     "patientCreated": "El paciente ha sido creado exitosamente",
+    "patientUpdated": "El paciente ha sido actualizado exitosamente",
     "evolutions": "Evoluciones",
     "conditions": "Condiciones",
     "medications": "Medicamentos",

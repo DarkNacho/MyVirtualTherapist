@@ -154,9 +154,10 @@ export default function PatientListPage() {
       }
       console.log("patientFormData:", patientFormData);
 
-      if (activeStep < 1) {
+      if (activeStep < 2) {
         setActiveStep((prev) => prev + 1);
       } else {
+        alert("Submitting form...");
         const operation = isEditing
           ? () => updatePatient(patientFormData)
           : () => postPatient(patientFormData);

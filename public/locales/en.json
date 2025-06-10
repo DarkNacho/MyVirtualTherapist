@@ -35,7 +35,14 @@
     "nameRequired": "Name is required",
     "name": "Name",
     "relation": "Relation",
-    "submit": "Submit"
+    "submit": "Submit",
+    "address": "Address",
+    "region": "Region",
+    "city": "City",
+    "streetAddress": "Street Address",
+    "regionRequired": "Region is required",
+    "cityRequired": "City is required",
+    "streetAddressRequired": "Street address is required"
   },
   "patientCreateForm": {
     "personalDetails": "Personal Details",
