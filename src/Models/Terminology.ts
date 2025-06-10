@@ -366,27 +366,7 @@ export const generoOptions: Coding[] = [
 export const maritalOptions: Coding[] = [
   {
     code: "S",
-    display: "Nunca Casado",
-    system: "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
-  },
-  {
-    code: "A",
-    display: "Anulado",
-    system: "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
-  },
-  {
-    code: "D",
-    display: "Divorciado",
-    system: "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
-  },
-  {
-    code: "I",
-    display: "Interlocutorio",
-    system: "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
-  },
-  {
-    code: "L",
-    display: "Legalmente Separado",
+    display: "Soltero",
     system: "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
   },
   {
@@ -396,7 +376,22 @@ export const maritalOptions: Coding[] = [
   },
   {
     code: "C",
-    display: "Unión de Hecho",
+    display: "Conviviente",
+    system: "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+  },
+  {
+    code: "D",
+    display: "Divorciado",
+    system: "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+  },
+  {
+    code: "L",
+    display: "Separado",
+    system: "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+  },
+  {
+    code: "W",
+    display: "Viudo",
     system: "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
   },
   {

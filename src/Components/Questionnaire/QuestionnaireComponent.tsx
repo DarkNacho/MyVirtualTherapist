@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Condition,
   FhirResource,
@@ -7,9 +6,14 @@ import {
   QuestionnaireItem,
   QuestionnaireResponse,
 } from "fhir/r4";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 import FhirResourceService from "../../Services/FhirService";
 import ObservationService from "../../Services/ObservationService";
@@ -17,7 +21,11 @@ import ConditionService from "../../Services/ConditionService";
 import { isAdminOrPractitioner } from "../../Utils/RolUser";
 import ObservationUtils from "../../Services/Utils/ObservationUtils";
 import HandleResult from "../../Utils/HandleResult";
+import { useTranslation } from "react-i18next";
+import QuestionnaireReportModal from "./QuestionnaireReportModal";
 //import "./QuestionnaireComponent.css";
+
+import { applyCustomLogic } from "./QuestionnaireCustomLogic";
 
 const fhirService =
   FhirResourceService.getInstance<FhirResource>("FhirResource");
@@ -40,6 +48,11 @@ export default function QuestionnaireComponent({
   encounterId?: string;
 }) {
   const formContainerRef = useRef(null);
+  const { t } = useTranslation();
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
+  const [open, setOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const formContainer = formContainerRef.current;
@@ -47,7 +60,6 @@ export default function QuestionnaireComponent({
       addCancelButton: false,
       addBackButton: false,
       formReadOnly: false,
-      //formStatus: readonly ? 'display' : 'preview'
     };
 
     const lformsQ = window.LForms.Util.convertFHIRQuestionnaireToLForms(
@@ -65,7 +77,6 @@ export default function QuestionnaireComponent({
       formContainer,
       formOptions
     );
-    //window.LForms.Util.addFormToPage(questionnaire, formContainer, formOptions);
   }, [questionnaire, questionnaireResponse]);
 
   // Función para actualizar las observaciones originales con las nuevas
@@ -301,31 +312,35 @@ export default function QuestionnaireComponent({
   };
 
   const postData = async () => {
+    if (isSubmitting) return; // Prevenir múltiples envíos
     const formContainer = formContainerRef.current;
 
     const val = window.LForms.Util.checkValidity(formContainer);
     if (val) return; //TODO: show message
 
-    const qr = window.LForms.Util.getFormFHIRData(
-      "QuestionnaireResponse",
-      "R4",
-      formContainer
-    ) as QuestionnaireResponse;
+    try {
+      const qr = window.LForms.Util.getFormFHIRData(
+        "QuestionnaireResponse",
+        "R4",
+        formContainer
+      ) as QuestionnaireResponse;
 
-    const originalObservation = (await getObservations()) as FhirResource[]; //obtiene obsevaciones desde Observation,  quizás llamar al inicio
-    const origianlCondition = (await getConditions()) as FhirResource[];
+      applyCustomLogic(questionnaire.id!, qr, questionnaire);
 
-    const originalResources = [...origianlCondition, ...originalObservation];
+      const originalObservation = (await getObservations()) as FhirResource[]; //obtiene obsevaciones desde Observation,  quizás llamar al inicio
+      const origianlCondition = (await getConditions()) as FhirResource[];
 
-    console.log("original resource: ", originalResources);
+      const originalResources = [...origianlCondition, ...originalObservation];
 
-    HandleResult.handleOperation(
-      () => sendQuestionnaireResponse(qr),
-      "Formulario Guardado Exitosamente",
-      "Enviado..."
-    );
+      console.log("original resource: ", originalResources);
 
-    /*sendQuestionnaireResponse(qr).then((res) => {
+      HandleResult.handleOperation(
+        () => sendQuestionnaireResponse(qr),
+        "Formulario Guardado Exitosamente",
+        "Enviado..."
+      );
+
+      /*sendQuestionnaireResponse(qr).then((res) => {
       if (res.success) {
         questionnaireResponse = res.data as QuestionnaireResponse;
         const responsesObservation = responseAsObservations(qr);
@@ -347,7 +362,7 @@ export default function QuestionnaireComponent({
     });
     */
 
-    /*
+      /*
     const originalObservation = await getObservations();
     const newObservation = responseAsObservations(qr);
     const finalObservation = generateUpdateObservations(
@@ -357,26 +372,156 @@ export default function QuestionnaireComponent({
 
     sendQuestionnaireResponse(qr).then(res => res.success ? sendObservations(finalObservation): console.error(res.error));
     */
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!questionnaireResponse.id) return;
+
+    try {
+      // Primero eliminamos las observaciones relacionadas
+      const observations = await getObservations();
+      if (observations.length > 0) {
+        for (const observation of observations) {
+          if (observation.id) {
+            await observationService.deleteResource(observation.id);
+          }
+        }
+      }
+
+      // Luego eliminamos las condiciones relacionadas
+      const conditions = await getConditions();
+      if (conditions.length > 0) {
+        for (const condition of conditions) {
+          if (condition.id) {
+            await conditionService.deleteResource(condition.id);
+          }
+        }
+      }
+
+      // Finalmente eliminamos el QuestionnaireResponse
+      const result = await questionnaireResponseService.deleteResource(
+        questionnaireResponse.id
+      );
+
+      if (result.success) {
+        // Mostrar mensaje de éxito
+        HandleResult.handleOperation(
+          () => Promise.resolve(result),
+          "Evaluación eliminada exitosamente",
+          "Eliminando..."
+        );
+        // Recargar la página después de un breve retraso para mostrar el mensaje
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        console.error("Error al eliminar la evaluación:", result.error);
+        HandleResult.handleOperation(
+          () => Promise.reject(result.error),
+          "Error al eliminar la evaluación",
+          "Eliminando..."
+        );
+      }
+    } catch (error) {
+      console.error("Error al eliminar la evaluación:", error);
+      HandleResult.handleOperation(
+        () => Promise.reject(error),
+        "Error al eliminar la evaluación",
+        "Eliminando..."
+      );
+    }
+  };
+
+  const handleDeleteClick = () => {
+    setOpenDeleteDialog(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
   };
 
   return (
     <div>
+      {questionnaireResponse.id && (
+        <QuestionnaireReportModal
+          questionnaireResponseId={questionnaireResponse.id}
+          open={open}
+          handleClose={() => setOpen(false)}
+        ></QuestionnaireReportModal>
+      )}
       <div ref={formContainerRef}></div>
       {isAdminOrPractitioner() && (
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
+            gap: "1rem",
+            marginTop: "1rem",
           }}
         >
+          {questionnaireResponse.id && (
+            <>
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={handleDeleteClick}
+              >
+                {t("questionnaireComponent.delete")}
+              </Button>
+              <Dialog
+                open={openDeleteDialog}
+                onClose={handleCloseDeleteDialog}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+              >
+                <DialogTitle id="alert-dialog-title">
+                  {t("questionnaireComponent.confirmDeleteTitle")}
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="alert-dialog-description">
+                    {t("questionnaireComponent.confirmDeleteMessage")}
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleCloseDeleteDialog}>
+                    {t("questionnaireComponent.cancel")}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      handleCloseDeleteDialog();
+                      handleDelete();
+                    }}
+                    color="error"
+                    autoFocus
+                  >
+                    {t("questionnaireComponent.confirm")}
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </>
+          )}
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setOpen(true)}
+            disabled={!questionnaireResponse.id}
+            sx={{ marginLeft: "right" }}
+          >
+            {t("questionnaireComponent.report")}
+          </Button>
           <Button
             variant="contained"
             color="primary"
             onClick={postData}
-            sx={{ marginLeft: "auto" }}
+            disabled={isSubmitting}
           >
-            Guardar
+            {t("questionnaireComponent.save")}
           </Button>
         </div>
       )}

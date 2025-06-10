@@ -84,10 +84,14 @@ export default function PatientList({
 
   const fetchResources = async () => {
     setLoading(true);
-    await HandleResult.handleOperation(
+    /*await HandleResult.handleOperation(
       () => fhirService.getResources(searchParam),
       t("patientList.receivedSuccessfully"),
       t("patientList.obtaining"),
+      setResources
+    );*/
+    await HandleResult.handleOperationWithErrorOnly(
+      () => fhirService.getResources(searchParam),
       setResources
     );
     setLoading(false);

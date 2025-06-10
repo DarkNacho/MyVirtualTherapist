@@ -13,6 +13,9 @@ export interface PatientFormData {
   rut: string;
   numeroTelefonico: string;
   email: string;
+  region: string;
+  ciudad: string;
+  direccion: string;
   //photo: string;
   maritalStatus: Coding;
   contact: {

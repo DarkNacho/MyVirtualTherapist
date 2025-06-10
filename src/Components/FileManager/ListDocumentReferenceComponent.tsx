@@ -23,9 +23,8 @@ export default function ListDocumentReferenceComponent() {
   }, []);
 
   const fetchDocumentReferences = async () => {
-    const service = new FhirResourceService<DocumentReference>(
-      "DocumentReference"
-    );
+    const service =
+      FhirResourceService.getInstance<DocumentReference>("DocumentReference");
     const response = await service.getResources({ _count: 10 });
     if (response.success) {
       console.log(response.data);
@@ -36,7 +35,7 @@ export default function ListDocumentReferenceComponent() {
   };
 
   const fetchBinary = async (url: string) => {
-    const service = new FhirResourceService<Binary>("Binary");
+    const service = FhirResourceService.getInstance<Binary>("Binary");
     const response = await service.getById(url.split("/")[1]);
     console.log(url);
     console.log(response);

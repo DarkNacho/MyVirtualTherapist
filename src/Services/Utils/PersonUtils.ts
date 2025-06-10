@@ -291,6 +291,46 @@ export default class PersonUtil {
         coding: data.maritalStatus ? [data.maritalStatus] : undefined,
       },
       photo: avatar,
+      address: [
+        {
+          type: "physical", // Tipo de dirección (física)
+          use: "home", // Uso de la dirección (domicilio)
+          line: [data.direccion], // Calle y número
+          city: data.ciudad, // Ciudad
+          state: data.region, // Región/estado/provincia
+          country: "CL", // País (Chile por defecto)
+          text: `${data.direccion}, ${data.ciudad}, ${data.region}`, // Texto completo para facilitar visualización
+        },
+      ],
+
+      contact: data.contact?.map((contact) => {
+        return {
+          name: {
+            given: [contact.nombre, contact.segundoNombre],
+            family: contact.apellidoPaterno,
+            suffix: [contact.apellidoMaterno],
+          },
+          telecom: [
+            {
+              system: "phone",
+              value: contact.numeroTelefonico,
+            },
+            {
+              system: "email",
+              value: contact.email,
+            },
+          ],
+          relationship: [
+            {
+              coding: [
+                {
+                  code: contact.contactType,
+                },
+              ],
+            },
+          ],
+        };
+      }),
     };
   };
 
@@ -303,8 +343,12 @@ export default class PersonUtil {
     const telecomEmail =
       patient.telecom?.find((t) => t.system === "email")?.value || "";
 
+    const gender = patient.gender || "unknown";
+
     const avatarAttachment = patient.photo?.[0];
     const avatar = this.attachmentToFile(avatarAttachment!);
+
+    const address = patient.address?.[0] ?? {};
 
     return {
       id: patient.id,
@@ -316,13 +360,37 @@ export default class PersonUtil {
       fechaNacimiento: patient.birthDate
         ? dayjs(patient.birthDate)
         : dayjs().subtract(18, "years"),
-      genero: patient.gender || "unknown",
+      genero: gender,
       numeroTelefonico: telecomPhone,
       email: telecomEmail || "",
       maritalStatus: patient.maritalStatus?.coding?.[0] || {},
       avatar: avatar,
       //photo: patient.photo?.[0].url || "",
-      contact: [],
+
+      region: address.state || "",
+      ciudad: address.city || "",
+      direccion: address.line?.[0] || "",
+
+      contact:
+        patient.contact?.map((contact) => {
+          const contactName = contact.name || {};
+          const phoneContact =
+            contact.telecom?.find((t) => t.system === "phone")?.value || "";
+          const emailContact =
+            contact.telecom?.find((t) => t.system === "email")?.value || "";
+          const relationshipCoding =
+            contact.relationship?.[0]?.coding?.[0]?.code || "";
+
+          return {
+            nombre: contactName.given?.[0] || "",
+            segundoNombre: contactName.given?.[1] || "",
+            apellidoPaterno: contactName.family || "",
+            apellidoMaterno: contactName.suffix?.[0] || "",
+            contactType: relationshipCoding,
+            email: emailContact,
+            numeroTelefonico: phoneContact,
+          };
+        }) || [],
     };
   };
 

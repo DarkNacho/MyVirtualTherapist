@@ -20,7 +20,8 @@
     "practitioners": "PRACTITIONERS",
     "encounters": "ENCOUNTERS",
     "contact": "CONTACT",
-    "sessionExpired": "Your session has expired, please log in again."
+    "sessionExpired": "Your session has expired, please log in again.",
+    "me": "Me"
   },
 
   "patientContactDetailForm": {
@@ -34,7 +35,14 @@
     "nameRequired": "Name is required",
     "name": "Name",
     "relation": "Relation",
-    "submit": "Submit"
+    "submit": "Submit",
+    "address": "Address",
+    "region": "Region",
+    "city": "City",
+    "streetAddress": "Street Address",
+    "regionRequired": "Region is required",
+    "cityRequired": "City is required",
+    "streetAddressRequired": "Street address is required"
   },
   "patientCreateForm": {
     "personalDetails": "Personal Details",
@@ -194,11 +202,12 @@
 
   "patientQuestionnaireComponent": {
     "newForms": "New Forms:",
-    "loadedForms": "Loaded Patient Forms:"
+    "loadedForms": "Loaded Patient Forms:",
+    "close": "Close"
   },
 
   "questionnaireListDialogComponent": {
-    "showQuestionnaires": "Show Forms",
+    "showQuestionnaires": "Add new Evaluation",
     "availableEvaluations": "Available Evaluations",
     "searchFormByTitle": "Search Form by Title",
     "tags": "Tags",
@@ -207,16 +216,24 @@
     "previousPage": "Previous Page",
     "nextPage": "Next Page"
   },
+  "questionnaireComponent": {
+    "delete": "Delete",
+    "confirmDeleteTitle": "Confirm Deletion",
+    "confirmDeleteMessage": "Are you sure you want to delete this assessment? This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "report": "Report",
+    "save": "Save"
+  },
 
   "terminology": {
     "maritalOptions": {
       "S": "Never Married",
-      "A": "Annulled",
-      "D": "Divorced",
-      "I": "Interlocutory",
-      "L": "Legally Separated",
       "M": "Married",
       "C": "Common Law",
+      "L": "Legally Separated",
+      "D": "Divorced",
+      "W": "Widowed",
       "UNK": "Unknown"
     },
     "genderOptions": {

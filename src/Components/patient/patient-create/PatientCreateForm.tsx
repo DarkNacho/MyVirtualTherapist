@@ -3,7 +3,6 @@ import {
   Grid,
   Stepper,
   Step,
-  StepLabel,
   Button,
   Box,
   Avatar,
@@ -12,14 +11,47 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
+  StepButton,
+  StepConnector,
+  stepConnectorClasses,
+  styled,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useTranslation } from "react-i18next";
 import PatientContactDetailForm from "./PatientContactDetailForm";
 import PatientPersonalDetailsForm from "./PatientPersonalDetailsForm";
+import PatientEmergencyContactsForm from "./PatientEmergencyContactsForm";
 import { PatientFormData } from "../../../Models/Forms/PatientForm";
 
-const steps = ["personalDetails", "contactDetails"];
+import { Patient } from "fhir/r4";
+
+// Actualizar los pasos para incluir los contactos de emergencia como un paso propio
+const steps = ["personalDetails", "contactDetails", "emergencyContacts"];
+
+// Conector personalizado para centrar la línea entre pasos
+const CustomConnector = styled(StepConnector)(({ theme }) => ({
+  [`&.${stepConnectorClasses.alternativeLabel}`]: {
+    top: 15, // Ajusta esta altura según necesites para centrar la línea
+    left: "calc(-50% + 10px)",
+    right: "calc(50% + 40px)",
+  },
+  [`&.${stepConnectorClasses.active}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      borderColor: theme.palette.primary.main,
+    },
+  },
+  [`&.${stepConnectorClasses.completed}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      borderColor: theme.palette.primary.main,
+    },
+  },
+  [`& .${stepConnectorClasses.line}`]: {
+    borderColor:
+      theme.palette.mode === "dark" ? theme.palette.grey[800] : "#eaeaf0",
+    borderTopWidth: 3,
+    borderRadius: 1,
+  },
+}));
 
 export default function PatientCreateForm({
   formId,
@@ -31,6 +63,9 @@ export default function PatientCreateForm({
   avatar,
   handleAvatarChange,
   isPosting = false,
+  setActiveStep,
+  isEditing = false,
+  selectedPatient = undefined,
 }: {
   formId: string;
   submitForm: SubmitHandler<PatientFormData>;
@@ -38,12 +73,22 @@ export default function PatientCreateForm({
   handleClose: () => void;
   open: boolean;
   activeStep: number;
-
   avatar?: File | null;
   handleAvatarChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isPosting: boolean;
+  setActiveStep: (step: number) => void;
+  isEditing?: boolean;
+  selectedPatient?: Patient | undefined;
 }) {
   const { t } = useTranslation();
+
+  // Función para manejar el clic en un paso
+  const handleStepClick = (step: number) => {
+    // Solo permitir ir a pasos anteriores o iguales al actual
+    if (step <= activeStep) {
+      setActiveStep(step);
+    }
+  };
 
   const successView = () => (
     <>
@@ -56,7 +101,9 @@ export default function PatientCreateForm({
           textUnderlineOffset: "0.2em",
         }}
       >
-        {t("patientCreateForm.patientCreated")}
+        {isEditing
+          ? t("patientCreateForm.patientUpdated")
+          : t("patientCreateForm.patientCreated")}
       </Typography>
       <Typography
         variant="h6"
@@ -67,9 +114,16 @@ export default function PatientCreateForm({
         {patient?.nombre} {patient?.segundoNombre} {patient?.apellidoPaterno}{" "}
         {patient?.apellidoMaterno}
       </Typography>
-      {t("patientCreateForm.verifyEmail")}
+      {!isEditing && (
+        <Typography variant="body1" sx={{ color: "#666" }}>
+          {t("patientCreateForm.verifyEmail")}
+        </Typography>
+      )}
     </>
   );
+
+  const hasPatientPhoto =
+    selectedPatient?.photo?.[0]?.data || selectedPatient?.photo?.[0]?.url;
 
   const renderAvatarUpload = () => (
     <Box
@@ -78,7 +132,7 @@ export default function PatientCreateForm({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        height: "90%", // Ensure it takes the full height of the parent container
+        height: "90%",
       }}
     >
       <Box
@@ -99,6 +153,19 @@ export default function PatientCreateForm({
           {avatar ? (
             <Avatar
               src={URL.createObjectURL(avatar)}
+              sx={{
+                width: 150,
+                height: 150,
+                cursor: "pointer",
+              }}
+            />
+          ) : hasPatientPhoto ? (
+            <Avatar
+              src={
+                selectedPatient?.photo?.[0]?.data
+                  ? `data:${selectedPatient.photo[0].contentType};base64,${selectedPatient.photo[0].data}`
+                  : selectedPatient?.photo?.[0]?.url
+              }
               sx={{
                 width: 150,
                 height: 150,
@@ -170,7 +237,17 @@ export default function PatientCreateForm({
                 submitForm={submitForm}
               />
             )}
-            {activeStep === 2 && successView()}
+
+            {activeStep === 2 && (
+              <PatientEmergencyContactsForm
+                patient={patient}
+                formId={`${formId}-2`}
+                submitForm={submitForm}
+              />
+            )}
+
+            {activeStep === 3 && successView()}
+
             <Box
               sx={{
                 display: "flex",
@@ -179,16 +256,26 @@ export default function PatientCreateForm({
                 mt: 2,
               }}
             >
-              <Stepper sx={{}} activeStep={activeStep} alternativeLabel>
+              {/* Stepper con StepButton para permitir hacer clic */}
+              <Stepper
+                sx={{ width: "80%" }}
+                activeStep={activeStep}
+                alternativeLabel
+                connector={<CustomConnector />}
+              >
                 {steps.map((label, index) => (
                   <Step key={label}>
-                    <StepLabel
+                    <StepButton
+                      onClick={() => handleStepClick(index)}
+                      disabled={index > activeStep}
                       sx={{
-                        whiteSpace: "nowrap",
-                        marginLeft: index === 0 ? "0" : "50px",
-                        marginRight: "50px", // Adjust the margin value as needed
+                        // Quitar el label al ocultar todo el contenido textual
+                        "& .MuiStepLabel-label": { display: "none" },
+                        // Mantener el punto de paso centrado y clickable
+                        padding: 0,
+                        cursor: index <= activeStep ? "pointer" : "default",
                       }}
-                    ></StepLabel>
+                    />
                   </Step>
                 ))}
               </Stepper>
@@ -232,6 +319,24 @@ export default function PatientCreateForm({
                     }}
                   >
                     {t("patientCreateForm.viewProfile")}
+                  </Button>
+                )}
+                {activeStep > 0 && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    form={`${formId}-${activeStep}`}
+                    onClick={() => setActiveStep(activeStep - 1)}
+                    disabled={isPosting}
+                    sx={{
+                      bottom: 0,
+                      left: 0,
+                      width: 200,
+                      borderTopRightRadius: 18,
+                      position: "absolute",
+                    }}
+                  >
+                    {t("patientCreateForm.back")}
                   </Button>
                 )}
               </Box>

@@ -84,7 +84,7 @@ export default class FhirResourceService<T extends FhirResource> {
         const result = { success: true, data } as Result<T>;
         if (cacheKey) {
           console.log("Cache miss:", cacheKey);
-          CacheUtils.saveToCache(cacheKey, result);
+          //CacheUtils.saveToCache(cacheKey, result);
         }
         return result;
       })
@@ -361,7 +361,7 @@ export default class FhirResourceService<T extends FhirResource> {
         (link) => link.relation === "self"
       )?.url;
       if (selfLink) {
-        CacheUtils.saveToCache(selfLink, { success: true, data: resources });
+        //CacheUtils.saveToCache(selfLink, { success: true, data: resources });
       }
 
       return { success: true, data: resources };
