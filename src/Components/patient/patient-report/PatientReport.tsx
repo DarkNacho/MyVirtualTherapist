@@ -68,6 +68,7 @@ export default function PatientReportModal({
 
   const [dateFilter, setDateFilter] = useState("all");
   const [timeRange, setTimeRange] = useState({ start: "", end: "" });
+  const [isDownloading, setIsDownloading] = useState(false); // Nuevo estado
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
@@ -212,13 +213,20 @@ export default function PatientReportModal({
   };
 
   const handleDownload = async () => {
-    await HandleResult.handleOperation(
-      downloadReport,
-      "Informe generado correctamente",
-      "Generando informe..."
-    );
-    //await downloadReport();
-    handleClose();
+    setIsDownloading(true);
+    try {
+      await HandleResult.handleOperation(
+        downloadReport,
+        "Informe generado correctamente",
+        "Generando informe..."
+      );
+      //await downloadReport();
+      handleClose();
+    } catch (error) {
+      console.error("Error downloading report:", error);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   return (
@@ -414,7 +422,12 @@ export default function PatientReportModal({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancelar</Button>
-        <Button onClick={handleDownload} variant="contained" color="primary">
+        <Button
+          onClick={handleDownload}
+          variant="contained"
+          color="primary"
+          disabled={isDownloading}
+        >
           Descargar
         </Button>
       </DialogActions>

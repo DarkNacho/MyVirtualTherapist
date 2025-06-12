@@ -8,6 +8,7 @@ import {
   Button,
 } from "@mui/material";
 import { useState } from "react";
+import HandleResult from "../../Utils/HandleResult";
 
 interface QuestionnaireReportModalProps {
   open: boolean;
@@ -25,6 +26,8 @@ export default function QuestionnaireReportModal({
     includePieChart: false,
     includeLineChart: false,
   });
+
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
@@ -81,8 +84,22 @@ export default function QuestionnaireReportModal({
   };
 
   const handleDownload = async () => {
-    await downloadReport();
-    handleClose();
+    try {
+      setIsDownloading(true);
+      await HandleResult.handleOperation(
+        async () => {
+          await downloadReport();
+          return { success: true, data: null };
+        },
+        "Informe generado exitosamente",
+        "Generando informe..."
+      );
+      handleClose();
+    } catch (error) {
+      console.error("Error downloading report:", error);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   return (
@@ -122,7 +139,9 @@ export default function QuestionnaireReportModal({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancelar</Button>
-        <Button onClick={handleDownload}>Descargar</Button>
+        <Button onClick={handleDownload} disabled={isDownloading}>
+          Descargar
+        </Button>
       </DialogActions>
     </Dialog>
   );

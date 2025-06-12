@@ -79,6 +79,8 @@ export default function QuestionnaireComponent({
     );
   }, [questionnaire, questionnaireResponse]);
 
+  const [isDownloading, setIsDownloading] = useState(false);
+
   // Función para actualizar las observaciones originales con las nuevas
   const generateUpdateResources = (
     originalObservations: FhirResource[],
@@ -510,7 +512,7 @@ export default function QuestionnaireComponent({
             variant="contained"
             color="primary"
             onClick={() => setOpen(true)}
-            disabled={!questionnaireResponse.id}
+            disabled={!questionnaireResponse.id || isDownloading}
             sx={{ marginLeft: "right" }}
           >
             {t("questionnaireComponent.report")}
