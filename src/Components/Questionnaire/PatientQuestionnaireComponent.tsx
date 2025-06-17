@@ -59,6 +59,7 @@ export default function PatientQuestionnaireComponent({
       const responseBundle = await questionnaireResponseService.getResources({
         subject: patientID,
         encounter: encounterID!,
+        _count: 999,
       });
       if (!responseBundle.success) throw Error(responseBundle.error);
 

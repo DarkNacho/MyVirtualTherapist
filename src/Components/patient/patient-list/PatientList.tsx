@@ -14,13 +14,7 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import {
-  ArrowForward,
-  Edit,
-  Delete,
-  ArrowLeft,
-  ArrowRight,
-} from "@mui/icons-material";
+import { Edit, Delete, ArrowLeft, ArrowRight } from "@mui/icons-material";
 import styles from "./PatientList.module.css";
 import { Patient } from "fhir/r4";
 import PersonUtil from "../../../Services/Utils/PersonUtils";
@@ -32,6 +26,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useResource } from "../../ResourceContext"; // Import the context
 
+import referIconPng from "../../../assets/icons/refer.png";
 interface PatientListProps {
   searchParam?: SearchParams;
   onReferClick?: (resource: Patient) => void;
@@ -265,8 +260,17 @@ export default function PatientList({
                           color="primary"
                           aria-label="derive"
                           onClick={() => onReferClick(resource)}
+                          sx={{ padding: "0px" }}
                         >
-                          <ArrowForward />
+                          {/* Usa un tag img para tu PNG */}
+                          <img
+                            src={referIconPng}
+                            alt={t("patientList.referPatient")}
+                            style={{
+                              width: isMobile ? 18 : 24, // Ajusta el tamaño según necesites
+                              height: isMobile ? 18 : 24, // Ajusta el tamaño según necesites
+                            }}
+                          />
                         </IconButton>
                       </Tooltip>
                     )}
