@@ -58,7 +58,6 @@ const WelcomeComponent: React.FC<WelcomeComponentProps> = ({ userName }) => {
             position: "absolute", // Position absolutely within Paper
             top: "23px", // Adjust top position to account for padding
             left: "23px", // Adjust left position to account for padding
-            cursor: "pointer",
           }}
         />
       )}
