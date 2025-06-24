@@ -60,4 +60,7 @@ export default class HandleResult {
   static showSuccessMessage = (message: string) => {
     toast.success(message);
   };
+  static showInfoMessage = (message: string) => {
+    toast(message);
+  };
 }

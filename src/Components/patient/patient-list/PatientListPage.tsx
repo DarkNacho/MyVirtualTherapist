@@ -84,7 +84,9 @@ export default function PatientListPage() {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       if (file.size > MAX_IMAGE_SIZE) {
-        alert("La imagen es demasiado grande. El tamaño máximo es 2MB.");
+        HandleResult.showInfoMessage(
+          "La imagen es demasiado grande. El tamaño máximo es 2MB."
+        );
         event.target.value = ""; // Limpia el input
         return;
       }
@@ -157,7 +159,6 @@ export default function PatientListPage() {
       if (activeStep < 2) {
         setActiveStep((prev) => prev + 1);
       } else {
-        alert("Submitting form...");
         const operation = isEditing
           ? () => updatePatient(patientFormData)
           : () => postPatient(patientFormData);

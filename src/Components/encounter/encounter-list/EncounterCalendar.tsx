@@ -9,7 +9,7 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { Edit, Delete, Visibility } from "@mui/icons-material";
+import { Edit, Delete } from "@mui/icons-material";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -267,7 +267,9 @@ export default function EncounterCalendar({
                 endDate = adjustedEnd;
                 setOpenCreate(true);
               } else {
-                alert("Please select a slot within a single day.");
+                HandleResult.showInfoMessage(
+                  "Please select a slot within a single day."
+                );
               }
             }}
             onSelectEvent={
@@ -315,7 +317,7 @@ export default function EncounterCalendar({
             open={Boolean(anchorEl)}
             onClose={handleCloseMenu}
           >
-            <MenuItem
+            {/*<MenuItem
               onClick={() => {
                 handleItemClick(selectedEvent!);
                 handleCloseMenu();
@@ -323,7 +325,7 @@ export default function EncounterCalendar({
             >
               <Visibility fontSize="small" />
               {t("encounterList.view")}
-            </MenuItem>
+            </MenuItem>*/}
             {onEditClick && isAdminPractitioner && (
               <MenuItem
                 onClick={() => {

@@ -30,6 +30,7 @@ export default function ForgotPasswordComponent({
   };
 
   const generateReset = async (rut: string): Promise<Result<any>> => {
+    rut = rut.replace(/\./g, "").replace(/-/g, "").toUpperCase();
     const response = await fetch(
       `${
         import.meta.env.VITE_SERVER_URL

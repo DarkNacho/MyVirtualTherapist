@@ -371,26 +371,35 @@ export default class PersonUtil {
       ciudad: address.city || "",
       direccion: address.line?.[0] || "",
 
-      contact:
-        patient.contact?.map((contact) => {
-          const contactName = contact.name || {};
-          const phoneContact =
-            contact.telecom?.find((t) => t.system === "phone")?.value || "";
-          const emailContact =
-            contact.telecom?.find((t) => t.system === "email")?.value || "";
-          const relationshipCoding =
-            contact.relationship?.[0]?.coding?.[0]?.code || "";
+      contact: patient.contact?.map((contact) => {
+        const contactName = contact.name || {};
+        const phoneContact =
+          contact.telecom?.find((t) => t.system === "phone")?.value || "";
+        const emailContact =
+          contact.telecom?.find((t) => t.system === "email")?.value || "";
+        const relationshipCoding =
+          contact.relationship?.[0]?.coding?.[0]?.code || "";
 
-          return {
-            nombre: contactName.given?.[0] || "",
-            segundoNombre: contactName.given?.[1] || "",
-            apellidoPaterno: contactName.family || "",
-            apellidoMaterno: contactName.suffix?.[0] || "",
-            contactType: relationshipCoding,
-            email: emailContact,
-            numeroTelefonico: phoneContact,
-          };
-        }) || [],
+        return {
+          nombre: contactName.given?.[0] || "",
+          segundoNombre: contactName.given?.[1] || "",
+          apellidoPaterno: contactName.family || "",
+          apellidoMaterno: contactName.suffix?.[0] || "",
+          contactType: relationshipCoding,
+          email: emailContact,
+          numeroTelefonico: phoneContact,
+        };
+      }) || [
+        {
+          nombre: "",
+          segundoNombre: "",
+          apellidoPaterno: "",
+          apellidoMaterno: "",
+          contactType: "N",
+          email: "",
+          numeroTelefonico: "",
+        },
+      ],
     };
   };
 

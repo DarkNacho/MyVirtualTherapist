@@ -17,6 +17,7 @@ import styles from "./HeaderDesktop.module.css";
 import { Patient, Practitioner } from "fhir/r4";
 import { useTranslation } from "react-i18next";
 import { isPatient, isAdminOrPractitioner } from "../../../Utils/RolUser";
+import HandleResult from "../../../Utils/HandleResult";
 
 interface HeaderDesktopProps {
   user?: Patient | Practitioner;
@@ -27,6 +28,7 @@ interface HeaderDesktopProps {
 }
 
 const handleOpenApp = () => {
+  /*
   const appUrl = "zoomus://"; // Replace with your custom URL scheme
   //const fallbackUrl = "https://google.cl"; // Replace with your download page URL
 
@@ -34,7 +36,9 @@ const handleOpenApp = () => {
   iframe.style.display = "none";
   iframe.src = appUrl;
 
-  document.body.appendChild(iframe);
+  document.body.appendChild(iframe);\
+  */
+  HandleResult.showErrorMessage("En construcción, pronto disponible");
 };
 
 const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
@@ -159,7 +163,9 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
                     <NavItem text={t("header.patients")} />
                   )}
                   <NavItem text={t("header.practitioners")} />
-                  <NavItem text={t("header.encounters")} />
+                  {isAdminOrPractitionerUser && (
+                    <NavItem text={t("header.encounters")} />
+                  )}
                   <NavItem
                     text={t("header.contact")}
                     href="https://wa.me/+56931416677"

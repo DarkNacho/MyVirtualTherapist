@@ -6,6 +6,7 @@ import { Patient, Practitioner } from "fhir/r4";
 import { loadUserRoleFromLocalStorage } from "../../Utils/RolUser";
 import FhirResourceService from "../../Services/FhirService";
 import { useTranslation } from "react-i18next";
+import HandleResult from "../../Utils/HandleResult";
 
 const isTokenExpired = () => {
   const expirationTime = localStorage.getItem("tokenExpiration");
@@ -107,7 +108,7 @@ const Header = () => {
   useEffect(() => {
     const checkTokenExpiration = () => {
       if (isTokenExpired()) {
-        alert(t("header.sessionExpired"));
+        HandleResult.showErrorMessage(t("header.sessionExpired"));
         handleLogOut();
       }
     };

@@ -29,6 +29,9 @@ import HandleResult from "../../../Utils/HandleResult";
 import FhirResourceService from "../../../Services/FhirService";
 import Tooltip from "@mui/material/Tooltip";
 import { useTranslation } from "react-i18next";
+import { isAdmin } from "../../../Utils/RolUser";
+
+const IS_ADMIN = isAdmin();
 
 interface PractitionerListProps {
   searchParam?: SearchParams;
@@ -279,7 +282,7 @@ export default function PractitionerList({
                     >
                       <Event />
                     </IconButton>
-                    {onEditClick && (
+                    {IS_ADMIN && onEditClick && (
                       <Tooltip title={t("practitionerList.edit")}>
                         <IconButton
                           className={
@@ -295,7 +298,7 @@ export default function PractitionerList({
                         </IconButton>
                       </Tooltip>
                     )}
-                    {onDeleteClick && (
+                    {IS_ADMIN && onDeleteClick && (
                       <Tooltip title={t("practitionerList.delete")}>
                         <IconButton
                           className={

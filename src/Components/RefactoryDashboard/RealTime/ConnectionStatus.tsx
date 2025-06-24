@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Button, Typography } from "@mui/material";
+import HandleResult from "../../../Utils/HandleResult";
 
 interface ConnectionStatusProps {
   isConnected: boolean;
@@ -9,7 +10,7 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({ isConnected }) => {
   const handleCopyZoomLink = () => {
     const dummyZoomLink = "https://zoom.us/j/123456789";
     navigator.clipboard.writeText(dummyZoomLink);
-    alert("Link de Zoom copiado al portapapeles");
+    HandleResult.showSuccessMessage("Link de Zoom copiado al portapapeles");
   };
 
   return (

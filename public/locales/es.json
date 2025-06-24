@@ -18,7 +18,7 @@
     "signOut": "Cerrar Sesión",
     "patients": "PACIENTES",
     "practitioners": "PROFESIONALES",
-    "encounters": "SESIONES",
+    "encounters": "Mi Agenda",
     "contact": "CONTACTO",
     "sessionExpired": "Su sesión ha expirado, por favor inicie sesión nuevamente.",
     "me": "Yo"
@@ -88,6 +88,10 @@
   },
   "patientCard": {
     "nameNotAvailable": "Nombre no disponible",
+    "addressNotAvailable": "Dirección no disponible",
+    "stateNotAvailable": "Estado no disponible",
+    "cityNotAvailable": "Ciudad no disponible",
+    "direction": "Dirección",
     "phone": "Teléfono",
     "email": "Correo Electrónico",
     "downloadReport": "Descargar Reporte",

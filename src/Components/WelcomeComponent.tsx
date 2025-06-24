@@ -28,11 +28,6 @@ const WelcomeComponent: React.FC<WelcomeComponentProps> = ({ userName }) => {
     return () => clearInterval(interval); // Cleanup on unmount
   }, [images.length]);
 
-  // Event handlers for navigation
-  const handleImageClick = () => {
-    navigate("/news");
-  };
-
   const handleTextClick = () => {
     navigate("/profile");
   };
@@ -55,7 +50,6 @@ const WelcomeComponent: React.FC<WelcomeComponentProps> = ({ userName }) => {
           component="img"
           src={images[currentImageIndex]}
           alt="background img"
-          onClick={handleImageClick}
           sx={{
             borderRadius: 2,
             width: "calc(100% - 46px)", // Adjust width to account for padding
