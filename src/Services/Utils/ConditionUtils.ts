@@ -1,5 +1,4 @@
 import { Condition } from "fhir/r4";
-
 import { ConditionFormData } from "../../Models/Forms/ConditionForm";
 
 export default class ConditionUtils {
@@ -22,22 +21,13 @@ export default class ConditionUtils {
       "N/A"
     );
   }
-  // Función para un array de items
 
   public static ConditionFormDataToCondition(
     data: ConditionFormData
   ): Condition {
     return {
       resourceType: "Condition",
-      code: {
-        coding: [
-          {
-            code: data.code.code,
-            system: data.code.system,
-            display: data.code.display,
-          },
-        ],
-      },
+      code: { coding: [data.code] },
       subject: {
         reference: `Patient/${data.subject.id}`,
         display: data.subject.display,
@@ -47,11 +37,9 @@ export default class ConditionUtils {
         display: data.encounter.display,
       },
       recorder: {
-        //! WARNING: quizás pueda cambiar a asserter o tener ambos
         reference: `Practitioner/${data.performer.id}`,
         display: data.performer.display,
       },
-
       note: [{ text: data.note }],
       clinicalStatus: {
         coding: [
@@ -61,18 +49,33 @@ export default class ConditionUtils {
           },
         ],
       },
+      /*
+      evidence: data.conditionCodes.map((coding) => ({
+        code: {
+          coding: [
+            {
+              code: coding.code,
+              system: coding.system,
+              display: coding.display,
+            },
+          ],
+        } as CodeableConcept,
+      })),
     } as Condition;
+     */
+    };
   }
 
   public static ConditionToConditionFormData(
     condition: Condition
   ): ConditionFormData {
     return {
-      code: {
-        code: condition.code?.coding?.[0]?.code || "",
-        system: condition.code?.coding?.[0]?.system || "",
-        display: condition.code?.coding?.[0]?.display || "",
-      },
+      code:
+        condition.code?.coding?.map((coding) => ({
+          code: coding.code || "",
+          system: coding.system || "",
+          display: coding.display || "",
+        })) || [],
       subject: {
         id: condition.subject?.reference?.split("/")[1] || "",
         display: condition.subject?.display || "",
@@ -81,12 +84,19 @@ export default class ConditionUtils {
         id: condition.encounter?.reference?.split("/")[1] || "",
         display: condition.encounter?.display || "",
       },
+      encounterId: condition.encounter?.reference?.split("/")[1] || "",
       performer: {
-        id: condition.recorder?.reference?.split("/")[1] || "", // Assuming recorder is used as performer
+        id: condition.recorder?.reference?.split("/")[1] || "",
         display: condition.recorder?.display || "",
       },
       note: condition.note?.[0]?.text || "",
       clinicalStatus: condition.clinicalStatus?.coding?.[0]?.code || "",
+      conditionCodes:
+        condition.evidence?.map((evidence) => ({
+          code: evidence.code?.[0]?.coding?.[0]?.code || "",
+          system: evidence.code?.[0]?.coding?.[0]?.system || "",
+          display: evidence.code?.[0]?.coding?.[0]?.display || "",
+        })) || [],
     } as ConditionFormData;
   }
 }

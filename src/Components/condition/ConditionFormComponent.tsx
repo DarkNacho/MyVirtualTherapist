@@ -187,6 +187,59 @@ export default function ConditionFormComponent({
             )}
           />
           */}
+          <Controller
+            name="code"
+            control={control}
+            defaultValue={condition?.code?.coding?.[0] || {}}
+            render={({ field }) => (
+              <Autocomplete
+                id="Autocomplete-CIE10-Single"
+                options={filteredOptions}
+                defaultValue={condition?.code?.coding?.[0] || {}}
+                getOptionLabel={(option) => {
+                  if (typeof option === "string") {
+                    return option;
+                  }
+                  return option.display || option.code || "UNKNOWN";
+                }}
+                isOptionEqualToValue={(option, value) => {
+                  if (typeof option === "string" || typeof value === "string") {
+                    return option === value;
+                  }
+                  return option.code === value.code;
+                }}
+                freeSolo
+                readOnly={readOnly}
+                onInputChange={(_, value) => handleSearch(value)} // Trigger search on input change
+                onChange={(_, newValue) => {
+                  const formattedValue =
+                    typeof newValue === "string"
+                      ? {
+                          code: `OTHER-${Date.now()}`, // Generate a unique code for new values
+                          system: "CTTN",
+                          display: newValue,
+                        }
+                      : newValue;
+                  field.onChange(formattedValue); // Update the field with the selected value
+                }}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.code}>
+                    {option.display}
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    label="Condición Reportada (CIE10)"
+                    variant="outlined"
+                    error={Boolean(errors.code)}
+                    helperText={errors.code && errors.code.message}
+                  />
+                )}
+              />
+            )}
+          />
 
           <Controller
             name="encounter"
@@ -222,7 +275,7 @@ export default function ConditionFormComponent({
               />
             )}
           />
-
+          {/*}
           <Controller
             name="conditionCodes"
             control={control}
@@ -279,7 +332,7 @@ export default function ConditionFormComponent({
               />
             )}
           />
-
+          */}
           <TextField
             multiline
             fullWidth

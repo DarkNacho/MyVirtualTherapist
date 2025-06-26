@@ -21,28 +21,44 @@ import { useResource } from "../../ResourceContext";
 import ClinicalImpressionCreateComponent from "../../clinical-impression/ClinicalImpressionCreateComponent";
 import { useTranslation } from "react-i18next";
 import { isAdminOrPractitioner } from "../../../Utils/RolUser";
+import dayjs from "dayjs";
 
 function getEvolutionDisplay(evolution: ClinicalImpression) {
   return {
     leftTitle: evolution.description || "N/A",
-    leftSubtitle: evolution.note?.[0].text || "N/A",
-    rightText: evolution.date || "N/A",
+    leftSubtitle: evolution.note?.[0].text
+      ? evolution.note[0].text.length > 25
+        ? `${evolution.note[0].text.substring(0, 25)}...`
+        : evolution.note[0].text
+      : "N/A",
+    rightText: dayjs(evolution.date).format("DD-MM-YYYY HH:mm") || "N/A",
   };
 }
 
 function getConditionDisplay(condition: Condition) {
   return {
     leftTitle: ConditionUtils.getName(condition),
-    leftSubtitle: ConditionUtils.getValue(condition),
-    rightText: condition.recordedDate || "N/A",
+    leftSubtitle: condition.note?.[0].text
+      ? condition.note[0].text.length > 25
+        ? `${condition.note[0].text.substring(0, 25)}...`
+        : condition.note[0].text
+      : "N/A",
+    rightText:
+      dayjs(condition.recordedDate).format("DD-MM-YYYY HH:mm") || "N/A",
   };
 }
 
 function getMedicationDisplay(medication: MedicationStatement) {
   return {
     leftTitle: MedicationUtils.getName(medication),
-    leftSubtitle: MedicationUtils.getValue(medication),
-    rightText: medication.effectivePeriod?.start || "N/A",
+    leftSubtitle: medication.note?.[0].text
+      ? medication.note[0].text.length > 25
+        ? `${medication.note[0].text.substring(0, 25)}...`
+        : medication.note[0].text
+      : "N/A",
+    rightText:
+      dayjs(medication.effectivePeriod?.start).format("DD-MM-YYYY HH:mm") ||
+      "N/A",
   };
 }
 

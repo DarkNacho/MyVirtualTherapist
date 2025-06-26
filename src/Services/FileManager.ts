@@ -1,4 +1,5 @@
 import { Attachment, Binary, DocumentReference, Reference } from "fhir/r4";
+import FhirResourceService from "./FhirService";
 
 export default class FileManager {
   static fileToBase64 = (file: File): Promise<string> => {
@@ -30,41 +31,44 @@ export default class FileManager {
     }
 
     const blob = new Blob([uint8Array], { type: attachment.contentType });
-    const file = new File([blob], "attachment", {
+    const file = new File([blob], attachment.title || "attachment", {
       type: attachment.contentType,
     });
 
     return file;
   };
 
-  static fileToBinary = async (
+  static async uploadFileAsBinary(
     file: File,
     securityContext?: Reference
-  ): Promise<Binary> => {
+  ): Promise<Binary> {
     const fileContent = await this.fileToBase64(file);
-    return {
+    const binary: Binary = {
       resourceType: "Binary",
       contentType: file.type,
       data: fileContent,
       securityContext: securityContext,
     };
-  };
 
-  static async calculateFileHash(file: File): Promise<string> {
-    const buffer = await file.arrayBuffer();
-    const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
-    const hashHex = hashArray
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join(""); // convert bytes to hex string
-    return btoa(hashHex);
+    const binaryService = FhirResourceService.getInstance<Binary>("Binary");
+    const result = await binaryService.postResource(binary);
+
+    if (!result.success) {
+      throw new Error(`Failed to upload Binary: ${result.error}`);
+    }
+
+    return result.data;
   }
 
-  static fileToDocumentReference = async (
-    file: File
-  ): Promise<DocumentReference> => {
-    const binary = await this.fileToBinary(file);
-    return {
+  static async uploadFileAsDocumentReference(
+    file: File,
+    securityContext?: Reference
+  ): Promise<DocumentReference> {
+    // Step 1: Upload the file as a Binary resource
+    const binary = await this.uploadFileAsBinary(file, securityContext);
+
+    // Step 2: Create a DocumentReference resource linked to the Binary
+    const documentReference: DocumentReference = {
       resourceType: "DocumentReference",
       status: "current",
       date: new Date().toISOString(),
@@ -72,13 +76,64 @@ export default class FileManager {
         {
           attachment: {
             contentType: binary.contentType,
-            data: binary.data,
+            url: `Binary/${binary.id}`, // Reference to the Binary resource
             size: file.size,
-            hash: await this.calculateFileHash(file),
             title: file.name,
           },
         },
       ],
     };
-  };
+
+    const documentReferenceService =
+      FhirResourceService.getInstance<DocumentReference>("DocumentReference");
+    const result = await documentReferenceService.postResource(
+      documentReference
+    );
+
+    if (!result.success) {
+      throw new Error(`Failed to upload DocumentReference: ${result.error}`);
+    }
+
+    return result.data;
+  }
+
+  static async getFileFromBinary(binaryId: string): Promise<File> {
+    const binaryService = FhirResourceService.getInstance<Binary>("Binary");
+    const result = await binaryService.getById(binaryId);
+
+    if (!result.success) {
+      throw new Error(`Failed to retrieve Binary: ${result.error}`);
+    }
+
+    const binary = result.data;
+    if (!binary.data || !binary.contentType) {
+      throw new Error("Binary resource is missing data or contentType");
+    }
+
+    const file = this.attachmentToFile({
+      contentType: binary.contentType,
+      data: binary.data,
+      title: "retrieved-file",
+    });
+
+    if (!file) {
+      throw new Error("Failed to convert Binary to File");
+    }
+
+    return file;
+  }
+
+  static async getDocumentReference(
+    documentReferenceId: string
+  ): Promise<DocumentReference> {
+    const documentReferenceService =
+      FhirResourceService.getInstance<DocumentReference>("DocumentReference");
+    const result = await documentReferenceService.getById(documentReferenceId);
+
+    if (!result.success) {
+      throw new Error(`Failed to retrieve DocumentReference: ${result.error}`);
+    }
+
+    return result.data;
+  }
 }

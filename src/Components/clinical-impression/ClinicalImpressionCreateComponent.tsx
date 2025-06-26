@@ -12,10 +12,13 @@ import {
 import { Close } from "@mui/icons-material";
 
 import styles from "./ClinicalImpressionCreateComponent.module.css";
-import { ClinicalImpression } from "fhir/r4";
+import { ClinicalImpression, DocumentReference } from "fhir/r4";
 import ClinicalImpressionFormComponent from "./ClinicalImpressionFormComponent";
 import { ClinicalImpressionFormData } from "../../Models/Forms/ClinicalImpressionForm";
 import { isAdminOrPractitioner } from "../../Utils/RolUser";
+import ClinicalImpressionUtils from "../../Services/Utils/ClinicalImpression";
+import HandleResult from "../../Utils/HandleResult";
+import FhirResourceService from "../../Services/FhirService";
 
 export default function ClinicalImpressionCreateComponent({
   patientId,
@@ -36,24 +39,74 @@ export default function ClinicalImpressionCreateComponent({
     ? localStorage.getItem("id") || undefined
     : undefined;
 
-  const onSubmitForm: SubmitHandler<ClinicalImpressionFormData> = (data) => {
-    //const newObservation =
-    //  ObservationUtils.ObservationFormDataToObservation(data);
-    console.log("ClinicalImpressionCreateComponent", data);
+  const onSubmitForm: SubmitHandler<ClinicalImpressionFormData> = async (
+    data
+  ) => {
+    let supportingInfoFiles: DocumentReference[] = [];
+
+    // upload supporting info files if they exist
+    if (data.supportingInfo && data.supportingInfo.length > 0) {
+      const supportingInfoFilesResult = await HandleResult.handleOperation(
+        () => sendSupportingInfoFiles(data.supportingInfo),
+        "Archivos subidos correctamente",
+        "Subiendo archivos..."
+      );
+      if (!supportingInfoFilesResult.success) {
+        console.error(
+          "Error uploading supporting info files:",
+          supportingInfoFilesResult.error
+        );
+        return;
+      }
+      supportingInfoFiles =
+        supportingInfoFilesResult.data as DocumentReference[];
+    }
+
+    const newClinicalImpression =
+      ClinicalImpressionUtils.ClinicalImpressionFormDataToClinicalImpression(
+        data,
+        supportingInfoFiles
+      );
+
+    console.log("ClinicalImpressionFormData", data);
+    console.log("ClinicalImpression", newClinicalImpression);
+    sendClinicalImpression(newClinicalImpression);
 
     //sendObservation(data);
+  };
+
+  const sendSupportingInfoFiles = async (
+    files: FileList | undefined
+  ): Promise<Result<DocumentReference[]>> => {
+    if (!files || files.length === 0) return { success: true, data: [] };
+    try {
+      const documentReferences =
+        await ClinicalImpressionUtils.uploadSupportingInfoFiles(files);
+      return { success: true, data: documentReferences };
+    } catch (error) {
+      console.error("Error uploading supporting info files:", error);
+      return {
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : String(error) || "Error uploading files",
+      };
+    }
   };
 
   const sendClinicalImpression = async (
     newClinicalImpression: ClinicalImpression
   ) => {
-    /*const response = await HandleResult.handleOperation(
-      () => new ObservationService().sendResource(newObservation),
-      "Observación guardada de forma exitosa",
+    const response = await HandleResult.handleOperation(
+      () =>
+        FhirResourceService.getInstance<ClinicalImpression>(
+          "ClinicalImpression"
+        ).sendResource(newClinicalImpression),
+      "Evolución guardada de forma exitosa",
       "Enviando..."
     );
     if (response.success) handleClose();
-    */
   };
 
   return (

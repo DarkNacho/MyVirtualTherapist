@@ -21,5 +21,7 @@
 
 - [ ] Anita Maria Muñoz, en la lista de profesionales se ve su imagen, pero al dar click a su perfil no se ve la imagen.
 
-- [ ] **1 Condiciones no se guardan / envían**
-- [ ] **2 Evoluciones no se guardad / envían**
+- [ ] **1 Condiciones, falta enviar documentos asociados**
+- [ ] **2 Evoluciones, falta enviar documentos asociados**
+- [ ] Borrar condiciones
+- [ ] Borrar evoluciones
