@@ -17,23 +17,20 @@ import { isAdminOrPractitioner } from "../../../Utils/RolUser";
 
 let practitionerFormData: PractitionerFormData;
 
-const handleEditClick = (person: Practitioner) => {
-  alert(`Edit clicked for id: ${person.id}`);
-};
-
 const handleDeleteClick = (person: Practitioner) => {
   console.log(`Delete clicked for id: ${person.id}`);
 };
 const PractitionerListPage = () => {
   const { t } = useTranslation();
+  const [searchParam, setSearchParam] = useState<SearchParams | undefined>();
+  const isAdminOrPractitionerUser = isAdminOrPractitioner();
+
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [avatar, setAvatar] = useState<File | null>(null);
   const [isPosting, setIsPosting] = useState(false);
 
-  const isAdminOrPractitionerUser = isAdminOrPractitioner();
-
-  const [searchParam, setSearchParam] = useState<SearchParams | undefined>();
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -41,12 +38,69 @@ const PractitionerListPage = () => {
 
   const handleClose = () => {
     setOpen(false);
+    setIsEditing(false);
+    setActiveStep(0);
   };
 
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       setAvatar(event.target.files[0]);
     }
+  };
+
+  const updatePractitioner = async (
+    data: PractitionerFormData
+  ): Promise<Result<Practitioner>> => {
+    const rut = data.rut.replace(/\./g, "").replace(/-/g, "").toUpperCase();
+    data.rut = rut;
+    const { practitioner, practitionerRole } =
+      await PersonUtil.PractitionerFormToPractitioner(data);
+
+    if (!practitioner)
+      return {
+        success: false,
+        error: t("practitionerPage.errorConvertingForm"),
+      };
+
+    // Actualizar en HAPI FHIR
+    const fhirService =
+      FhirResourceService.getInstance<Practitioner>("Practitioner");
+    const responseFhir = await fhirService.updateResource(practitioner);
+
+    if (!responseFhir.success) return responseFhir;
+
+    // TODO: Falta actualizar roles y actualizar datos en el servidor de login.
+    // Por ende igual hay que definir que no se podra no modificar, rut no lo creo, y mail habria que ver probablemente requiera re validacion
+
+    CacheUtils.clearCache();
+    return responseFhir;
+  };
+
+  const handleEditClick = async (person: Practitioner) => {
+    setIsEditing(true);
+
+    setActiveStep(0);
+    const practitionerRoleResult =
+      await FhirResourceService.getInstance<PractitionerRole>(
+        "PractitionerRole"
+      ).getResources({ practitioner: person.id! });
+    if (!practitionerRoleResult.success)
+      return HandleResult.showErrorMessage(practitionerRoleResult.error);
+
+    // Si tienes una función para convertir Practitioner a PractitionerFormData:
+    const formData = await PersonUtil.PractitionerToPractitionerForm(
+      person,
+      practitionerRoleResult.data[0] || {}
+    );
+    practitionerFormData = formData;
+
+    if (formData.avatar) {
+      setAvatar(formData.avatar);
+    } else {
+      setAvatar(null);
+    }
+
+    setOpen(true);
   };
 
   const submitForm = async (data: PractitionerFormData) => {
@@ -57,19 +111,26 @@ const PractitionerListPage = () => {
         practitionerFormData.avatar = avatar;
       }
       console.log("practitionerFormData:", practitionerFormData);
-      // Add any additional logic if needed
       if (activeStep < 1) {
         setActiveStep((prev) => prev + 1);
       } else {
+        const operation = isEditing
+          ? () => updatePractitioner(practitionerFormData)
+          : () => postPractitioner(practitionerFormData);
+
+        const message = isEditing
+          ? t("practitionerPage.practitionerUpdated")
+          : t("practitionerPage.practitionerCreated");
+
         const response = await HandleResult.handleOperation(
-          () => postPractitioner(practitionerFormData),
-          t("practitionerPage.practitionerCreated"),
+          operation,
+          message,
           t("practitionerPage.sending")
         );
         if (response.success) setActiveStep((prev) => prev + 1);
       }
     } finally {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       setIsPosting(false);
     }
   };
@@ -198,6 +259,7 @@ const PractitionerListPage = () => {
         avatar={avatar}
         handleAvatarChange={handleAvatarChange}
         isPosting={isPosting}
+        isEditing={isEditing}
       />
     </Box>
   );

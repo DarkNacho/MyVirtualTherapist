@@ -21,10 +21,12 @@ export default function PractitionerContactDetailForm({
   formId,
   practitioner,
   submitForm,
+  isEditing = false,
 }: {
   formId: string;
   practitioner?: PractitionerFormData;
   submitForm: SubmitHandler<PractitionerFormData>;
+  isEditing?: boolean;
 }) {
   const { t } = useTranslation();
   const {
@@ -37,6 +39,8 @@ export default function PractitionerContactDetailForm({
     defaultValues: {
       email: practitioner?.email || "",
       numeroTelefonico: practitioner?.numeroTelefonico || "",
+      role: practitioner?.role || [],
+      specialty: practitioner?.specialty || [],
     },
     mode: "onBlur",
   });

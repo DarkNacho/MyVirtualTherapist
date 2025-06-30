@@ -32,6 +32,7 @@ export default function PractitionerCreateForm({
   avatar,
   handleAvatarChange,
   isPosting = false,
+  isEditing = false,
 }: {
   formId: string;
   submitForm: SubmitHandler<PractitionerFormData>;
@@ -43,6 +44,7 @@ export default function PractitionerCreateForm({
   avatar?: File | null;
   handleAvatarChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isPosting: boolean;
+  isEditing?: boolean;
 }) {
   const { t } = useTranslation();
 
@@ -165,6 +167,7 @@ export default function PractitionerCreateForm({
                 practitioner={practitioner}
                 formId={`${formId}-0`}
                 submitForm={submitForm}
+                isEditing={isEditing}
               />
             )}
 
@@ -173,6 +176,7 @@ export default function PractitionerCreateForm({
                 practitioner={practitioner}
                 formId={`${formId}-1`}
                 submitForm={submitForm}
+                isEditing={isEditing}
               />
             )}
             {activeStep === 2 && successView()}

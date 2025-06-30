@@ -20,10 +20,12 @@ export default function PractitionerPersonalDetailsForm({
   formId,
   practitioner,
   submitForm,
+  isEditing = false,
 }: {
   formId: string;
   practitioner?: PractitionerFormData;
   submitForm: SubmitHandler<PractitionerFormData>;
+  isEditing?: boolean;
 }) {
   const { t } = useTranslation();
 
