@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  CircularProgress,
 } from "@mui/material";
 
 import { Close } from "@mui/icons-material";
@@ -19,17 +20,23 @@ import { isAdminOrPractitioner } from "../../Utils/RolUser";
 import ClinicalImpressionUtils from "../../Services/Utils/ClinicalImpression";
 import HandleResult from "../../Utils/HandleResult";
 import FhirResourceService from "../../Services/FhirService";
+import UploadFileComponent, {
+  UploadFileComponentRef,
+} from "../FileManager/UploadFileComponent";
+import { useEffect, useRef, useState } from "react";
 
 export default function ClinicalImpressionCreateComponent({
   patientId,
   encounterId,
   onOpen,
   isOpen,
+  clinicalImpression,
 }: {
   patientId: string;
   onOpen: (isOpen: boolean) => void;
   isOpen: boolean;
   encounterId?: string;
+  clinicalImpression?: ClinicalImpression;
 }) {
   const handleClose = () => {
     onOpen(false);
@@ -39,28 +46,73 @@ export default function ClinicalImpressionCreateComponent({
     ? localStorage.getItem("id") || undefined
     : undefined;
 
+  const uploadRef = useRef<UploadFileComponentRef>(null);
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [formInitData, setFormInitData] = useState<
+    ClinicalImpressionFormData | undefined
+  >(undefined);
+
+  useEffect(() => {
+    const initForm = async () => {
+      setLoading(true);
+      if (isOpen && clinicalImpression) {
+        console.log("Cargando ClinicalImpression desde props");
+        ClinicalImpressionUtils.ClinicalImpressionToClinicalImpressionFormData(
+          clinicalImpression,
+          false
+        ).then((data) => {
+          setFormInitData(data);
+          setLoading(false);
+          console.log("ClinicalImpressionFormData inicial:", data);
+        });
+      } else if (isOpen && !clinicalImpression) {
+        setFormInitData(undefined); // Limpia el formulario si es nuevo
+        setLoading(false);
+      }
+    };
+    initForm();
+  }, [clinicalImpression, isOpen]);
+
   const onSubmitForm: SubmitHandler<ClinicalImpressionFormData> = async (
     data
   ) => {
-    let supportingInfoFiles: DocumentReference[] = [];
+    let supportingInfoFiles: DocumentReference | undefined = undefined;
 
-    // upload supporting info files if they exist
-    if (data.supportingInfo && data.supportingInfo.length > 0) {
-      const supportingInfoFilesResult = await HandleResult.handleOperation(
-        () => sendSupportingInfoFiles(data.supportingInfo),
-        "Archivos subidos correctamente",
-        "Subiendo archivos..."
-      );
-      if (!supportingInfoFilesResult.success) {
-        console.error(
-          "Error uploading supporting info files:",
-          supportingInfoFilesResult.error
-        );
+    console.log("===> onSubmitForm called");
+    console.log("Archivos seleccionados:", uploadRef.current?.hasFiles?.());
+    console.log(
+      "DocumentReference actual:",
+      uploadRef.current?.getDocumentReference?.()
+    );
+
+    if (
+      uploadRef.current &&
+      uploadRef.current.hasFiles &&
+      uploadRef.current.hasFiles() &&
+      !uploadRef.current.getDocumentReference()
+    ) {
+      console.log("===> Subiendo archivos...");
+      const result = await uploadRef.current.uploadAllFiles();
+      console.log("Resultado de uploadAllFiles:", result);
+      if (!result?.success || !result.data) {
+        console.error("Error al subir archivos o no hay data en el resultado");
         return;
       }
-      supportingInfoFiles =
-        supportingInfoFilesResult.data as DocumentReference[];
+      supportingInfoFiles = result.data;
+    } else if (
+      uploadRef.current &&
+      uploadRef.current.getDocumentReference &&
+      uploadRef.current.getDocumentReference()
+    ) {
+      console.log("===> Ya hay DocumentReference disponible");
+      supportingInfoFiles = uploadRef.current.getDocumentReference();
+    } else {
+      console.log(
+        "===> No hay archivos para subir o no se requiere DocumentReference"
+      );
     }
+    console.log("DocumentReference a enviar:", supportingInfoFiles);
 
     const newClinicalImpression =
       ClinicalImpressionUtils.ClinicalImpressionFormDataToClinicalImpression(
@@ -68,31 +120,10 @@ export default function ClinicalImpressionCreateComponent({
         supportingInfoFiles
       );
 
-    console.log("ClinicalImpressionFormData", data);
-    console.log("ClinicalImpression", newClinicalImpression);
+    console.log("ClinicalImpressionFormData:", data);
+    console.log("ClinicalImpression a enviar:", newClinicalImpression);
+
     sendClinicalImpression(newClinicalImpression);
-
-    //sendObservation(data);
-  };
-
-  const sendSupportingInfoFiles = async (
-    files: FileList | undefined
-  ): Promise<Result<DocumentReference[]>> => {
-    if (!files || files.length === 0) return { success: true, data: [] };
-    try {
-      const documentReferences =
-        await ClinicalImpressionUtils.uploadSupportingInfoFiles(files);
-      return { success: true, data: documentReferences };
-    } catch (error) {
-      console.error("Error uploading supporting info files:", error);
-      return {
-        success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : String(error) || "Error uploading files",
-      };
-    }
   };
 
   const sendClinicalImpression = async (
@@ -128,14 +159,31 @@ export default function ClinicalImpressionCreateComponent({
         </DialogTitle>
         <DialogContent>
           <Container className={styles.container}>
-            <ClinicalImpressionFormComponent
-              formId="form"
-              patientId={patientId}
-              practitionerId={practitionerId}
-              submitForm={onSubmitForm}
-              readOnly={false}
-              encounterId={encounterId}
-            ></ClinicalImpressionFormComponent>
+            {loading ? (
+              <CircularProgress />
+            ) : (
+              <>
+                <ClinicalImpressionFormComponent
+                  formId="form"
+                  patientId={patientId}
+                  practitionerId={practitionerId}
+                  submitForm={onSubmitForm}
+                  readOnly={false}
+                  encounterId={encounterId}
+                  clinicalImpression={formInitData}
+                />
+              </>
+            )}
+            <UploadFileComponent
+              ref={uploadRef}
+              subject={{ reference: `Patient/${patientId}` }}
+              author={{ reference: `Practitioner/${practitionerId}` }}
+              documentReferenceId={
+                clinicalImpression?.supportingInfo?.[0]?.reference?.split(
+                  "/"
+                )[1] || undefined
+              }
+            />
           </Container>
         </DialogContent>
         <DialogActions className={styles.dialogActions}>

@@ -8,6 +8,7 @@ import {
 import { PatientFormData } from "../../Models/Forms/PatientForm";
 import dayjs from "dayjs";
 import { PractitionerFormData } from "../../Models/Forms/PractitionerForm";
+import FileManager from "../FileManager";
 
 type FhirResourceType = Patient | Practitioner | Person;
 
@@ -215,20 +216,6 @@ export default class PersonUtil {
     };
     return genderMap[resource.gender] || "N/A";
   }
-  static fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        if (reader.result) {
-          resolve(reader.result.toString().split(",")[1]);
-        } else {
-          reject(new Error("File reading failed"));
-        }
-      };
-      reader.onerror = (error) => reject(error);
-    });
-  };
 
   static attachmentToFile = (attachment: Attachment): File | undefined => {
     if (!attachment || !attachment.data) {
@@ -258,7 +245,7 @@ export default class PersonUtil {
     let avatar: Attachment[] | undefined;
 
     if (data.avatar) {
-      const avatarBase64 = await this.fileToBase64(data.avatar);
+      const avatarBase64 = await FileManager.fileToBase64(data.avatar);
       avatar = [
         {
           contentType: data.avatar.type, // MIME type of the file
@@ -413,7 +400,7 @@ export default class PersonUtil {
     let avatar: Attachment[] | undefined;
 
     if (data.avatar) {
-      const avatarBase64 = await this.fileToBase64(data.avatar);
+      const avatarBase64 = await FileManager.fileToBase64(data.avatar);
       avatar = [
         {
           contentType: data.avatar.type, // MIME type of the file

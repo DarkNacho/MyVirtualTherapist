@@ -25,6 +25,7 @@ interface HeaderDesktopProps {
   handleSetLocation: (path: string) => void;
   handleSignOutClick: () => void;
   handleLanguageToggle: () => void;
+  handleEditProfile: () => void;
 }
 
 const handleOpenApp = () => {
@@ -47,6 +48,7 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
   handleSetLocation,
   handleSignOutClick,
   handleLanguageToggle,
+  handleEditProfile,
 }) => {
   const { t, i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -60,11 +62,6 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleProfileClick = () => {
-    alert("Profile clicked");
-    handleClose();
   };
 
   const NavItem = ({
@@ -191,7 +188,7 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
                   open={Boolean(anchorEl)}
                   onClose={handleClose}
                 >
-                  <MenuItem onClick={handleProfileClick}>
+                  <MenuItem onClick={handleEditProfile}>
                     {t("header.myProfile")}
                   </MenuItem>
                   <MenuItem onClick={handleSignOutClick}>

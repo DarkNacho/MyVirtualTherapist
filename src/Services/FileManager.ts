@@ -1,6 +1,5 @@
-import { Attachment, Binary, DocumentReference, Reference } from "fhir/r4";
+import { DocumentReference, Reference } from "fhir/r4";
 import FhirResourceService from "./FhirService";
-
 export default class FileManager {
   static fileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -17,123 +16,110 @@ export default class FileManager {
     });
   };
 
-  static attachmentToFile = (attachment: Attachment): File | undefined => {
-    if (!attachment || !attachment.data) {
-      return undefined;
-    }
-
-    const byteString = atob(attachment.data);
-    const arrayBuffer = new ArrayBuffer(byteString.length);
-    const uint8Array = new Uint8Array(arrayBuffer);
-
+  static base64ToFile(
+    base64: string,
+    fileName: string,
+    mimeType: string
+  ): File {
+    const byteString = atob(base64);
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
     for (let i = 0; i < byteString.length; i++) {
-      uint8Array[i] = byteString.charCodeAt(i);
+      ia[i] = byteString.charCodeAt(i);
     }
-
-    const blob = new Blob([uint8Array], { type: attachment.contentType });
-    const file = new File([blob], attachment.title || "attachment", {
-      type: attachment.contentType,
-    });
-
-    return file;
-  };
-
-  static async uploadFileAsBinary(
-    file: File,
-    securityContext?: Reference
-  ): Promise<Binary> {
-    const fileContent = await this.fileToBase64(file);
-    const binary: Binary = {
-      resourceType: "Binary",
-      contentType: file.type,
-      data: fileContent,
-      securityContext: securityContext,
-    };
-
-    const binaryService = FhirResourceService.getInstance<Binary>("Binary");
-    const result = await binaryService.postResource(binary);
-
-    if (!result.success) {
-      throw new Error(`Failed to upload Binary: ${result.error}`);
-    }
-
-    return result.data;
+    return new File([ab], fileName, { type: mimeType });
   }
 
-  static async uploadFileAsDocumentReference(
-    file: File,
-    securityContext?: Reference
-  ): Promise<DocumentReference> {
-    // Step 1: Upload the file as a Binary resource
-    const binary = await this.uploadFileAsBinary(file, securityContext);
+  static async fileToHash(file: File): Promise<string> {
+    const arrayBuffer = await file.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest("SHA-256", arrayBuffer);
+    // Convierte el ArrayBuffer a base64
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashString = hashArray.map((b) => String.fromCharCode(b)).join("");
+    return btoa(hashString);
+  }
 
-    // Step 2: Create a DocumentReference resource linked to the Binary
-    const documentReference: DocumentReference = {
-      resourceType: "DocumentReference",
-      status: "current",
-      date: new Date().toISOString(),
-      content: [
-        {
+  static async base64ToHash(base64: string): Promise<string> {
+    const binary = atob(base64);
+    const len = binary.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    const hashBuffer = await crypto.subtle.digest("SHA-256", bytes.buffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashString = hashArray.map((b) => String.fromCharCode(b)).join("");
+    return btoa(hashString);
+  }
+
+  static async uploadFilesAsDocumentReference(
+    id: string | undefined,
+    files: File[] | FileList,
+    subject?: Reference,
+    author?: Reference,
+    encounter?: Reference
+  ): Promise<Result<DocumentReference>> {
+    const filesArray = Array.from(files);
+
+    const contents = await Promise.all(
+      filesArray.map(async (file) => {
+        const data = await this.fileToBase64(file);
+        return {
           attachment: {
-            contentType: binary.contentType,
-            url: `Binary/${binary.id}`, // Reference to the Binary resource
+            contentType: file.type,
+            data: data,
             size: file.size,
             title: file.name,
+            hash: await this.base64ToHash(data),
           },
-        },
-      ],
+          context: {
+            encounter: encounter ? [encounter] : [],
+          },
+        };
+      })
+    );
+
+    const documentReference: DocumentReference = {
+      resourceType: "DocumentReference",
+      id: id,
+      status: "current",
+      date: new Date().toISOString(),
+      author: author ? [author] : [],
+      subject: subject,
+      content: contents,
     };
 
     const documentReferenceService =
       FhirResourceService.getInstance<DocumentReference>("DocumentReference");
-    const result = await documentReferenceService.postResource(
-      documentReference
-    );
-
-    if (!result.success) {
-      throw new Error(`Failed to upload DocumentReference: ${result.error}`);
-    }
-
-    return result.data;
+    return documentReferenceService.sendResource(documentReference);
   }
 
-  static async getFileFromBinary(binaryId: string): Promise<File> {
-    const binaryService = FhirResourceService.getInstance<Binary>("Binary");
-    const result = await binaryService.getById(binaryId);
+  static documentReferenceToFiles(
+    documentReference: DocumentReference
+  ): FileList {
+    const files: File[] = [];
 
-    if (!result.success) {
-      throw new Error(`Failed to retrieve Binary: ${result.error}`);
-    }
+    if (!documentReference.content) return new DataTransfer().files;
 
-    const binary = result.data;
-    if (!binary.data || !binary.contentType) {
-      throw new Error("Binary resource is missing data or contentType");
-    }
-
-    const file = this.attachmentToFile({
-      contentType: binary.contentType,
-      data: binary.data,
-      title: "retrieved-file",
+    documentReference.content.forEach((entry) => {
+      const attachment = entry.attachment;
+      if (
+        attachment &&
+        attachment.data &&
+        attachment.title &&
+        attachment.contentType
+      ) {
+        const file = this.base64ToFile(
+          attachment.data,
+          attachment.title,
+          attachment.contentType
+        );
+        files.push(file);
+      }
     });
 
-    if (!file) {
-      throw new Error("Failed to convert Binary to File");
-    }
-
-    return file;
-  }
-
-  static async getDocumentReference(
-    documentReferenceId: string
-  ): Promise<DocumentReference> {
-    const documentReferenceService =
-      FhirResourceService.getInstance<DocumentReference>("DocumentReference");
-    const result = await documentReferenceService.getById(documentReferenceId);
-
-    if (!result.success) {
-      throw new Error(`Failed to retrieve DocumentReference: ${result.error}`);
-    }
-
-    return result.data;
+    const dataTransfer = new DataTransfer();
+    files.forEach((file) => dataTransfer.items.add(file));
+    return dataTransfer.files;
   }
 }

@@ -76,6 +76,17 @@ export default function PatientOverviewTab({
   const [medications, setMedications] = useState<
     MedicationStatement[] | undefined
   >(undefined);
+
+  const [selectedEvolution, setSelectedEvolution] = useState<
+    ClinicalImpression | undefined
+  >(undefined);
+  const [selectedCondition, setSelectedCondition] = useState<
+    Condition | undefined
+  >(undefined);
+  const [selectedMedication, setSelectedMedication] = useState<
+    MedicationStatement | undefined
+  >(undefined);
+
   const [isEvolutionOpen, setIsEvolutionOpen] = useState(false);
   const [isConditionOpen, setIsConditionOpen] = useState(false);
   const [isMedicationOpen, setIsMedicationOpen] = useState(false);
@@ -146,14 +157,20 @@ export default function PatientOverviewTab({
 
   const handleEvolutionClick = (evolution: ClinicalImpression) => {
     console.log("Evolution clicked", evolution);
+    setSelectedEvolution(evolution);
+    setIsEvolutionOpen(true);
   };
 
   const handleConditionClick = (condition: Condition) => {
     console.log("Condition clicked", condition);
+    setSelectedCondition(condition);
+    setIsConditionOpen(true);
   };
 
   const handleMedicationClick = (medication: MedicationStatement) => {
     console.log("Medication clicked", medication);
+    setSelectedMedication(medication);
+    setIsMedicationOpen(true);
   };
 
   const handleAddEvolutionClick = () => {
@@ -170,14 +187,23 @@ export default function PatientOverviewTab({
 
   const handleEvolutionOpen = (isOpen: boolean) => {
     setIsEvolutionOpen(isOpen);
+    if (!isOpen) {
+      setSelectedEvolution(undefined);
+    }
   };
 
   const handleConditionOpen = (isOpen: boolean) => {
     setIsConditionOpen(isOpen);
+    if (!isOpen) {
+      setSelectedCondition(undefined);
+    }
   };
 
   const handleMedicationOpen = (isOpen: boolean) => {
     setIsMedicationOpen(isOpen);
+    if (!isOpen) {
+      setSelectedMedication(undefined);
+    }
   };
 
   return (
@@ -236,6 +262,7 @@ export default function PatientOverviewTab({
             patientId={id}
             onOpen={handleEvolutionOpen}
             isOpen={isEvolutionOpen}
+            clinicalImpression={selectedEvolution}
           />
         </>
       )}

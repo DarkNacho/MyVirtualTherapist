@@ -1,4 +1,10 @@
-import { useState } from "react";
+import {
+  ForwardedRef,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import { DocumentReference, Reference } from "fhir/r4";
 import getFileIconInfo from "./getFileIconInfo";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -16,13 +22,15 @@ import {
   CardContent,
   Grid,
   IconButton,
+  Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import styles from "./FileManager.module.css";
-import FhirResourceService from "../../Services/FhirService";
+
 import FileManager from "../../Services/FileManager";
+import FhirResourceService from "../../Services/FhirService";
 
 function formatBytes(bytes: number, decimals = 2) {
   if (bytes === 0) return "0 Bytes";
@@ -33,65 +41,90 @@ function formatBytes(bytes: number, decimals = 2) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 }
 
-export default function UploadFileComponent({
-  subject,
-  author,
-}: {
-  subject?: Reference;
-  author: Reference;
-}) {
+export interface UploadFileComponentRef {
+  uploadAllFiles: () => Promise<Result<DocumentReference> | null>;
+  isUploading: () => boolean;
+  getUploadResult: () => Result<DocumentReference> | null;
+  getDocumentReference: () => DocumentReference | undefined;
+  hasFiles: () => boolean;
+}
+
+const UploadFileComponent = forwardRef(function UploadFileComponent(
+  {
+    subject,
+    author,
+    onUploadResult,
+    documentReferenceId,
+  }: {
+    subject?: Reference;
+    author: Reference;
+    onUploadResult?: (result: Result<DocumentReference> | null) => void;
+    documentReferenceId?: string; // Optional, if you want to update an existing DocumentReference
+  },
+  ref: ForwardedRef<UploadFileComponentRef>
+) {
   const [files, setFiles] = useState<File[]>([]);
-  const [uploading, setUploading] = useState<{ [key: string]: boolean }>({});
-  const [successUpload, setSuccessUpload] = useState<{
-    [key: string]: boolean;
-  }>({});
-  const [errorUpload, setErrorUpload] = useState<{
-    [key: string]: string;
-  }>({});
+  const [uploading, setUploading] = useState(false);
+  const [successUpload, setSuccessUpload] = useState(false);
+  const [errorUpload, setErrorUpload] = useState<string | null>(null);
+  const [uploadResult, setUploadResult] =
+    useState<Result<DocumentReference> | null>(null);
+
+  const [loadingFiles, setLoadingFiles] = useState(false);
+
+  useEffect(() => {
+    if (documentReferenceId) {
+      fetchDocumentReference();
+    }
+  }, [documentReferenceId]);
+
+  useImperativeHandle(ref, () => ({
+    uploadAllFiles,
+    isUploading: () => uploading,
+    getUploadResult: () => uploadResult,
+    getDocumentReference: () =>
+      uploadResult?.success ? uploadResult.data : undefined,
+    hasFiles: () => files.length > 0,
+  }));
 
   const handleFileChange = (newFiles: File[]) => {
-    if (Object.values(successUpload).every((status) => status)) {
-      // Reset state if all files were successfully uploaded
-      setFiles(newFiles);
-      setUploading({});
-      setSuccessUpload({});
-      setErrorUpload({});
+    setFiles((prevFiles) => {
+      // Opcional: evitar archivos duplicados por nombre y tamaño
+      const allFiles = [...prevFiles, ...newFiles];
+      const uniqueFiles = Array.from(
+        new Map(allFiles.map((f) => [f.name + f.size, f])).values()
+      );
+      return uniqueFiles;
+    });
+    setUploading(false);
+    setSuccessUpload(false);
+    setErrorUpload(null);
+    setUploadResult(null);
+    if (onUploadResult) onUploadResult(null);
+  };
+
+  const uploadAllFiles = async () => {
+    setUploading(true);
+    setSuccessUpload(false);
+    setErrorUpload(null);
+
+    const result = await FileManager.uploadFilesAsDocumentReference(
+      documentReferenceId,
+      files,
+      subject,
+      author
+    );
+
+    setUploading(false);
+    setUploadResult(result);
+    if (onUploadResult) onUploadResult(result);
+
+    if (result.success) {
+      setSuccessUpload(true);
     } else {
-      setFiles(newFiles);
+      setErrorUpload(result.error || "Error al subir archivos");
     }
-  };
-
-  const handleFileUpload = async (file: File, index: number) => {
-    setUploading((prev) => ({ ...prev, [index]: true }));
-
-    const response = await HandleUpload(file);
-    if (!response.success)
-      setErrorUpload((prev) => ({ ...prev, [index]: response.error }));
-
-    setUploading((prev) => ({ ...prev, [index]: false }));
-    setSuccessUpload((prev) => ({ ...prev, [index]: response.success }));
-  };
-
-  const HandleUpload = async (
-    file: File
-  ): Promise<Result<DocumentReference>> => {
-    if (!file) {
-      return {
-        success: false,
-        error: "Por favor selecciona un archivo primero",
-      };
-    }
-
-    console.log("Uploading file", file);
-
-    const fhirService =
-      FhirResourceService.getInstance<DocumentReference>("DocumentReference");
-
-    const document = await FileManager.fileToDocumentReference(file);
-    document.subject = subject;
-    document.author = [author];
-
-    return fhirService.sendResource(document);
+    return result;
   };
 
   const handleFileRemove = (event: React.MouseEvent, index: number) => {
@@ -99,89 +132,123 @@ export default function UploadFileComponent({
     setFiles(files.filter((_, i) => i !== index));
   };
 
-  const uploadAllFiles = async () => {
-    setErrorUpload({});
-    setSuccessUpload({});
-    files.forEach((file, index) => handleFileUpload(file, index));
-  };
-
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: handleFileChange,
   });
 
-  const isUploading = Object.values(uploading).some((status) => status);
+  const fetchDocumentReference = async () => {
+    if (!documentReferenceId) return;
+
+    try {
+      setLoadingFiles(true);
+
+      const fhirResource =
+        FhirResourceService.getInstance<DocumentReference>("DocumentReference");
+
+      /*
+      const response = await HandleResult.handleOperation(
+        () => fhirResource.getById(documentReferenceId),
+        "Cargando Documentos",
+        "No se pudo obtener los documentos"
+      );
+      */
+      const response = await fhirResource.getById(documentReferenceId);
+
+      if (!response.success) return;
+
+      const files = FileManager.documentReferenceToFiles(response.data);
+      setFiles(Array.from(files));
+    } catch (error) {
+      console.error("Error fetching DocumentReference:", error);
+    } finally {
+      setLoadingFiles(false);
+    }
+  };
 
   return (
     <Box p={10}>
       <section {...getRootProps()} className={styles.dropzone}>
         <Stack>
           <input {...getInputProps()} />
-          <Button variant="outlined" disabled={isUploading}>
+          <Button variant="outlined" disabled={uploading}>
             <CloudUploadIcon />
           </Button>
         </Stack>
         <Stack className="filesContainer">
           <Grid container spacing={2}>
-            {files.map((file, index) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                <Card key={index} className={styles.card}>
-                  <CardContent className={styles.cardContent}>
-                    {uploading[index] && (
-                      <Box className={styles.uploading}>
-                        <CircularProgress />
-                      </Box>
-                    )}
-                    {errorUpload[index] && (
-                      <Box>
-                        <ErrorIcon color="error" />
-                        <Typography color="error">
-                          {errorUpload[index]}
-                        </Typography>
-                      </Box>
-                    )}
-                    {successUpload[index] && (
-                      <Box>
-                        <CheckCircleIcon color="primary" />
-                        <Typography color="primary">
-                          Subido exitosamente
-                        </Typography>
-                      </Box>
-                    )}
+            {loadingFiles
+              ? Array.from({ length: 3 }).map((_, idx) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={idx}>
+                    <Card className={styles.card}>
+                      <CardContent className={styles.cardContent}>
+                        <Box className={styles.box}>
+                          <Skeleton variant="circular" width={40} height={40} />
+                          <Skeleton width="80%" />
+                          <Skeleton width="60%" />
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))
+              : files.map((file, index) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                    <Card key={index} className={styles.card}>
+                      <CardContent className={styles.cardContent}>
+                        {uploading && (
+                          <Box className={styles.uploading}>
+                            <CircularProgress />
+                          </Box>
+                        )}
+                        {errorUpload && (
+                          <Box>
+                            <ErrorIcon color="error" />
+                            <Typography color="error">{errorUpload}</Typography>
+                          </Box>
+                        )}
+                        {successUpload && (
+                          <Box>
+                            <CheckCircleIcon color="primary" />
+                            <Typography color="primary">
+                              Subido exitosamente
+                            </Typography>
+                          </Box>
+                        )}
 
-                    <Box className={styles.box}>
-                      <Typography variant="body1" component="div">
-                        {file.name}
-                      </Typography>
-                      <Typography variant="body2" component="div">
-                        {formatBytes(file.size)}
-                      </Typography>
-
-                      {getFileIconInfo(file.type).icon}
-                    </Box>
-                    <Box className={`options ${styles.options}`}>
-                      {!successUpload[index] && !isUploading && (
-                        <IconButton
-                          onClick={(event) => handleFileRemove(event, index)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      )}
-                      <IconButton
-                        onClick={() =>
-                          window.open(
-                            URL.createObjectURL(file),
-                            "_blank",
-                            "noopener,noreferrer"
-                          )
-                        }
-                      >
-                        <VisibilityIcon />
-                      </IconButton>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
+                        <Box className={styles.box}>
+                          <Typography variant="body1" component="div">
+                            {file.name}
+                          </Typography>
+                          <Typography variant="body2" component="div">
+                            {formatBytes(file.size)}
+                          </Typography>
+                          {getFileIconInfo(file.type).icon}
+                        </Box>
+                        <Box className={`options ${styles.options}`}>
+                          {!successUpload && !uploading && (
+                            <IconButton
+                              onClick={(event) =>
+                                handleFileRemove(event, index)
+                              }
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          )}
+                          <IconButton
+                            onClick={() =>
+                              window.open(
+                                URL.createObjectURL(file),
+                                "_blank",
+                                "noopener,noreferrer"
+                              )
+                            }
+                          >
+                            <VisibilityIcon />
+                          </IconButton>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
           </Grid>
         </Stack>
       </section>
@@ -189,15 +256,12 @@ export default function UploadFileComponent({
         <Button
           variant="contained"
           onClick={uploadAllFiles}
-          disabled={
-            isUploading ||
-            files.length === 0 ||
-            Object.values(successUpload).length === files.length
-          }
+          disabled={uploading || files.length === 0 || successUpload}
         >
           Subir Archivos y Guardar Documentos
         </Button>
       </Stack>
     </Box>
   );
-}
+});
+export default UploadFileComponent;

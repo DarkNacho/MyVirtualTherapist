@@ -28,6 +28,7 @@ interface HeaderMobileProps {
   handleSetLocation: (path: string) => void;
   handleSignOutClick: () => void;
   handleLanguageToggle: () => void;
+  handleEditProfile: () => void;
 }
 
 const HeaderMobile: React.FC<HeaderMobileProps> = ({
@@ -36,6 +37,7 @@ const HeaderMobile: React.FC<HeaderMobileProps> = ({
   handleSetLocation,
   handleSignOutClick,
   handleLanguageToggle,
+  handleEditProfile,
 }) => {
   const { t, i18n } = useTranslation();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -204,6 +206,15 @@ const HeaderMobile: React.FC<HeaderMobileProps> = ({
                   className={styles.languageButton}
                 >
                   {i18n.language.toUpperCase()}
+                </Button>
+              </ListItem>
+              <ListItem>
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={handleEditProfile}
+                >
+                  {t("header.myProfile")}
                 </Button>
               </ListItem>
             </List>

@@ -3,7 +3,7 @@ import { Coding } from "fhir/r4";
 
 export interface PractitionerFormData {
   id?: string;
-  avatar?: File;
+  avatar?: File | null;
   practitionerId?: string;
   nombre: string;
   segundoNombre: string;

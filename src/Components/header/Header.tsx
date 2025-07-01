@@ -7,6 +7,10 @@ import { loadUserRoleFromLocalStorage } from "../../Utils/RolUser";
 import FhirResourceService from "../../Services/FhirService";
 import { useTranslation } from "react-i18next";
 import HandleResult from "../../Utils/HandleResult";
+import { usePatientForm } from "../patient/patient-create/usePatientForm";
+import { usePractitionerForm } from "../practitioner/practitioner-create/usePractitionerForm";
+import PatientCreateForm from "../patient/patient-create/PatientCreateForm";
+import PractitionerCreateForm from "../practitioner/practitioner-create/PractitionerCreateForm";
 
 const isTokenExpired = () => {
   const expirationTime = localStorage.getItem("tokenExpiration");
@@ -31,6 +35,10 @@ const Header = () => {
 
   const [user, setUser] = useState<Patient | Practitioner>();
   const [selectedItem, setSelectedItem] = useState<string>();
+
+  // Hooks para formularios
+  const patientForm = usePatientForm();
+  const practitionerForm = usePractitionerForm();
 
   const getUser = async () => {
     const id = localStorage.getItem("id");
@@ -60,6 +68,16 @@ const Header = () => {
     }
 
     setSelectedItem(path);
+  };
+
+  const handleEditProfile = () => {
+    if (user) {
+      if (user.resourceType === "Patient") {
+        patientForm.handleEditPatient(user as Patient);
+      } else if (user.resourceType === "Practitioner") {
+        practitionerForm.handleEditClick(user as Practitioner);
+      }
+    }
   };
 
   useEffect(() => {
@@ -119,22 +137,59 @@ const Header = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  return isMobile ? (
-    <HeaderMobile
-      user={user}
-      selectedItem={selectedItem}
-      handleSetLocation={handleSetLocation}
-      handleSignOutClick={handleSignOutClick}
-      handleLanguageToggle={handleLanguageToggle}
-    />
-  ) : (
-    <HeaderDesktop
-      user={user}
-      selectedItem={selectedItem}
-      handleSetLocation={handleSetLocation}
-      handleSignOutClick={handleSignOutClick}
-      handleLanguageToggle={handleLanguageToggle}
-    />
+  return (
+    <>
+      {isMobile ? (
+        <HeaderMobile
+          user={user}
+          selectedItem={selectedItem}
+          handleSetLocation={handleSetLocation}
+          handleSignOutClick={handleSignOutClick}
+          handleLanguageToggle={handleLanguageToggle}
+          handleEditProfile={handleEditProfile}
+        />
+      ) : (
+        <HeaderDesktop
+          user={user}
+          selectedItem={selectedItem}
+          handleSetLocation={handleSetLocation}
+          handleSignOutClick={handleSignOutClick}
+          handleLanguageToggle={handleLanguageToggle}
+          handleEditProfile={handleEditProfile}
+        />
+      )}
+      {user?.resourceType === "Patient" && (
+        <PatientCreateForm
+          formId="patient-edit-form"
+          patient={patientForm.patientFormData}
+          submitForm={patientForm.submitForm}
+          handleClose={patientForm.handleClose}
+          open={patientForm.openCreate}
+          activeStep={patientForm.activeStep}
+          avatar={patientForm.avatar}
+          handleAvatarChange={patientForm.handleAvatarChange}
+          isPosting={patientForm.isPosting}
+          setActiveStep={patientForm.handleSetActiveStep}
+          isEditing={patientForm.isEditing}
+          selectedPatient={patientForm.selectedPatient}
+        />
+      )}
+      {user?.resourceType !== "Patient" && (
+        <PractitionerCreateForm
+          formId="practitioner-edit-form"
+          practitioner={practitionerForm.practitionerFormData}
+          submitForm={practitionerForm.submitForm}
+          handleClose={practitionerForm.handleClose}
+          open={practitionerForm.open}
+          activeStep={practitionerForm.activeStep}
+          setActiveStep={practitionerForm.setActiveStep}
+          avatar={practitionerForm.avatar}
+          handleAvatarChange={practitionerForm.handleAvatarChange}
+          isPosting={practitionerForm.isPosting}
+          isEditing={practitionerForm.isEditing}
+        />
+      )}
+    </>
   );
 };
 
