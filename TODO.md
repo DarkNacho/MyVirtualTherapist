@@ -19,9 +19,11 @@
 
 - [x] Deshabilitar la vista de sesión
 
-- [ ] Anita Maria Muñoz, en la lista de profesionales se ve su imagen, pero al dar click a su perfil no se ve la imagen.
+- [ ] En Pacientes al editar Paciente, la foto de perfil no carga, en Profesionales no hay problema.
+- [ ] Al momento de querer buscar y presionar el botón "Enter", no hace nada, hay que dar click al ícono de búsqueda.
 
 - [ ] **1 Condiciones, falta enviar documentos asociados**
 - [ ] **2 Evoluciones, falta enviar documentos asociados**
 - [ ] Borrar condiciones
 - [ ] Borrar evoluciones
+- [ ] Cuando se edito evolución, se duplicó. Esto incluyen archivos duplicados igual. Es probable que sea por editar o por subir archivos muy grandes.

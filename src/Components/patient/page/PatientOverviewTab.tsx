@@ -164,13 +164,13 @@ export default function PatientOverviewTab({
   const handleConditionClick = (condition: Condition) => {
     console.log("Condition clicked", condition);
     setSelectedCondition(condition);
-    setIsConditionOpen(true);
+    //setIsConditionOpen(true);
   };
 
   const handleMedicationClick = (medication: MedicationStatement) => {
     console.log("Medication clicked", medication);
     setSelectedMedication(medication);
-    setIsMedicationOpen(true);
+    //setIsMedicationOpen(true);
   };
 
   const handleAddEvolutionClick = () => {
