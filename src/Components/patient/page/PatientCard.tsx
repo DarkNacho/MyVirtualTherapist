@@ -153,6 +153,14 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
                       )}
                     </a>
                   </Typography>
+                  <Typography variant="body2">
+                    <strong>{t("patientCard.direction")}:</strong>{" "}
+                    {patient.address?.[0]?.state ||
+                      t("patientCard.stateNotAvailable")}{" "}
+                    {patient.address?.[0]?.city ||
+                      t("patientCard.addressNotAvailable")}
+                  </Typography>
+
                   <Button
                     variant="contained"
                     color="primary"
@@ -190,6 +198,11 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
                   <Typography variant="body2">
                     <strong>{t("patientCard.gender")}:</strong>{" "}
                     {genderMap[patient.gender || "unknown"]}
+                  </Typography>
+                  <Typography variant="body2">
+                    {" "}
+                    {patient.address?.[0]?.line ||
+                      t("patientCard.addressNotAvailable")}
                   </Typography>
                   {isAdminOrPractitionerUser && (
                     <Button

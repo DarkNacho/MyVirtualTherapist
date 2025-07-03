@@ -18,7 +18,7 @@
     "signOut": "Sign Out",
     "patients": "PATIENTS",
     "practitioners": "PRACTITIONERS",
-    "encounters": "ENCOUNTERS",
+    "encounters": "MY SCHEDULE",
     "contact": "CONTACT",
     "sessionExpired": "Your session has expired, please log in again.",
     "me": "Me"
@@ -85,6 +85,10 @@
   },
   "patientCard": {
     "nameNotAvailable": "Name not available",
+    "addressNotAvailable": "Address not available",
+    "stateNotAvailable": "State not available",
+    "cityNotAvailable": "City not available",
+    "direction": "Direction",
     "phone": "Phone",
     "email": "Email",
     "downloadReport": "Download Report",

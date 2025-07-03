@@ -5,12 +5,14 @@ import PatientListPage from "../patient/patient-list/PatientListPage";
 import PractitionerListPage from "../practitioner/practitioner-list/PractitionerListPage";
 import { useTranslation } from "react-i18next";
 import EncounterListPage from "../encounter/encounter-list/EncounterListPage";
+import { isAdminOrPractitioner } from "../../Utils/RolUser";
+import PractitionerListPatient from "../practitioner/practitioner-list-patient-only/PractitionerListPatient";
 
 export default function ResourceListPage() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { t } = useTranslation();
-
+  const isAdminOrPractitionerUser = isAdminOrPractitioner();
   const [selectedItem, setSelectedItem] = useState<string>(
     window.location.hash.substring(1)
   );
@@ -56,8 +58,12 @@ export default function ResourceListPage() {
       case t("header.patients"):
         return <PatientListPage />;
       case t("header.practitioners"):
-        return <PractitionerListPage />;
-      case t("header.encounters"):
+        return isAdminOrPractitionerUser ? (
+          <PractitionerListPage />
+        ) : (
+          <PractitionerListPatient />
+        );
+      case t("header.encounters").replace(" ", ""):
         return <EncounterListPage />;
       // Add more cases here for other options
       default:

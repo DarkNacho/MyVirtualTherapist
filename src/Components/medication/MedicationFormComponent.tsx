@@ -64,8 +64,9 @@ export default function MedicationFormComponent({
       // Filter the CIE10 list based on the input
       const filtered = MedicamentList.filter(
         (item) =>
-          item.display.toLowerCase().includes(inputValue.toLowerCase()) ||
-          item.code.toLowerCase().includes(inputValue.toLowerCase())
+          item.display?.toLowerCase().includes(inputValue.toLowerCase()) ||
+          item.code?.toLowerCase().includes(inputValue.toLowerCase()) ||
+          "UNKNOWN"
       );
       setFilteredOptions(filtered.slice(0, 50)); // Limit to 50 results for performance
     }

@@ -21,28 +21,44 @@ import { useResource } from "../../ResourceContext";
 import ClinicalImpressionCreateComponent from "../../clinical-impression/ClinicalImpressionCreateComponent";
 import { useTranslation } from "react-i18next";
 import { isAdminOrPractitioner } from "../../../Utils/RolUser";
+import dayjs from "dayjs";
 
 function getEvolutionDisplay(evolution: ClinicalImpression) {
   return {
     leftTitle: evolution.description || "N/A",
-    leftSubtitle: evolution.note?.[0].text || "N/A",
-    rightText: evolution.date || "N/A",
+    leftSubtitle: evolution.note?.[0].text
+      ? evolution.note[0].text.length > 25
+        ? `${evolution.note[0].text.substring(0, 25)}...`
+        : evolution.note[0].text
+      : "N/A",
+    rightText: dayjs(evolution.date).format("DD-MM-YYYY HH:mm") || "N/A",
   };
 }
 
 function getConditionDisplay(condition: Condition) {
   return {
     leftTitle: ConditionUtils.getName(condition),
-    leftSubtitle: ConditionUtils.getValue(condition),
-    rightText: condition.recordedDate || "N/A",
+    leftSubtitle: condition.note?.[0].text
+      ? condition.note[0].text.length > 25
+        ? `${condition.note[0].text.substring(0, 25)}...`
+        : condition.note[0].text
+      : "N/A",
+    rightText:
+      dayjs(condition.recordedDate).format("DD-MM-YYYY HH:mm") || "N/A",
   };
 }
 
 function getMedicationDisplay(medication: MedicationStatement) {
   return {
     leftTitle: MedicationUtils.getName(medication),
-    leftSubtitle: MedicationUtils.getValue(medication),
-    rightText: medication.effectivePeriod?.start || "N/A",
+    leftSubtitle: medication.note?.[0].text
+      ? medication.note[0].text.length > 25
+        ? `${medication.note[0].text.substring(0, 25)}...`
+        : medication.note[0].text
+      : "N/A",
+    rightText:
+      dayjs(medication.effectivePeriod?.start).format("DD-MM-YYYY HH:mm") ||
+      "N/A",
   };
 }
 
@@ -60,6 +76,17 @@ export default function PatientOverviewTab({
   const [medications, setMedications] = useState<
     MedicationStatement[] | undefined
   >(undefined);
+
+  const [selectedEvolution, setSelectedEvolution] = useState<
+    ClinicalImpression | undefined
+  >(undefined);
+  const [selectedCondition, setSelectedCondition] = useState<
+    Condition | undefined
+  >(undefined);
+  const [selectedMedication, setSelectedMedication] = useState<
+    MedicationStatement | undefined
+  >(undefined);
+
   const [isEvolutionOpen, setIsEvolutionOpen] = useState(false);
   const [isConditionOpen, setIsConditionOpen] = useState(false);
   const [isMedicationOpen, setIsMedicationOpen] = useState(false);
@@ -130,14 +157,20 @@ export default function PatientOverviewTab({
 
   const handleEvolutionClick = (evolution: ClinicalImpression) => {
     console.log("Evolution clicked", evolution);
+    setSelectedEvolution(evolution);
+    setIsEvolutionOpen(true);
   };
 
   const handleConditionClick = (condition: Condition) => {
     console.log("Condition clicked", condition);
+    setSelectedCondition(condition);
+    setIsConditionOpen(true);
   };
 
   const handleMedicationClick = (medication: MedicationStatement) => {
     console.log("Medication clicked", medication);
+    setSelectedMedication(medication);
+    //setIsMedicationOpen(true);
   };
 
   const handleAddEvolutionClick = () => {
@@ -154,14 +187,23 @@ export default function PatientOverviewTab({
 
   const handleEvolutionOpen = (isOpen: boolean) => {
     setIsEvolutionOpen(isOpen);
+    if (!isOpen) {
+      setSelectedEvolution(undefined);
+    }
   };
 
   const handleConditionOpen = (isOpen: boolean) => {
     setIsConditionOpen(isOpen);
+    if (!isOpen) {
+      setSelectedCondition(undefined);
+    }
   };
 
   const handleMedicationOpen = (isOpen: boolean) => {
     setIsMedicationOpen(isOpen);
+    if (!isOpen) {
+      setSelectedMedication(undefined);
+    }
   };
 
   return (
@@ -210,6 +252,7 @@ export default function PatientOverviewTab({
             patientId={id}
             onOpen={handleConditionOpen}
             isOpen={isConditionOpen}
+            condition={selectedCondition}
           />
           <MedicationCreateComponent
             patientId={id}
@@ -220,6 +263,7 @@ export default function PatientOverviewTab({
             patientId={id}
             onOpen={handleEvolutionOpen}
             isOpen={isEvolutionOpen}
+            clinicalImpression={selectedEvolution}
           />
         </>
       )}

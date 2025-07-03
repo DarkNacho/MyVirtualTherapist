@@ -112,17 +112,29 @@ export default function ResourceList<T>({
                   <ListItemButton onClick={() => onClick(resource)}>
                     <ListItemText
                       primary={
-                        <Typography variant="body1" fontWeight="bold">
+                        <Typography
+                          variant="body1"
+                          fontWeight="bold"
+                          align="center"
+                        >
                           {leftTitle}
                         </Typography>
                       }
                       secondary={
-                        <Typography variant="body2" color="textSecondary">
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          align="center"
+                        >
                           {leftSubtitle}
                         </Typography>
                       }
                     />
-                    <Typography variant="body2" color="textSecondary">
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      align="center"
+                    >
                       {rightText}
                     </Typography>
                   </ListItemButton>

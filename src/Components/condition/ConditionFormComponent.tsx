@@ -1,7 +1,7 @@
 import { DevTool } from "@hookform/devtools";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { Autocomplete, Box, MenuItem, Stack, TextField } from "@mui/material";
-import { Condition, Encounter, Patient, Practitioner, Coding } from "fhir/r4";
+import { Autocomplete, MenuItem, Stack, TextField } from "@mui/material";
+import { Encounter, Patient, Practitioner, Coding } from "fhir/r4";
 import AutoCompleteComponent from "../auto-complete-components/AutoCompleteComponent";
 import PersonUtil from "../../Services/Utils/PersonUtils";
 import EncounterUtils from "../../Services/Utils/EncounterUtils";
@@ -11,7 +11,6 @@ import { CIE10 } from "../../Models/CIE10";
 
 import { clinicalStatus } from "../../Models/Terminology";
 import { ConditionFormData } from "../../Models/Forms/ConditionForm";
-import UploadFileComponent from "../FileManager/UploadFileComponent";
 import { useState, useEffect } from "react";
 //import AutoCompleteFromSnomedComponent from "../AutoCompleteComponents/AutoCompleteFromSnomed";
 
@@ -37,7 +36,7 @@ export default function ConditionFormComponent({
   practitionerId: string;
   patientId?: string;
   encounterId?: string;
-  condition?: Condition;
+  condition?: ConditionFormData;
   readOnly?: boolean;
 }) {
   const {
@@ -45,16 +44,17 @@ export default function ConditionFormComponent({
     register,
     trigger,
     handleSubmit,
-    setValue,
     formState: { errors },
-  } = useForm<ConditionFormData>();
-
-  const [selectedPatient, setSelectedPatient] = useState<string | undefined>(
-    patientId
-  );
-  const [selectedPractitioner, setSelectedPractitioner] = useState<
-    string | undefined
-  >(practitionerId);
+  } = useForm<ConditionFormData>({
+    defaultValues: {
+      performer: condition?.performer || { id: practitionerId, display: "" },
+      subject: condition?.subject || { id: patientId, display: "" },
+      encounter: condition?.encounter || { id: encounterId, display: "" },
+      code: condition?.code || {},
+      note: condition?.note || "",
+      clinicalStatus: "active",
+    },
+  });
 
   const roleUser = loadUserRoleFromLocalStorage();
 
@@ -68,8 +68,9 @@ export default function ConditionFormComponent({
       // Filter the CIE10 list based on the input
       const filtered = CIE10.filter(
         (item) =>
-          item.display.toLowerCase().includes(inputValue.toLowerCase()) ||
-          item.code.toLowerCase().includes(inputValue.toLowerCase())
+          item.display?.toLowerCase().includes(inputValue.toLowerCase()) ||
+          item.code?.toLowerCase().includes(inputValue.toLowerCase()) ||
+          "UNKNOWN"
       );
       setFilteredOptions(filtered.slice(0, 50)); // Limit to 50 results for performance
     }
@@ -97,17 +98,17 @@ export default function ConditionFormComponent({
                 label={"Selecciona Profesional"}
                 getDisplay={PersonUtil.getPersonNameAsString}
                 searchParam={"name"}
-                defaultResourceId={practitionerId}
+                defaultResourceId={condition?.performer?.id || practitionerId}
                 onChange={(selectedObject) => {
                   if (selectedObject) {
                     field.onChange({
                       id: selectedObject.id,
                       display: PersonUtil.getPersonNameAsString(selectedObject),
                     });
-                    setSelectedPractitioner(selectedObject.id);
+                    //setSelectedPractitioner(selectedObject.id);
                   } else {
                     field.onChange(null);
-                    setSelectedPractitioner(undefined);
+                    //setSelectedPractitioner(undefined);
                   }
                 }}
                 readOnly={readOnly || !(roleUser === "Admin")}
@@ -137,7 +138,7 @@ export default function ConditionFormComponent({
                 label={"Selecciona Paciente"}
                 getDisplay={PersonUtil.getPersonNameAsString}
                 searchParam={"name"}
-                defaultResourceId={patientId}
+                defaultResourceId={condition?.subject?.id || patientId}
                 defaultParams={
                   roleUser === "Practitioner"
                     ? { "general-practitioner": practitionerId! }
@@ -149,10 +150,10 @@ export default function ConditionFormComponent({
                       id: selectedObject.id,
                       display: PersonUtil.getPersonNameAsString(selectedObject),
                     });
-                    setSelectedPatient(selectedObject.id);
+                    //setSelectedPatient(selectedObject.id);
                   } else {
                     field.onChange(null);
-                    setSelectedPatient(undefined);
+                    //setSelectedPatient(undefined);
                   }
                 }}
                 readOnly={readOnly || Boolean(patientId)}
@@ -187,6 +188,59 @@ export default function ConditionFormComponent({
             )}
           />
           */}
+          <Controller
+            name="code"
+            control={control}
+            defaultValue={condition?.code || {}}
+            render={({ field }) => (
+              <Autocomplete
+                id="Autocomplete-CIE10-Single"
+                options={filteredOptions}
+                defaultValue={condition?.code || {}}
+                getOptionLabel={(option) => {
+                  if (typeof option === "string") {
+                    return option;
+                  }
+                  return option.display || option.code || "UNKNOWN";
+                }}
+                isOptionEqualToValue={(option, value) => {
+                  if (typeof option === "string" || typeof value === "string") {
+                    return option === value;
+                  }
+                  return option.code === value.code;
+                }}
+                freeSolo
+                readOnly={readOnly}
+                onInputChange={(_, value) => handleSearch(value)} // Trigger search on input change
+                onChange={(_, newValue) => {
+                  const formattedValue =
+                    typeof newValue === "string"
+                      ? {
+                          code: `OTHER-${Date.now()}`, // Generate a unique code for new values
+                          system: "CTTN",
+                          display: newValue,
+                        }
+                      : newValue;
+                  field.onChange(formattedValue); // Update the field with the selected value
+                }}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.code}>
+                    {option.display}
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    label="Condición Reportada (CIE10)"
+                    variant="outlined"
+                    error={Boolean(errors.code)}
+                    helperText={errors.code && errors.code.message}
+                  />
+                )}
+              />
+            )}
+          />
 
           <Controller
             name="encounter"
@@ -199,8 +253,11 @@ export default function ConditionFormComponent({
                 resourceType={"Encounter"}
                 label={"Selecciona Encuentro"}
                 getDisplay={getEncounterDisplay}
-                defaultResourceId={encounterId}
-                defaultParams={{ subject: patientId!, _count: 99999 }}
+                defaultResourceId={condition?.encounter?.id || encounterId}
+                defaultParams={{
+                  subject: condition?.subject?.id || patientId!,
+                  _count: 99999,
+                }}
                 searchParam={""}
                 onChange={(selectedObject) => {
                   if (selectedObject) {
@@ -222,7 +279,7 @@ export default function ConditionFormComponent({
               />
             )}
           />
-
+          {/*}
           <Controller
             name="conditionCodes"
             control={control}
@@ -279,11 +336,11 @@ export default function ConditionFormComponent({
               />
             )}
           />
-
+          */}
           <TextField
             multiline
             fullWidth
-            defaultValue={condition?.note?.[0].text || ""}
+            defaultValue={condition?.note || ""}
             rows={3}
             label="Notas"
             {...register("note")}
@@ -310,13 +367,6 @@ export default function ConditionFormComponent({
               </MenuItem>
             ))}
           </TextField>
-
-          <Box>
-            <UploadFileComponent
-              subject={{ reference: `Patient/${selectedPatient}` }}
-              author={{ reference: `Practitioner/${selectedPractitioner}` }}
-            />
-          </Box>
         </Stack>
       </form>
       <DevTool control={control} />

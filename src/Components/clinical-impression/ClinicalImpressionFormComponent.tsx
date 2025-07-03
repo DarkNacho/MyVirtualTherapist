@@ -12,7 +12,7 @@ import {
 import dayjs from "dayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Patient, Practitioner, Encounter, ClinicalImpression } from "fhir/r4";
+import { Patient, Practitioner, Encounter } from "fhir/r4";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useDebouncedCallback } from "use-debounce";
@@ -24,8 +24,6 @@ import { loadUserRoleFromLocalStorage } from "../../Utils/RolUser";
 import { ClinicalImpressionFormData } from "../../Models/Forms/ClinicalImpressionForm";
 
 import InfoIcon from "@mui/icons-material/Info";
-import UploadFileComponent from "../FileManager/UploadFileComponent";
-import { useState } from "react";
 
 function getEncounterDisplay(resource: Encounter): string {
   return `Profesional: ${EncounterUtils.getPrimaryPractitioner(
@@ -47,7 +45,7 @@ export default function ClinicalImpressionFormComponent({
   formId: string;
   patientId?: string;
   submitForm: SubmitHandler<ClinicalImpressionFormData>;
-  clinicalImpression?: ClinicalImpression;
+  clinicalImpression?: ClinicalImpressionFormData;
   practitionerId?: string;
   encounterId?: string;
   readOnly?: boolean;
@@ -58,7 +56,20 @@ export default function ClinicalImpressionFormComponent({
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<ClinicalImpressionFormData>();
+  } = useForm<ClinicalImpressionFormData>({
+    defaultValues: {
+      assessor: clinicalImpression?.assessor,
+      subject: clinicalImpression?.subject,
+      encounter: clinicalImpression?.encounter,
+      date: clinicalImpression?.date ? dayjs(clinicalImpression.date) : dayjs(),
+      previous: clinicalImpression?.previous,
+      description: clinicalImpression?.description || "",
+      summary: clinicalImpression?.summary || "Detalles de la evolución",
+      note: clinicalImpression?.note || "",
+    },
+  });
+
+  console.log("ClinicalImpressionFormComponent", clinicalImpression);
 
   const roleUser = loadUserRoleFromLocalStorage();
   //if (clinicalImpression)
@@ -69,12 +80,14 @@ export default function ClinicalImpressionFormComponent({
     trigger("summary");
   }, 300);
 
+  /*
   const [selectedPatient, setSelectedPatient] = useState<string | undefined>(
     patientId
   );
   const [selectedPractitioner, setSelectedPractitioner] = useState<
     string | undefined
   >(practitionerId);
+  */
 
   return (
     <>
@@ -92,14 +105,16 @@ export default function ClinicalImpressionFormComponent({
                 label={"Selecciona Profesional"}
                 getDisplay={PersonUtil.getPersonNameAsString}
                 searchParam={"name"}
-                defaultResourceId={practitionerId}
+                defaultResourceId={
+                  clinicalImpression?.assessor?.id || practitionerId
+                }
                 onChange={(selectedObject) => {
                   if (selectedObject) {
                     field.onChange({
                       id: selectedObject.id,
                       display: PersonUtil.getPersonNameAsString(selectedObject),
                     });
-                    setSelectedPractitioner(selectedObject.id);
+                    //setSelectedPractitioner(selectedObject.id);
                   } else {
                     field.onChange(null);
                   }
@@ -126,7 +141,7 @@ export default function ClinicalImpressionFormComponent({
                 label={"Selecciona Paciente"}
                 getDisplay={PersonUtil.getPersonNameAsString}
                 searchParam={"name"}
-                defaultResourceId={patientId}
+                defaultResourceId={clinicalImpression?.subject?.id || patientId}
                 defaultParams={
                   roleUser === "Practitioner"
                     ? { "general-practitioner": practitionerId! }
@@ -138,7 +153,7 @@ export default function ClinicalImpressionFormComponent({
                       id: selectedObject.id,
                       display: PersonUtil.getPersonNameAsString(selectedObject),
                     });
-                    setSelectedPatient(selectedObject.id);
+                    //setSelectedPatient(selectedObject.id);
                   } else {
                     field.onChange(null);
                   }
@@ -162,8 +177,13 @@ export default function ClinicalImpressionFormComponent({
                 resourceType={"Encounter"}
                 label={"Seleccionar Sesión"}
                 getDisplay={getEncounterDisplay}
-                defaultResourceId={encounterId}
-                defaultParams={{ subject: patientId!, _count: 99999 }}
+                defaultResourceId={
+                  clinicalImpression?.encounter?.id || encounterId
+                }
+                defaultParams={{
+                  subject: clinicalImpression?.subject?.id || patientId!,
+                  _count: 99999,
+                }}
                 searchParam={""}
                 onChange={(selectedObject) => {
                   if (selectedObject) {
@@ -312,12 +332,6 @@ export default function ClinicalImpressionFormComponent({
               />
             )}
           />
-          <Box>
-            <UploadFileComponent
-              subject={{ reference: `Patient/${selectedPatient}` }}
-              author={{ reference: `Practitioner/${selectedPractitioner}` }}
-            />
-          </Box>
         </Stack>
       </form>
       <DevTool control={control} />

@@ -173,9 +173,9 @@ export default class ObservationUtils {
       interpretation: [{ coding: data.interpretation }],
       issued: dayjs(data.issued).toISOString(),
       note: [{ text: data.note }],
-
       resourceType: "Observation",
       status: "unknown",
+      recordedDate: dayjs().toISOString(),
     } as Observation;
   }
 

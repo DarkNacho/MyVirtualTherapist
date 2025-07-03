@@ -14,30 +14,14 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import {
-  Edit,
-  Delete,
-  ArrowLeft,
-  ArrowRight,
-  Event,
-} from "@mui/icons-material";
-import styles from "./PractitionerList.module.css";
-import { Practitioner } from "fhir/r4";
+import { ArrowLeft, ArrowRight, Event } from "@mui/icons-material";
+import styles from "./PractitionerListPatient.module.css";
+import { Patient, Practitioner } from "fhir/r4";
 import PersonUtil from "../../../Services/Utils/PersonUtils";
-import { SearchParams } from "fhir-kit-client";
 import HandleResult from "../../../Utils/HandleResult";
 import FhirResourceService from "../../../Services/FhirService";
-import Tooltip from "@mui/material/Tooltip";
 import { useTranslation } from "react-i18next";
-import { isAdmin } from "../../../Utils/RolUser";
-
-const IS_ADMIN = isAdmin();
-
-interface PractitionerListProps {
-  searchParam?: SearchParams;
-  onEditClick?: (resource: Practitioner) => void;
-  onDeleteClick?: (resource: Practitioner) => void;
-}
+import { SearchParams } from "fhir-kit-client";
 
 function identifier(resource: Practitioner, isMobile: boolean) {
   const identifier = PersonUtil.getIdentifierByCode(resource, "RUT");
@@ -57,12 +41,7 @@ function identifier(resource: Practitioner, isMobile: boolean) {
 const fhirService =
   FhirResourceService.getInstance<Practitioner>("Practitioner");
 
-export default function PractitionerList({
-  searchParam,
-
-  onEditClick,
-  onDeleteClick,
-}: PractitionerListProps) {
+export default function PractitionerListPatient() {
   const { t } = useTranslation();
   const [resources, setResources] = useState<Practitioner[]>([]);
   const [loading, setLoading] = useState(true);
@@ -88,6 +67,26 @@ export default function PractitionerList({
 
   const fetchResources = async () => {
     setLoading(true);
+    const patientJson = localStorage.getItem("user");
+    const patient: Patient | null = patientJson
+      ? JSON.parse(patientJson)
+      : null;
+    if (!patient || !patient.id) {
+      setLoading(false);
+      HandleResult.showErrorMessage(
+        "Error al obtener la lista de profesionales. No se encontró el paciente asociado."
+      );
+      return;
+    }
+    const practitionerListId =
+      patient.generalPractitioner
+        ?.map((p) => p.reference)
+        .filter((ref): ref is string => !!ref) || [];
+
+    const searchParam: SearchParams = {
+      _id: practitionerListId.join(","),
+    };
+
     await HandleResult.handleOperation(
       () => fhirService.getResources(searchParam),
       t("practitionerList.receivedSuccessfully"),
@@ -99,7 +98,7 @@ export default function PractitionerList({
 
   useEffect(() => {
     fetchResources();
-  }, [searchParam]);
+  }, []);
 
   const renderSkeleton = () => (
     <ListItem className={styles.listItem}>
@@ -282,38 +281,6 @@ export default function PractitionerList({
                     >
                       <Event />
                     </IconButton>
-                    {IS_ADMIN && onEditClick && (
-                      <Tooltip title={t("practitionerList.edit")}>
-                        <IconButton
-                          className={
-                            isMobile
-                              ? styles.smallCircularContainer
-                              : styles.circularContainer
-                          }
-                          color="primary"
-                          aria-label="edit"
-                          onClick={() => onEditClick(resource)}
-                        >
-                          <Edit />
-                        </IconButton>
-                      </Tooltip>
-                    )}
-                    {IS_ADMIN && onDeleteClick && (
-                      <Tooltip title={t("practitionerList.delete")}>
-                        <IconButton
-                          className={
-                            isMobile
-                              ? styles.smallCircularContainer
-                              : styles.circularContainer
-                          }
-                          color="error"
-                          aria-label="delete"
-                          onClick={() => onDeleteClick(resource)}
-                        >
-                          <Delete />
-                        </IconButton>
-                      </Tooltip>
-                    )}
                   </Box>
                 </ListItem>
               </React.Fragment>

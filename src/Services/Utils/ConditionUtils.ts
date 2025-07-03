@@ -1,6 +1,7 @@
-import { Condition } from "fhir/r4";
-
+import { Condition, DocumentReference } from "fhir/r4";
 import { ConditionFormData } from "../../Models/Forms/ConditionForm";
+import FhirResourceService from "../FhirService";
+import FileManager from "../FileManager";
 
 export default class ConditionUtils {
   public static getName(condition: Condition): string {
@@ -22,22 +23,14 @@ export default class ConditionUtils {
       "N/A"
     );
   }
-  // Función para un array de items
 
   public static ConditionFormDataToCondition(
-    data: ConditionFormData
+    data: ConditionFormData,
+    supportingInfoDocument?: DocumentReference
   ): Condition {
     return {
       resourceType: "Condition",
-      code: {
-        coding: [
-          {
-            code: data.code.code,
-            system: data.code.system,
-            display: data.code.display,
-          },
-        ],
-      },
+      code: { coding: [data.code] },
       subject: {
         reference: `Patient/${data.subject.id}`,
         display: data.subject.display,
@@ -47,11 +40,9 @@ export default class ConditionUtils {
         display: data.encounter.display,
       },
       recorder: {
-        //! WARNING: quizás pueda cambiar a asserter o tener ambos
         reference: `Practitioner/${data.performer.id}`,
         display: data.performer.display,
       },
-
       note: [{ text: data.note }],
       clinicalStatus: {
         coding: [
@@ -61,18 +52,50 @@ export default class ConditionUtils {
           },
         ],
       },
+      evidence: [
+        {
+          detail: [
+            { reference: `DocumentReference/${supportingInfoDocument?.id}` },
+          ],
+        },
+      ],
+      /*
+      evidence: data.conditionCodes.map((coding) => ({
+        code: {
+          coding: [
+            {
+              code: coding.code,
+              system: coding.system,
+              display: coding.display,
+            },
+          ],
+        } as CodeableConcept,
+      })),
     } as Condition;
+     */
+    };
   }
 
-  public static ConditionToConditionFormData(
-    condition: Condition
-  ): ConditionFormData {
+  public static async ConditionToConditionFormData(
+    condition: Condition,
+    loadFiles: boolean = false
+  ): Promise<ConditionFormData> {
+    let dataFiles: FileList | undefined = undefined;
+    const documentReferenceId =
+      condition.evidence?.[0]?.detail?.[0]?.reference?.split("/")[1];
+
+    if (loadFiles && documentReferenceId) {
+      const fhirResourceService =
+        FhirResourceService.getInstance<DocumentReference>("DocumentReference");
+      const resultFile = await fhirResourceService.getById(documentReferenceId);
+
+      if (resultFile.success && resultFile.data) {
+        dataFiles = await FileManager.documentReferenceToFiles(resultFile.data);
+      }
+    }
+
     return {
-      code: {
-        code: condition.code?.coding?.[0]?.code || "",
-        system: condition.code?.coding?.[0]?.system || "",
-        display: condition.code?.coding?.[0]?.display || "",
-      },
+      code: condition.code?.coding?.[0] || {},
       subject: {
         id: condition.subject?.reference?.split("/")[1] || "",
         display: condition.subject?.display || "",
@@ -82,11 +105,12 @@ export default class ConditionUtils {
         display: condition.encounter?.display || "",
       },
       performer: {
-        id: condition.recorder?.reference?.split("/")[1] || "", // Assuming recorder is used as performer
+        id: condition.recorder?.reference?.split("/")[1] || "",
         display: condition.recorder?.display || "",
       },
       note: condition.note?.[0]?.text || "",
-      clinicalStatus: condition.clinicalStatus?.coding?.[0]?.code || "",
+      clinicalStatus: condition.clinicalStatus?.coding?.[0]?.code || "active",
+      supportingInfo: dataFiles,
     } as ConditionFormData;
   }
 }

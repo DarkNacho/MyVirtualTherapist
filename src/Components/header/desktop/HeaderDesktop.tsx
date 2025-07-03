@@ -17,6 +17,7 @@ import styles from "./HeaderDesktop.module.css";
 import { Patient, Practitioner } from "fhir/r4";
 import { useTranslation } from "react-i18next";
 import { isPatient, isAdminOrPractitioner } from "../../../Utils/RolUser";
+import HandleResult from "../../../Utils/HandleResult";
 
 interface HeaderDesktopProps {
   user?: Patient | Practitioner;
@@ -24,9 +25,11 @@ interface HeaderDesktopProps {
   handleSetLocation: (path: string) => void;
   handleSignOutClick: () => void;
   handleLanguageToggle: () => void;
+  handleEditProfile: () => void;
 }
 
 const handleOpenApp = () => {
+  /*
   const appUrl = "zoomus://"; // Replace with your custom URL scheme
   //const fallbackUrl = "https://google.cl"; // Replace with your download page URL
 
@@ -34,7 +37,9 @@ const handleOpenApp = () => {
   iframe.style.display = "none";
   iframe.src = appUrl;
 
-  document.body.appendChild(iframe);
+  document.body.appendChild(iframe);\
+  */
+  HandleResult.showErrorMessage("En construcción, pronto disponible");
 };
 
 const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
@@ -43,6 +48,7 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
   handleSetLocation,
   handleSignOutClick,
   handleLanguageToggle,
+  handleEditProfile,
 }) => {
   const { t, i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -58,11 +64,6 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
     setAnchorEl(null);
   };
 
-  const handleProfileClick = () => {
-    alert("Profile clicked");
-    handleClose();
-  };
-
   const NavItem = ({
     text,
     href,
@@ -76,7 +77,7 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
   }) => (
     <Typography
       component={"a"}
-      href={href ? href : `/#${text}`}
+      href={href ? href : `/#${text.replace(" ", "")}`}
       variant="h6"
       target={target}
       onClick={onClick ? onClick : () => handleSetLocation(text)}
@@ -159,7 +160,9 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
                     <NavItem text={t("header.patients")} />
                   )}
                   <NavItem text={t("header.practitioners")} />
-                  <NavItem text={t("header.encounters")} />
+                  {isAdminOrPractitionerUser && (
+                    <NavItem text={t("header.encounters")} />
+                  )}
                   <NavItem
                     text={t("header.contact")}
                     href="https://wa.me/+56931416677"
@@ -185,7 +188,7 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
                   open={Boolean(anchorEl)}
                   onClose={handleClose}
                 >
-                  <MenuItem onClick={handleProfileClick}>
+                  <MenuItem onClick={handleEditProfile}>
                     {t("header.myProfile")}
                   </MenuItem>
                   <MenuItem onClick={handleSignOutClick}>
