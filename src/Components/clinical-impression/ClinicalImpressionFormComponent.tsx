@@ -105,7 +105,9 @@ export default function ClinicalImpressionFormComponent({
                 label={"Selecciona Profesional"}
                 getDisplay={PersonUtil.getPersonNameAsString}
                 searchParam={"name"}
-                defaultResourceId={practitionerId}
+                defaultResourceId={
+                  clinicalImpression?.assessor?.id || practitionerId
+                }
                 onChange={(selectedObject) => {
                   if (selectedObject) {
                     field.onChange({
@@ -139,7 +141,7 @@ export default function ClinicalImpressionFormComponent({
                 label={"Selecciona Paciente"}
                 getDisplay={PersonUtil.getPersonNameAsString}
                 searchParam={"name"}
-                defaultResourceId={patientId}
+                defaultResourceId={clinicalImpression?.subject?.id || patientId}
                 defaultParams={
                   roleUser === "Practitioner"
                     ? { "general-practitioner": practitionerId! }
@@ -175,8 +177,13 @@ export default function ClinicalImpressionFormComponent({
                 resourceType={"Encounter"}
                 label={"Seleccionar Sesión"}
                 getDisplay={getEncounterDisplay}
-                defaultResourceId={encounterId}
-                defaultParams={{ subject: patientId!, _count: 99999 }}
+                defaultResourceId={
+                  clinicalImpression?.encounter?.id || encounterId
+                }
+                defaultParams={{
+                  subject: clinicalImpression?.subject?.id || patientId!,
+                  _count: 99999,
+                }}
                 searchParam={""}
                 onChange={(selectedObject) => {
                   if (selectedObject) {

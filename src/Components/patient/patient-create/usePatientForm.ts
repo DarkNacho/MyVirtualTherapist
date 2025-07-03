@@ -209,6 +209,12 @@ export function usePatientForm(selectedPatientProp?: Patient) {
       const formData = await PersonUtil.PatientToPatientForm(person);
       setPatientFormData(formData);
       setOpenCreate(true);
+
+      if (formData.avatar) {
+        setAvatar(formData.avatar);
+      } else {
+        setAvatar(null);
+      }
     } catch (error) {
       console.error("Error preparing patient for edit:", error);
     }

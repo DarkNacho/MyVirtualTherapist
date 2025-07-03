@@ -74,6 +74,31 @@ export default function ClinicalImpressionCreateComponent({
     initForm();
   }, [clinicalImpression, isOpen]);
 
+  const handleDelete = async () => {
+    if (!clinicalImpression) {
+      return;
+    }
+
+    const confirmed = await HandleResult.confirm(
+      "¿Estás seguro de que quieres eliminar esta evolución? Esta acción no se puede deshacer.\n Los archivos asociados también no se eliminarán automáticamente."
+    );
+    if (!confirmed) {
+      return;
+    }
+
+    const response = await HandleResult.handleOperation(
+      () =>
+        FhirResourceService.getInstance<ClinicalImpression>(
+          "ClinicalImpression"
+        ).deleteResource(clinicalImpression.id!),
+      "Evolución eliminada de forma exitosa",
+      "Eliminando..."
+    );
+    if (response.success) {
+      handleClose();
+    }
+  };
+
   const onSubmitForm: SubmitHandler<ClinicalImpressionFormData> = async (
     data
   ) => {
@@ -119,6 +144,8 @@ export default function ClinicalImpressionCreateComponent({
         data,
         supportingInfoFiles
       );
+
+    if (clinicalImpression) newClinicalImpression.id = clinicalImpression.id;
 
     console.log("ClinicalImpressionFormData:", data);
     console.log("ClinicalImpression a enviar:", newClinicalImpression);
@@ -187,6 +214,14 @@ export default function ClinicalImpressionCreateComponent({
           </Container>
         </DialogContent>
         <DialogActions className={styles.dialogActions}>
+          <Button
+            onClick={handleDelete}
+            variant="contained"
+            color="error"
+            sx={{ marginRight: "auto" }}
+          >
+            Borrar
+          </Button>
           <Button onClick={handleClose} variant="contained" color="error">
             Cancelar
           </Button>

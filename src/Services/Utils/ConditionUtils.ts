@@ -1,5 +1,7 @@
-import { Condition } from "fhir/r4";
+import { Condition, DocumentReference } from "fhir/r4";
 import { ConditionFormData } from "../../Models/Forms/ConditionForm";
+import FhirResourceService from "../FhirService";
+import FileManager from "../FileManager";
 
 export default class ConditionUtils {
   public static getName(condition: Condition): string {
@@ -23,7 +25,8 @@ export default class ConditionUtils {
   }
 
   public static ConditionFormDataToCondition(
-    data: ConditionFormData
+    data: ConditionFormData,
+    supportingInfoDocument?: DocumentReference
   ): Condition {
     return {
       resourceType: "Condition",
@@ -49,6 +52,13 @@ export default class ConditionUtils {
           },
         ],
       },
+      evidence: [
+        {
+          detail: [
+            { reference: `DocumentReference/${supportingInfoDocument?.id}` },
+          ],
+        },
+      ],
       /*
       evidence: data.conditionCodes.map((coding) => ({
         code: {
@@ -66,16 +76,26 @@ export default class ConditionUtils {
     };
   }
 
-  public static ConditionToConditionFormData(
-    condition: Condition
-  ): ConditionFormData {
+  public static async ConditionToConditionFormData(
+    condition: Condition,
+    loadFiles: boolean = false
+  ): Promise<ConditionFormData> {
+    let dataFiles: FileList | undefined = undefined;
+    const documentReferenceId =
+      condition.evidence?.[0]?.detail?.[0]?.reference?.split("/")[1];
+
+    if (loadFiles && documentReferenceId) {
+      const fhirResourceService =
+        FhirResourceService.getInstance<DocumentReference>("DocumentReference");
+      const resultFile = await fhirResourceService.getById(documentReferenceId);
+
+      if (resultFile.success && resultFile.data) {
+        dataFiles = await FileManager.documentReferenceToFiles(resultFile.data);
+      }
+    }
+
     return {
-      code:
-        condition.code?.coding?.map((coding) => ({
-          code: coding.code || "",
-          system: coding.system || "",
-          display: coding.display || "",
-        })) || [],
+      code: condition.code?.coding?.[0] || {},
       subject: {
         id: condition.subject?.reference?.split("/")[1] || "",
         display: condition.subject?.display || "",
@@ -84,19 +104,13 @@ export default class ConditionUtils {
         id: condition.encounter?.reference?.split("/")[1] || "",
         display: condition.encounter?.display || "",
       },
-      encounterId: condition.encounter?.reference?.split("/")[1] || "",
       performer: {
         id: condition.recorder?.reference?.split("/")[1] || "",
         display: condition.recorder?.display || "",
       },
       note: condition.note?.[0]?.text || "",
-      clinicalStatus: condition.clinicalStatus?.coding?.[0]?.code || "",
-      conditionCodes:
-        condition.evidence?.map((evidence) => ({
-          code: evidence.code?.[0]?.coding?.[0]?.code || "",
-          system: evidence.code?.[0]?.coding?.[0]?.system || "",
-          display: evidence.code?.[0]?.coding?.[0]?.display || "",
-        })) || [],
+      clinicalStatus: condition.clinicalStatus?.coding?.[0]?.code || "active",
+      supportingInfo: dataFiles,
     } as ConditionFormData;
   }
 }

@@ -17,5 +17,5 @@ export interface ConditionFormData {
   code: Coding;
   note: string; // https://hl7.org/fhir/datatypes.html#Annotation
   clinicalStatus: string;
-  conditionCodes: Coding[];
+  supportingInfo: FileList | undefined; // DocumentReference
 }

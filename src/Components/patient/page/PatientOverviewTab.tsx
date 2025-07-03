@@ -164,7 +164,7 @@ export default function PatientOverviewTab({
   const handleConditionClick = (condition: Condition) => {
     console.log("Condition clicked", condition);
     setSelectedCondition(condition);
-    //setIsConditionOpen(true);
+    setIsConditionOpen(true);
   };
 
   const handleMedicationClick = (medication: MedicationStatement) => {
@@ -252,6 +252,7 @@ export default function PatientOverviewTab({
             patientId={id}
             onOpen={handleConditionOpen}
             isOpen={isConditionOpen}
+            condition={selectedCondition}
           />
           <MedicationCreateComponent
             patientId={id}

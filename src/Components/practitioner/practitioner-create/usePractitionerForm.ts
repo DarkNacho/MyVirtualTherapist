@@ -35,8 +35,17 @@ export const usePractitionerForm = ({
   };
 
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setAvatar(event.target.files[0]);
+    const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2MB
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      if (file.size > MAX_IMAGE_SIZE) {
+        HandleResult.showInfoMessage(
+          "La imagen es demasiado grande. El tamaño máximo es 2MB."
+        );
+        event.target.value = "";
+        return;
+      }
+      setAvatar(file);
     }
   };
 
