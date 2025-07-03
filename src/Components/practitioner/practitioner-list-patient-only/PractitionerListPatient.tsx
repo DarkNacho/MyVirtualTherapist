@@ -15,7 +15,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { ArrowLeft, ArrowRight, Event } from "@mui/icons-material";
-import styles from "./PractitionerList.module.css";
+import styles from "./PractitionerListPatient.module.css";
 import { Patient, Practitioner } from "fhir/r4";
 import PersonUtil from "../../../Services/Utils/PersonUtils";
 import HandleResult from "../../../Utils/HandleResult";

@@ -6,7 +6,7 @@
 - [x] En olvidar contraseña, asegurar que formatee el rut
 
 - [x] Como paciente, quitar "Sesiones" ya que hay uno en Yo
-- [ ] Como paciente, en profesionales, que sólo se vean los de él y no la lista global.
+- [x] Como paciente, en profesionales, que sólo se vean los de él y no la lista global.
 
 - [x] Como profesional, en "Profesionales" se ven los iconos de editar y eliminar profesional
 
@@ -27,10 +27,12 @@
 - [x] Borrar condiciones
 - [x] Borrar evoluciones
 - [x] Cuando se edito evolución, se duplicó. Esto incluyen archivos duplicados igual. Es probable que sea por editar o por subir archivos muy grandes.
+- [x] Bug en ir a la agenda
 
-NOTA:
+NOTAS:
 
 AL subir documentos, si modifico un formulario como Administrador y cambio el practicante en ese formulario, los archivos subidos quedan como si fuera el Administrador que los subió y no el practicante.
 Igualmente no se esta asociando el encuentro.
 
 Esto solo afecta por el momento si quiero ir a buscar solo documentos y luego saber donde esta asociado este documento.
+Adicionalmente si se eliminan archivos de este, aun queda un DocumentReference asociado a este pero sin documentos.

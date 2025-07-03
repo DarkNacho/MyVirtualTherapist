@@ -77,7 +77,7 @@ const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
   }) => (
     <Typography
       component={"a"}
-      href={href ? href : `/#${text}`}
+      href={href ? href : `/#${text.replace(" ", "")}`}
       variant="h6"
       target={target}
       onClick={onClick ? onClick : () => handleSetLocation(text)}
