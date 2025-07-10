@@ -4,13 +4,7 @@ import { Autocomplete, Stack, TextField } from "@mui/material";
 import dayjs from "dayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import {
-  MedicationStatement,
-  Patient,
-  Practitioner,
-  Encounter,
-  Coding,
-} from "fhir/r4";
+import { Patient, Practitioner, Encounter, Coding } from "fhir/r4";
 
 import AutoCompleteComponent from "../auto-complete-components/AutoCompleteComponent";
 import PersonUtil from "../../Services/Utils/PersonUtils";
@@ -34,13 +28,15 @@ export default function MedicationFormComponent({
   submitForm,
   medication,
   practitionerId,
+  encounterId,
   readOnly = false,
 }: {
   formId: string;
   patientId?: string;
   submitForm: SubmitHandler<MedicationFormData>;
-  medication?: MedicationStatement;
+  medication?: MedicationFormData;
   practitionerId?: string;
+  encounterId?: string;
   readOnly?: boolean;
 }) {
   const {
@@ -49,10 +45,19 @@ export default function MedicationFormComponent({
     trigger,
     handleSubmit,
     formState: { errors },
-  } = useForm<MedicationFormData>();
+  } = useForm<MedicationFormData>({
+    defaultValues: {
+      performer: medication?.performer || { id: practitionerId, display: "" },
+      subject: medication?.subject || { id: patientId, display: "" },
+      encounter: medication?.encounter || { id: encounterId, display: "" },
+      medication: medication?.medication || {},
+      note: medication?.note || "",
+      startDate: medication?.startDate || dayjs(),
+      endDate: medication?.endDate || dayjs(),
+    },
+  });
 
   const roleUser = loadUserRoleFromLocalStorage();
-  const encounterId = medication?.context?.reference?.split("/")[1];
 
   const [filteredOptions, setFilteredOptions] = useState<Coding[]>([]);
 
@@ -93,7 +98,7 @@ export default function MedicationFormComponent({
                 label={"Profesional que indica medicamento"}
                 getDisplay={PersonUtil.getPersonNameAsString}
                 searchParam={"name"}
-                defaultResourceId={practitionerId}
+                defaultResourceId={medication?.performer?.id || practitionerId}
                 onChange={(selectedObject) => {
                   if (selectedObject) {
                     field.onChange({
@@ -124,7 +129,7 @@ export default function MedicationFormComponent({
                 label={"Selecciona Paciente"}
                 getDisplay={PersonUtil.getPersonNameAsString}
                 searchParam={"name"}
-                defaultResourceId={patientId}
+                defaultResourceId={medication?.subject?.id || patientId}
                 defaultParams={
                   roleUser === "Practitioner"
                     ? { "general-practitioner": practitionerId! }
@@ -151,20 +156,12 @@ export default function MedicationFormComponent({
           <Controller
             name="medication"
             control={control}
-            defaultValue={
-              medication
-                ? medication.medicationCodeableConcept?.coding?.[0]
-                : {}
-            }
+            defaultValue={medication?.medication || {}}
             render={({ field }) => (
               <Autocomplete
                 id="Autocomplete-MedicationList"
                 options={filteredOptions}
-                defaultValue={
-                  medication
-                    ? medication.medicationCodeableConcept?.coding?.[0]
-                    : {}
-                }
+                defaultValue={medication?.medication || {}}
                 getOptionLabel={(option) => {
                   if (typeof option === "string") {
                     return option;
@@ -253,7 +250,7 @@ export default function MedicationFormComponent({
                 resourceType={"Encounter"}
                 label={"Selecciona Encuentro"}
                 getDisplay={getEncounterDisplay}
-                defaultResourceId={encounterId}
+                defaultResourceId={medication?.encounter?.id || encounterId}
                 defaultParams={{ subject: patientId!, _count: 99999 }}
                 searchParam={""}
                 onChange={(selectedObject) => {
@@ -279,7 +276,7 @@ export default function MedicationFormComponent({
           <TextField
             multiline
             fullWidth
-            defaultValue={medication?.note?.[0].text || ""}
+            defaultValue={medication?.note || ""}
             rows={3}
             label="Notas"
             {...register("note")}

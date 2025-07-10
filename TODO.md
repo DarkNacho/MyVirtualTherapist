@@ -28,6 +28,10 @@
 - [x] Borrar evoluciones
 - [x] Cuando se edito evolución, se duplicó. Esto incluyen archivos duplicados igual. Es probable que sea por editar o por subir archivos muy grandes.
 - [x] Bug en ir a la agenda
+- [x] Al crear una Evolución, existe un texto en detalles "Detalles de la evolución", debería eliminarse ese texto por defecto cuando se entra a escribir.
+- [x] Medicamentos, que se pueda hacer click y editar, ademas de subir documentos.
+- [ ] En Pacientes, Condiciones, Medicamentos, Evoluciones, solo se ven las ultimas 5, que se pueden ver todas. haciendo un boton de siguiente
+- [ ] Investigar como reemplazar el botón de siguiente y atrás por usar el scrollbar tal que si quiero bajar mas cargue la siguiente pagina automáticamente.
 
 NOTAS:
 

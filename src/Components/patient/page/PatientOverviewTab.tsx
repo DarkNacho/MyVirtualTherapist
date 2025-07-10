@@ -170,7 +170,7 @@ export default function PatientOverviewTab({
   const handleMedicationClick = (medication: MedicationStatement) => {
     console.log("Medication clicked", medication);
     setSelectedMedication(medication);
-    //setIsMedicationOpen(true);
+    setIsMedicationOpen(true);
   };
 
   const handleAddEvolutionClick = () => {
@@ -258,6 +258,7 @@ export default function PatientOverviewTab({
             patientId={id}
             onOpen={handleMedicationOpen}
             isOpen={isMedicationOpen}
+            medication={selectedMedication}
           />
           <ClinicalImpressionCreateComponent
             patientId={id}

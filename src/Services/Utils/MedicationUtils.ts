@@ -1,5 +1,8 @@
-import { MedicationStatement } from "fhir/r4";
+import { Coding, DocumentReference, MedicationStatement } from "fhir/r4";
 import { MedicationFormData } from "../../Models/Forms/MedicationForm";
+import dayjs from "dayjs";
+import FhirResourceService from "../FhirService";
+import FileManager from "../FileManager";
 
 export default class MedicationUtils {
   public static getName(medication: MedicationStatement): string {
@@ -26,8 +29,9 @@ export default class MedicationUtils {
   }
 
   public static MedicationFormDataToMedicationStatement(
-    data: MedicationFormData
-  ) {
+    data: MedicationFormData,
+    supportingInfoDocument?: DocumentReference
+  ): MedicationStatement {
     const medicationStatement: MedicationStatement = {
       resourceType: "MedicationStatement",
       status: "active",
@@ -50,8 +54,67 @@ export default class MedicationUtils {
         start: data.startDate.toISOString(),
         end: data.endDate.toISOString(),
       },
+      derivedFrom: supportingInfoDocument
+        ? [{ reference: `DocumentReference/${supportingInfoDocument.id}` }]
+        : undefined,
     };
 
     return medicationStatement;
+  }
+
+  public static async MedicationStatementToMedicationFormData(
+    medicationStatement: MedicationStatement,
+    loadFiles: boolean = false
+  ): Promise<MedicationFormData> {
+    let dataFiles: FileList | undefined = undefined;
+
+    // Load files if requested and there is a derivedFrom DocumentReference
+    if (
+      loadFiles &&
+      medicationStatement.derivedFrom &&
+      medicationStatement.derivedFrom.length > 0
+    ) {
+      const docRefId =
+        medicationStatement.derivedFrom[0].reference?.split("/")[1] || "";
+      if (docRefId) {
+        const fhirResourceService =
+          FhirResourceService.getInstance<DocumentReference>(
+            "DocumentReference"
+          );
+        const resultFiles = await fhirResourceService.getById(docRefId);
+        const supportingInfoFiles: DocumentReference[] = resultFiles.success
+          ? [resultFiles.data]
+          : [];
+        dataFiles = await FileManager.documentReferenceToFiles(
+          supportingInfoFiles[0]
+        );
+      }
+    }
+
+    return {
+      subject: {
+        id: medicationStatement.subject?.reference?.split("/")[1] || "",
+        display: medicationStatement.subject?.display || "",
+      },
+      encounter: {
+        id: medicationStatement.context?.reference?.split("/")[1] || "",
+        display: medicationStatement.context?.display || "",
+      },
+      performer: {
+        id:
+          medicationStatement.informationSource?.reference?.split("/")[1] || "",
+        display: medicationStatement.informationSource?.display || "",
+      },
+      medication:
+        medicationStatement.medicationCodeableConcept?.coding?.[0] ||
+        ({} as Coding),
+      startDate: medicationStatement.effectivePeriod?.start
+        ? dayjs(medicationStatement.effectivePeriod.start)
+        : dayjs(),
+      endDate: medicationStatement.effectivePeriod?.end
+        ? dayjs(medicationStatement.effectivePeriod.end)
+        : dayjs(),
+      supportingInfo: dataFiles,
+    } as MedicationFormData;
   }
 }
