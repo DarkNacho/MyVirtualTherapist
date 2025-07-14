@@ -140,7 +140,7 @@
     "personalDetails": "Datos Personales",
     "contactDetails": "Datos de Contacto",
     "practitionerCreated": "PROFESIONAL CREADO CON ÉXITO",
-    "verifyEmail": "Verifique el correo del practicante para confirmar clave de acceso.",
+    "verifyEmail": "Verifique el correo del profesional para confirmar clave de acceso.",
     "back": "Atrás",
     "next": "Siguiente",
     "submit": "Enviar",
@@ -163,7 +163,7 @@
     "invalidRut": "Rut inválido"
   },
   "practitionerPage": {
-    "practitionerCreated": "El practicante ha sido creado exitosamente",
+    "practitionerCreated": "El profesional ha sido creado exitosamente",
     "sending": "Enviando...",
     "errorConvertingForm": "Error al convertir la evolución",
     "userExists": "El usuario ya existe"
@@ -173,7 +173,7 @@
     "obtaining": "Obteniendo...",
     "age": "Edad",
     "phone": "Teléfono",
-    "derivePractitioner": "Derivar practicante",
+    "derivePractitioner": "Derivar profesional",
     "edit": "Editar",
     "delete": "Eliminar",
     "previous": "Anterior",
@@ -181,8 +181,8 @@
   },
   "practitionerSearchComponent": {
     "practitioners": "PROFESIONALES",
-    "searchPractitioner": "Buscar un practicante",
-    "addPractitioner": "Agregar\nPracticante",
+    "searchPractitioner": "Buscar un profesional",
+    "addPractitioner": "Agregar\nProfesional",
     "searchByPhone": "Buscar por teléfono",
     "searchByRut": "Buscar por RUT",
     "searchByEmail": "Buscar por correo",
@@ -252,5 +252,14 @@
       "female": "Femenino",
       "other": "Otro"
     }
+  },
+  "encounterList": {
+    "encounterCreated": "La sesión ha sido creada exitosamente",
+    "encounterUpdated": "La sesión ha sido actualizada exitosamente",
+    "sending": "Enviando...",
+    "errorConvertingForm": "Error al convertir la evolución",
+    "userExists": "El usuario ya existe",
+    "edit": "Editar",
+    "delete": "Eliminar"
   }
 }

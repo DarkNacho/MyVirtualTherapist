@@ -52,10 +52,6 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
     setOpenReport(false);
   };
 
-  const onRefer = () => {
-    console.log("Referir a otro profesional");
-  };
-
   const genderMap = {
     male: t("terminology.genderOptions.male"),
     female: t("terminology.genderOptions.female"),
@@ -204,7 +200,7 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
                     {patient.address?.[0]?.line ||
                       t("patientCard.addressNotAvailable")}
                   </Typography>
-                  {isAdminOrPractitionerUser && (
+                  {/*isAdminOrPractitionerUser && (
                     <Button
                       variant="contained"
                       color="primary"
@@ -214,7 +210,7 @@ export default function PatientCard({ patient }: { patient?: Patient }) {
                     >
                       {t("patientCard.refer")}
                     </Button>
-                  )}
+                  )*/}
                 </>
               )}
             </Grid>

@@ -1,5 +1,7 @@
 import { Encounter, Period, Reference } from "fhir/r4";
 import { loadUserRoleFromLocalStorage } from "../../Utils/RolUser";
+import { EncounterFormData } from "../../Models/Forms/EncounterForm";
+import dayjs from "dayjs";
 
 /**
  * Utility class for working with Encounter objects.
@@ -142,5 +144,86 @@ export default class EncounterUtils {
       return this.getSubjectDisplayOrID(firstParticipant.individual!);
     }
     return "N/A";
+  }
+
+  public static EncounterFormDataToEncounter(
+    data: EncounterFormData
+  ): Encounter {
+    const seguimiento = data.seguimiento?.id
+      ? {
+          reference: `Encounter/${data.seguimiento.id}`,
+          display: data.seguimiento.display,
+        }
+      : undefined;
+
+    return {
+      resourceType: "Encounter",
+      subject: {
+        reference: `Patient/${data.patient.id}`,
+        display: data.patient.display,
+      },
+      participant: [
+        {
+          individual: {
+            reference: `Practitioner/${data.practitioner.id}`,
+            display: data.practitioner.display,
+          },
+        },
+      ],
+      period: {
+        start: dayjs(
+          `${dayjs(data.day).format("DD-MM-YY")} ${dayjs(data.start).format(
+            "HH:mm"
+          )}`,
+          "DD-MM-YY HH:mm"
+        ).toISOString(),
+        end: dayjs(
+          `${dayjs(data.day).format("DD-MM-YY")} ${dayjs(data.end).format(
+            "HH:mm"
+          )}`,
+          "DD-MM-YY HH:mm"
+        ).toISOString(),
+      },
+      partOf: seguimiento,
+      status: "finished",
+      class: {
+        code: data.type,
+        system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+      },
+    };
+  }
+
+  public static EncounterToEncounterFormData(
+    encounter: Encounter
+  ): EncounterFormData {
+    const participant = encounter.participant?.[0]?.individual;
+    const patient = encounter.subject;
+    const practitioner = participant;
+    const period = encounter.period;
+
+    // Extraer día, hora inicio y fin
+    const start = period?.start ? dayjs(period.start) : dayjs();
+    const end = period?.end ? dayjs(period.end) : dayjs();
+
+    return {
+      patient: {
+        id: patient?.reference?.split("/")[1] || "",
+        display: patient?.display || "",
+      },
+      practitioner: {
+        id: practitioner?.reference?.split("/")[1] || "",
+        display: practitioner?.display || "",
+      },
+      day: start,
+      start: start,
+      end: end,
+      seguimiento: encounter.partOf
+        ? {
+            id: encounter.partOf.reference?.split("/")[1] || "",
+            display: encounter.partOf.display || "",
+          }
+        : undefined,
+      type: encounter.class?.code || "",
+    };
   }
 }

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Paper } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 
 import img1 from "../assets/PLACEHOLDERS/1.png";
 import img2 from "../assets/PLACEHOLDERS/2.png";
@@ -18,7 +17,6 @@ const images = [img1, img2, img3, img4, img5];
 const WelcomeComponent: React.FC<WelcomeComponentProps> = ({ userName }) => {
   const { t } = useTranslation();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const navigate = useNavigate();
 
   // Update image every 30 seconds
   useEffect(() => {
@@ -27,10 +25,6 @@ const WelcomeComponent: React.FC<WelcomeComponentProps> = ({ userName }) => {
     }, 5000);
     return () => clearInterval(interval); // Cleanup on unmount
   }, [images.length]);
-
-  const handleTextClick = () => {
-    navigate("/profile");
-  };
 
   return (
     <Paper
@@ -72,9 +66,7 @@ const WelcomeComponent: React.FC<WelcomeComponentProps> = ({ userName }) => {
           borderTopRightRadius: 8,
           borderBottomLeftRadius: 15,
           padding: "4px 8px",
-          cursor: "pointer",
         }}
-        onClick={handleTextClick}
       >
         <Typography variant="body1" color="white">
           {t("welcome")} <span>{userName}</span>

@@ -9,9 +9,28 @@ import { useState } from "react";
 import PatientRefer from "../patient-refer/PatientRefer";
 import { loadUserRoleFromLocalStorage } from "../../../Utils/RolUser";
 import { usePatientForm } from "../patient-create/usePatientForm";
+import HandleResult from "../../../Utils/HandleResult";
+import FhirResourceService from "../../../Services/FhirService";
 
-const handleDeleteClick = (person: Patient) => {
-  alert(`Delete clicked for id: ${person.id}`);
+const handleDeleteClick = async (person: Patient) => {
+  if (!person) return;
+  const confirmed = await HandleResult.confirm(
+    "¿Estás seguro de que quieres eliminar este paciente? Esta acción no se puede deshacer."
+  );
+  if (!confirmed) return;
+  const response = await HandleResult.handleOperation(
+    () =>
+      FhirResourceService.getInstance<Patient>("Patient").deleteResource(
+        person.id!
+      ),
+    "Paciente eliminado de forma exitosa",
+    "Eliminando..."
+  );
+  if (!response.success) {
+    HandleResult.showErrorMessage(
+      "Error al eliminar el paciente. Por favor, inténtalo de nuevo más tarde."
+    );
+  }
 };
 
 export default function PatientListPage() {

@@ -7,9 +7,10 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Skeleton,
 } from "@mui/material";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Close } from "@mui/icons-material";
 
 import styles from "./EncounterCreateComponent.module.css";
@@ -18,9 +19,10 @@ import { Encounter } from "fhir/r4";
 import EncounterFormComponent from "./EncounterFormComponent";
 import HandleResult from "../../../Utils/HandleResult";
 import FhirResourceService from "../../../Services/FhirService";
-import dayjs from "dayjs";
+
 import { EncounterFormData } from "../../../Models/Forms/EncounterForm";
 import { CacheUtils } from "../../../Utils/Cache";
+import EncounterUtils from "../../../Services/Utils/EncounterUtils";
 
 export default function EncounterCreateComponent({
   onOpen,
@@ -28,12 +30,16 @@ export default function EncounterCreateComponent({
   patientId,
   start,
   end,
+  encounter,
+  mode,
 }: {
   onOpen: (isOpen: boolean) => void;
   isOpen: boolean;
   patientId?: string;
   start?: Date;
   end?: Date;
+  encounter?: Encounter;
+  mode: "create" | "edit";
 }) {
   useEffect(() => {
     onOpen(isOpen);
@@ -43,13 +49,46 @@ export default function EncounterCreateComponent({
     onOpen(false);
   };
 
+  const [loading, setLoading] = useState<boolean>(false);
+  const [formInitData, setFormInitData] = useState<
+    EncounterFormData | undefined
+  >(undefined);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setFormInitData(undefined);
+      setLoading(false);
+      return;
+    }
+    console.log("isOpen", isOpen);
+    console.log("mode", mode);
+    console.log("encounter", encounter);
+
+    if (mode === "edit") {
+      if (!encounter) {
+        setLoading(true);
+        setFormInitData(undefined);
+        return;
+      }
+      // encounter ya está, inicializa el form
+      setLoading(true);
+      const formData = EncounterUtils.EncounterToEncounterFormData(encounter);
+      setFormInitData(formData);
+      setLoading(false);
+      console.log("Form data initialized for edit mode:", formData);
+    } else if (mode === "create") {
+      setFormInitData(undefined);
+      setLoading(false);
+    }
+  }, [encounter, isOpen, mode]);
+
   const practitionerId = localStorage.getItem("id");
 
   const postEncounter = async (newEncounter: Encounter) => {
     const fhirService = FhirResourceService.getInstance<Encounter>("Encounter");
 
     const response = await HandleResult.handleOperation(
-      () => fhirService.postResource(newEncounter),
+      () => fhirService.sendResource(newEncounter),
       "Encuentro guardado de forma exitosa",
       "Enviando..."
     );
@@ -64,48 +103,8 @@ export default function EncounterCreateComponent({
     console.log("send form");
     console.log(data);
 
-    const seguimiento = data.seguimiento?.id
-      ? {
-          reference: `Encounter/${data.seguimiento.id}`,
-          display: data.seguimiento.display,
-        }
-      : undefined;
-
-    const newEncounter: Encounter = {
-      resourceType: "Encounter",
-      subject: {
-        reference: `Patient/${data.patient.id}`,
-        display: data.patient.display,
-      },
-      participant: [
-        {
-          individual: {
-            reference: `Practitioner/${data.practitioner.id}`,
-            display: data.practitioner.display,
-          },
-        },
-      ],
-      period: {
-        start: dayjs(
-          `${dayjs(data.day).format("DD-MM-YY")} ${dayjs(data.start).format(
-            "HH:mm"
-          )}`,
-          "DD-MM-YY HH:mm"
-        ).toISOString(),
-        end: dayjs(
-          `${dayjs(data.day).format("DD-MM-YY")} ${dayjs(data.end).format(
-            "HH:mm"
-          )}`,
-          "DD-MM-YY HH:mm"
-        ).toISOString(),
-      },
-      partOf: seguimiento,
-      status: "finished",
-      class: {
-        code: data.type,
-        system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
-      },
-    };
+    const newEncounter = EncounterUtils.EncounterFormDataToEncounter(data);
+    if (encounter) newEncounter.id = encounter.id; // Mantiene el ID si se está editando
     //alert(JSON.stringify(newEncounter, null, 2));
     postEncounter(newEncounter);
   };
@@ -129,14 +128,24 @@ export default function EncounterCreateComponent({
         </DialogTitle>
         <DialogContent>
           <Container className={styles.container}>
-            <EncounterFormComponent
-              formId="encounterForm"
-              submitForm={onSubmitForm}
-              practitionerId={practitionerId!}
-              patientId={patientId}
-              start={start}
-              end={end}
-            ></EncounterFormComponent>
+            {loading ? (
+              <>
+                <Skeleton variant="rectangular" height={60} sx={{ mb: 2 }} />
+                <Skeleton variant="rectangular" height={60} sx={{ mb: 2 }} />
+                <Skeleton variant="rectangular" height={60} sx={{ mb: 2 }} />
+                <Skeleton variant="rectangular" height={40} width="40%" />
+              </>
+            ) : (
+              <EncounterFormComponent
+                formId="encounterForm"
+                submitForm={onSubmitForm}
+                practitionerId={practitionerId!}
+                patientId={patientId}
+                start={start}
+                end={end}
+                encounter={formInitData}
+              />
+            )}
           </Container>
         </DialogContent>
         <DialogActions className={styles.dialogActions}>
@@ -148,6 +157,7 @@ export default function EncounterCreateComponent({
             variant="contained"
             color="primary"
             form="encounterForm"
+            disabled={loading}
           >
             Enviar
           </Button>
