@@ -17,7 +17,7 @@ import styles from "./HeaderDesktop.module.css";
 import { Patient, Practitioner } from "fhir/r4";
 import { useTranslation } from "react-i18next";
 import { isPatient, isAdminOrPractitioner } from "../../../Utils/RolUser";
-import HandleResult from "../../../Utils/HandleResult";
+//import HandleResult from "../../../Utils/HandleResult";
 
 interface HeaderDesktopProps {
   user?: Patient | Practitioner;
@@ -39,7 +39,8 @@ const handleOpenApp = () => {
 
   document.body.appendChild(iframe);\
   */
-  HandleResult.showErrorMessage("En construcción, pronto disponible");
+  //HandleResult.showErrorMessage("En construcción, pronto disponible");
+  window.open("https://mvt.cttn.cl/", "_blank");
 };
 
 const HeaderDesktop: React.FC<HeaderDesktopProps> = ({
