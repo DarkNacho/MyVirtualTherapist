@@ -14,11 +14,17 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { SvgIconComponent } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import { FhirResource } from "fhir/r4";
+import FhirResourceService from "../../Services/FhirService";
+import HandleResult from "../../Utils/HandleResult";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
-interface ResourceListProps<T> {
+interface ResourceListProps<T extends FhirResource> {
   title: string; // Title for the header
   Icon: SvgIconComponent; // Icon for the header
-  resources?: T[]; // Generic list of HL7 FHIR resources
+  defaultResources?: T[]; // Generic list of HL7 FHIR resources
   onClick: (resource: T) => void; // Handler for item click
   getDisplay: (resource: T) => {
     leftTitle: string;
@@ -26,19 +32,47 @@ interface ResourceListProps<T> {
     rightText: string;
   }; // Function to extract display strings
   onAddClick?: () => void; // Optional handler for the "Add" button
+  fhirService?: FhirResourceService<T>; // Optional FHIR service for pagination
 }
 
-export default function ResourceList<T>({
+export default function ResourceList<T extends FhirResource>({
   title,
   Icon,
-  resources,
+  defaultResources,
   onClick,
   getDisplay,
   onAddClick,
+  fhirService,
 }: ResourceListProps<T>) {
-  const loading = resources === undefined;
+  //const loading = resources === undefined;
+
+  const [resources, setResources] = useState<T[]>(defaultResources || []);
+
+  const [loading, setLoading] = useState(resources === undefined);
   const isEmpty = resources && resources.length === 0;
 
+  const handleNewResources = async (direction: "next" | "previous") => {
+    if (!fhirService) return;
+    setLoading(true);
+    await HandleResult.handleOperationWithErrorOnly(
+      () => fhirService.getNewResources(direction),
+      setResources
+    );
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    setLoading(resources === undefined);
+  }, [resources]);
+
+  useEffect(() => {
+    if (defaultResources) {
+      console.log("Setting default resources:", defaultResources);
+      setResources(defaultResources);
+    }
+  }, [defaultResources]);
+
+  // ...existing code...
   return (
     <Card
       sx={{
@@ -144,6 +178,33 @@ export default function ResourceList<T>({
           )}
         </List>
       </CardContent>
+      {/* Footer: Pagination Buttons always at the bottom */}
+      {fhirService && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            p: 2,
+            borderTop: "1px solid #eee",
+            background: "#fafafa",
+          }}
+        >
+          <IconButton
+            onClick={() => handleNewResources("previous")}
+            disabled={!fhirService.hasPrevPage || loading}
+            color="primary"
+          >
+            <ArrowBackIcon />
+          </IconButton>
+          <IconButton
+            onClick={() => handleNewResources("next")}
+            disabled={!fhirService.hasNextPage || loading}
+            color="primary"
+          >
+            <ArrowForwardIcon />
+          </IconButton>
+        </Box>
+      )}
     </Card>
   );
 }
