@@ -16,6 +16,7 @@ import { loadUserRoleFromLocalStorage } from "../../../Utils/RolUser";
 
 import { encounterType } from "../../../Models/Terminology";
 import { EncounterFormData } from "../../../Models/Forms/EncounterForm";
+import { useEffect } from "react";
 
 export default function EncounterFormComponent({
   formId,
@@ -25,6 +26,7 @@ export default function EncounterFormComponent({
   readOnly = false,
   start,
   end,
+  encounter,
 }: {
   formId: string;
   submitForm: SubmitHandler<EncounterFormData>;
@@ -33,19 +35,45 @@ export default function EncounterFormComponent({
   readOnly?: boolean;
   start?: Date;
   end?: Date;
+  encounter?: EncounterFormData;
 }) {
-  const {
-    handleSubmit,
-    control,
-    register,
-    formState: { errors },
-  } = useForm<EncounterFormData>();
-
   const roleUser = loadUserRoleFromLocalStorage();
 
   const defaultStart = start ? dayjs(start) : dayjs();
   const defaultEnd = end ? dayjs(end) : dayjs().add(30, "minutes");
   const defaultDay = start ? dayjs(start) : dayjs();
+
+  const {
+    handleSubmit,
+    control,
+    register,
+    formState: { errors },
+    reset,
+  } = useForm<EncounterFormData>({
+    defaultValues: {
+      practitioner: encounter?.practitioner || { id: practitionerId },
+      patient: encounter?.patient || { id: patientId },
+      start: encounter?.start || defaultStart,
+      end: encounter?.end || defaultEnd,
+      day: encounter?.day || defaultDay,
+      type: encounter?.type || "AMB",
+    },
+  });
+
+  useEffect(() => {
+    // Pon el console.log aquí
+    console.log("encounter", encounter);
+    if (encounter) {
+      reset({
+        practitioner: encounter.practitioner || { id: practitionerId },
+        patient: encounter.patient || { id: patientId },
+        start: encounter.start || defaultStart,
+        end: encounter.end || defaultEnd,
+        day: encounter.day || defaultDay,
+        type: encounter.type || "AMB",
+      });
+    }
+  }, [encounter]);
 
   return (
     <>
@@ -63,7 +91,9 @@ export default function EncounterFormComponent({
                 label={"Selecciona Profesional"}
                 getDisplay={PersonUtil.getPersonNameAsString}
                 searchParam={"name"}
-                defaultResourceId={practitionerId}
+                defaultResourceId={
+                  encounter?.practitioner?.id || practitionerId
+                }
                 onChange={(selectedObject) => {
                   if (selectedObject) {
                     field.onChange({
@@ -95,10 +125,13 @@ export default function EncounterFormComponent({
                 label={"Selecciona Paciente"}
                 getDisplay={PersonUtil.getPersonNameAsString}
                 searchParam={"name"}
-                defaultResourceId={patientId}
+                defaultResourceId={encounter?.patient?.id || patientId}
                 defaultParams={
                   roleUser === "Practitioner"
-                    ? { "general-practitioner": practitionerId }
+                    ? {
+                        "general-practitioner":
+                          encounter?.practitioner?.id || practitionerId,
+                      }
                     : {}
                 }
                 onChange={(selectedObject) => {
@@ -123,7 +156,7 @@ export default function EncounterFormComponent({
             <Controller
               control={control}
               name="day"
-              defaultValue={defaultDay}
+              defaultValue={encounter?.day || defaultDay}
               render={({ field }) => (
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
@@ -143,7 +176,7 @@ export default function EncounterFormComponent({
             <Controller
               control={control}
               name="start"
-              defaultValue={defaultStart}
+              defaultValue={encounter?.start || defaultStart}
               render={({ field: { onChange, value, ref } }) => (
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <TimePicker
@@ -160,7 +193,7 @@ export default function EncounterFormComponent({
 
             <Controller
               control={control}
-              defaultValue={defaultEnd}
+              defaultValue={encounter?.end || defaultEnd}
               name="end"
               render={({ field: { onChange, value, ref } }) => (
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -179,7 +212,7 @@ export default function EncounterFormComponent({
           <TextField
             select
             label="Tipo"
-            defaultValue="AMB"
+            defaultValue={encounter?.type || "AMB"}
             {...register("type", {
               required: "Tipo de consulta requerida",
             })}

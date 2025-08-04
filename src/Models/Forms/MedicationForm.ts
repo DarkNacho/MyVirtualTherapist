@@ -22,4 +22,5 @@ export interface MedicationFormData {
   note: string;
   startDate: Dayjs;
   endDate: Dayjs;
+  supportingInfo?: FileList;
 }

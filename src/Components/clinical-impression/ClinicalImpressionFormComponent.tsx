@@ -64,7 +64,7 @@ export default function ClinicalImpressionFormComponent({
       date: clinicalImpression?.date ? dayjs(clinicalImpression.date) : dayjs(),
       previous: clinicalImpression?.previous,
       description: clinicalImpression?.description || "",
-      summary: clinicalImpression?.summary || "Detalles de la evolución",
+      summary: clinicalImpression?.summary,
       note: clinicalImpression?.note || "",
     },
   });
@@ -260,7 +260,8 @@ export default function ClinicalImpressionFormComponent({
             render={({ field }) => (
               <Box height={300}>
                 <ReactQuill
-                  value={field.value || "Detalles de la evolución"}
+                  value={field.value}
+                  placeholder="Detalles de la evolución"
                   onChange={(content) => {
                     field.onChange(content);
                     handleQuillChange(content);

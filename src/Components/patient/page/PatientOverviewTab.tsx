@@ -96,9 +96,17 @@ export default function PatientOverviewTab({
   const isAdminOrPractitionerUser = isAdminOrPractitioner();
   const { t } = useTranslation();
 
+  const fhirServiceEvolution =
+    FhirResourceService.getInstance<ClinicalImpression>("ClinicalImpression");
+
+  const fhirServiceCondition =
+    FhirResourceService.getInstance<Condition>("Condition");
+
+  const fhirServiceMedication =
+    FhirResourceService.getInstance<MedicationStatement>("MedicationStatement");
+
   const fetchEvolution = async (id: string) => {
-    const fhirService =
-      FhirResourceService.getInstance<ClinicalImpression>("ClinicalImpression");
+    const fhirService = fhirServiceEvolution;
     /*const response = await HandleResult.handleOperation(
       () => fhirService.getResources({ patient: id }),
       "Evolution fetched successfully",
@@ -113,7 +121,7 @@ export default function PatientOverviewTab({
   };
 
   const fetchConditions = async (id: string) => {
-    const fhirService = FhirResourceService.getInstance<Condition>("Condition");
+    const fhirService = fhirServiceCondition;
     /*const response = await HandleResult.handleOperation(
       () => fhirService.getResources({ patient: id }),
       "Conditions fetched successfully",
@@ -128,9 +136,7 @@ export default function PatientOverviewTab({
   };
 
   const fetchMedications = async (id: string) => {
-    const fhirService = FhirResourceService.getInstance<MedicationStatement>(
-      "MedicationStatement"
-    );
+    const fhirService = fhirServiceMedication;
 
     /*const response = await HandleResult.handleOperation(
       () => fhirService.getResources({ patient: id }),
@@ -170,7 +176,7 @@ export default function PatientOverviewTab({
   const handleMedicationClick = (medication: MedicationStatement) => {
     console.log("Medication clicked", medication);
     setSelectedMedication(medication);
-    //setIsMedicationOpen(true);
+    setIsMedicationOpen(true);
   };
 
   const handleAddEvolutionClick = () => {
@@ -213,36 +219,39 @@ export default function PatientOverviewTab({
           <ResourceList
             title={t("patientPage.evolutions")}
             Icon={NotesIcon}
-            resources={evolution}
+            defaultResources={evolution}
             onClick={handleEvolutionClick}
             getDisplay={getEvolutionDisplay}
             onAddClick={
               isAdminOrPractitionerUser ? handleAddEvolutionClick : undefined
             }
+            fhirService={fhirServiceEvolution}
           />
         </Grid>
         <Grid item xs={12} md={4}>
           <ResourceList
             title={t("patientPage.conditions")}
             Icon={ConditionIcon}
-            resources={conditions}
+            defaultResources={conditions}
             onClick={handleConditionClick}
             getDisplay={getConditionDisplay}
             onAddClick={
               isAdminOrPractitionerUser ? handleAddConditionClick : undefined
             }
+            fhirService={fhirServiceCondition}
           />
         </Grid>
         <Grid item xs={12} md={4}>
           <ResourceList
             title={t("patientPage.medications")}
             Icon={MedicationIcon}
-            resources={medications}
+            defaultResources={medications}
             onClick={handleMedicationClick}
             getDisplay={getMedicationDisplay}
             onAddClick={
               isAdminOrPractitionerUser ? handleAddMedicationClick : undefined
             }
+            fhirService={fhirServiceMedication}
           />
         </Grid>
       </Grid>
@@ -258,6 +267,7 @@ export default function PatientOverviewTab({
             patientId={id}
             onOpen={handleMedicationOpen}
             isOpen={isMedicationOpen}
+            medication={selectedMedication}
           />
           <ClinicalImpressionCreateComponent
             patientId={id}

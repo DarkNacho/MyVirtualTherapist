@@ -28,8 +28,6 @@ import { isAdminOrPractitioner } from "../../../Utils/RolUser";
 
 interface EncounterListProps {
   searchParam?: SearchParams;
-  onEditClick?: (resource: Encounter) => void;
-  onDeleteClick?: (resource: Encounter) => void;
   patientId?: string;
 }
 
@@ -74,8 +72,6 @@ let endDate: Date | undefined = undefined;
 
 export default function EncounterCalendar({
   searchParam,
-  onEditClick,
-  onDeleteClick,
   patientId,
 }: EncounterListProps) {
   const { t, i18n } = useTranslation();
@@ -89,6 +85,10 @@ export default function EncounterCalendar({
   const [currentView, setCurrentView] = useState<string>("month");
   const [openCreate, setOpenCreate] = useState(false);
   const isAdminPractitioner = isAdminOrPractitioner();
+  const [selectedResource, setSelectedResource] = useState<
+    Encounter | undefined
+  >(undefined);
+  const [mode, setMode] = useState<"create" | "edit">("create");
 
   const fetchResources = async () => {
     setLoading(true);
@@ -134,6 +134,7 @@ export default function EncounterCalendar({
     }
   };
 
+  /*
   const handleEventClick = (event: {
     id: string | undefined;
     title: string;
@@ -142,11 +143,48 @@ export default function EncounterCalendar({
     resource: Encounter;
   }) => {
     handleItemClick(event.resource);
-  };
+  };*/
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
     setSelectedEvent(null);
+    //setSelectedResource(undefined);
+  };
+
+  const handleEditClick = (encounter: Encounter) => {
+    setSelectedResource(encounter);
+    setMode("edit");
+    setOpenCreate(true);
+    console.log("Edit encounter:", encounter);
+  };
+
+  const handleCreateClick = (start: Date, end: Date) => {
+    startDate = start;
+    endDate = end;
+    setSelectedResource(undefined);
+    setMode("create");
+    setOpenCreate(true);
+  };
+
+  const handleDeleteClick = async (encounter: Encounter) => {
+    if (!encounter) return;
+    const confirmed = await HandleResult.confirm(
+      "¿Estás seguro de que quieres eliminar esta sesión? Esta acción no se puede deshacer."
+    );
+    if (!confirmed) return;
+    const response = await HandleResult.handleOperation(
+      () =>
+        FhirResourceService.getInstance<Encounter>("Encounter").deleteResource(
+          encounter.id!
+        ),
+      "Sesión eliminada de forma exitosa",
+      "Eliminando..."
+    );
+    if (!response.success) {
+      HandleResult.showErrorMessage(
+        "Error al eliminar la sesión. Por favor, inténtalo de nuevo más tarde."
+      );
+    }
   };
 
   const renderSkeleton = () => (
@@ -256,25 +294,19 @@ export default function EncounterCalendar({
             messages={calendarMessages}
             onSelectSlot={({ start, end }) => {
               let adjustedEnd = end;
-              console.log("currentView", currentView);
               if (currentView === "month") {
                 adjustedEnd = moment(end).subtract(1, "second").toDate();
               }
               const isSameDay = moment(start).isSame(adjustedEnd, "day");
               if (isSameDay) {
-                //alert(`Selected slot: ${start} - ${adjustedEnd}`);
-                startDate = start;
-                endDate = adjustedEnd;
-                setOpenCreate(true);
+                handleCreateClick(start, adjustedEnd);
               } else {
                 HandleResult.showInfoMessage(
                   "Please select a slot within a single day."
                 );
               }
             }}
-            onSelectEvent={
-              currentView !== "month" ? handleEventClick : handleMenuClick
-            }
+            onSelectEvent={handleMenuClick}
             onView={(view) => setCurrentView(view)}
             popup
             selectable
@@ -302,8 +334,8 @@ export default function EncounterCalendar({
                 event: (props) => (
                   <CustomAgendaEvent
                     event={props.event}
-                    onEditClick={onEditClick}
-                    onDeleteClick={onDeleteClick}
+                    onEditClick={handleEditClick}
+                    onDeleteClick={handleDeleteClick}
                     t={t}
                   />
                 ),
@@ -326,10 +358,10 @@ export default function EncounterCalendar({
               <Visibility fontSize="small" />
               {t("encounterList.view")}
             </MenuItem>*/}
-            {onEditClick && isAdminPractitioner && (
+            {handleEditClick && isAdminPractitioner && (
               <MenuItem
                 onClick={() => {
-                  onEditClick(selectedEvent!);
+                  handleEditClick(selectedEvent!);
                   handleCloseMenu();
                 }}
               >
@@ -337,10 +369,10 @@ export default function EncounterCalendar({
                 {t("encounterList.edit")}
               </MenuItem>
             )}
-            {onDeleteClick && isAdminPractitioner && (
+            {handleDeleteClick && isAdminPractitioner && (
               <MenuItem
                 onClick={() => {
-                  onDeleteClick(selectedEvent!);
+                  handleDeleteClick(selectedEvent!);
                   handleCloseMenu();
                 }}
               >
@@ -355,11 +387,14 @@ export default function EncounterCalendar({
         <EncounterCreateComponent
           onOpen={function (isOpen: boolean): void {
             setOpenCreate(isOpen);
+            if (!isOpen) setSelectedResource(undefined);
           }}
           isOpen={openCreate}
           start={startDate}
           end={endDate}
           patientId={patientId}
+          encounter={selectedResource}
+          mode={mode}
         />
       )}
     </>
