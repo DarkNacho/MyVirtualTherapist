@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState, useCallback } from "react";
+import { useMemo, useCallback } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import { COLORS } from "../constants";
 import useThrottledWebSocket from "../../charts/useThrottledWebSocket";
@@ -18,13 +18,7 @@ interface SensorDataPoint {
   timestamp_epoch: number;
 }
 
-interface DebugInfoState {
-  hasDevices: boolean;
-  deviceNames: string[];
-  hasSpo2: boolean;
-  hasHeartRate: boolean;
-  hasRespRate: boolean;
-}
+
 
 interface ChartData {
   spo2: number[];
@@ -53,14 +47,6 @@ interface RealTimeProps {
 }
 
 export default function RealTime({ patientId, token }: RealTimeProps) {
-  // For debugging
-  const [debugInfo, setDebugInfo] = useState<DebugInfoState>({
-    hasDevices: false,
-    deviceNames: [],
-    hasSpo2: false,
-    hasHeartRate: false,
-    hasRespRate: false,
-  });
 
   let webSocketUrl = `${
     import.meta.env.VITE_CHART_SERVER_URL
@@ -79,25 +65,7 @@ export default function RealTime({ patientId, token }: RealTimeProps) {
     500
   );
 
-  // Debug logging to understand data structure - only in development mode
-  useEffect(() => {
-    if (import.meta.env.DEV && sensorDataByDevice) {
-      const deviceNames = Object.keys(sensorDataByDevice);
-      const primaryDevice = deviceNames[0] || ""; // Usually "Pulsioxímetro"
-
-      setDebugInfo({
-        hasDevices: deviceNames.length > 0,
-        deviceNames,
-        hasSpo2: primaryDevice && !!sensorDataByDevice[primaryDevice]?.["SpO2"],
-        hasHeartRate:
-          primaryDevice &&
-          !!sensorDataByDevice[primaryDevice]?.["Frecuencia Cardíaca"],
-        hasRespRate:
-          primaryDevice &&
-          !!sensorDataByDevice[primaryDevice]?.["Frecuencia Respiratoria"],
-      });
-    }
-  }, [sensorDataByDevice]);
+  // Debug logging removed to avoid unused variable warnings
 
   const {
     currentSpo2,
@@ -168,9 +136,20 @@ export default function RealTime({ patientId, token }: RealTimeProps) {
 
       try {
         const lastFiveData = dataArray.slice(-5);
-        const avgValue =
-          lastFiveData.reduce((sum, data) => sum + data.value, 0) /
-          lastFiveData.length;
+        const validValues = lastFiveData
+          .map(data => data.value)
+          .filter(value => isFinite(value) && !isNaN(value));
+        
+        if (validValues.length === 0) {
+          return "N/A";
+        }
+        
+        const avgValue = validValues.reduce((sum, value) => sum + value, 0) / validValues.length;
+        
+        if (!isFinite(avgValue) || isNaN(avgValue)) {
+          return "N/A";
+        }
+        
         return Math.round(avgValue).toString();
       } catch (error) {
         if (import.meta.env.DEV) {
@@ -186,7 +165,10 @@ export default function RealTime({ patientId, token }: RealTimeProps) {
     ): number[] => {
       if (!dataArray || !Array.isArray(dataArray)) return [];
       try {
-        return dataArray.slice(-MAX_DATA_POINTS).map((item) => item.value);
+        return dataArray
+          .slice(-MAX_DATA_POINTS)
+          .map((item) => item.value)
+          .filter(value => isFinite(value) && !isNaN(value));
       } catch (error) {
         if (import.meta.env.DEV) {
           console.error("Error extracting chart values:", error);

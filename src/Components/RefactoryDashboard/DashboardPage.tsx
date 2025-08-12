@@ -1,55 +1,13 @@
-import { FC, useRef, useState } from "react";
+import { FC, useState } from "react";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  ChartOptions,
-} from "chart.js";
-import { Line, Bar } from "react-chartjs-2";
-import {
-  Grid,
   Paper,
   Typography,
   Box,
-  Tab,
-  Tabs,
   Button,
-  IconButton,
-  Tooltip as MuiTooltip,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Avatar,
 } from "@mui/material";
-import zoomPlugin from "chartjs-plugin-zoom";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import CloseIcon from "@mui/icons-material/Close";
-import DownloadIcon from "@mui/icons-material/Download";
-import ShareIcon from "@mui/icons-material/Share";
 import { COLORS } from "./constants";
-import { lineOptions, barOptions } from "./Charts/chartConfig";
 import RealTime from "../RefactoryDashboard/RealTime/RealTime";
 import Summary from "../RefactoryDashboard/Summary/Summary";
-
-// Register Chart.js components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  zoomPlugin
-);
 
 // Interface for props
 interface DashboardPage {

@@ -35,6 +35,22 @@ const GeneralAverages: React.FC<GeneralAveragesProps> = ({
   data,
   isLoading = false, // Default to false if not provided
 }) => {
+  // Helper function to safely display numeric values
+  const safeDisplayValue = (value: number, unit: string = "", placeholder: string = "N/A"): string => {
+    if (value === 0 && data.lastSessionCount === 0) {
+      return placeholder;
+    }
+    return `${value}${unit}`;
+  };
+
+  // Helper function to safely display range values
+  const safeDisplayRange = (min: number, max: number, unit: string = "", placeholder: string = "N/A"): string => {
+    if ((min === 0 && max === 0) && data.lastSessionCount === 0) {
+      return placeholder;
+    }
+    return `${min}-${max}${unit}`;
+  };
+
   if (isLoading) {
     return (
       <Box sx={{ p: 2, bgcolor: COLORS.veryLightBlue, borderRadius: 1, mb: 2 }}>
@@ -83,7 +99,10 @@ const GeneralAverages: React.FC<GeneralAveragesProps> = ({
   return (
     <Box sx={{ p: 2, bgcolor: COLORS.veryLightBlue, borderRadius: 1, mb: 2 }}>
       <Typography variant="subtitle1" fontWeight="medium" mb={1}>
-        Promedios Generales Últimas {data.lastSessionCount} Sesiones
+        {data.lastSessionCount === 0 
+          ? "Sin datos de sesiones disponibles" 
+          : `Promedios Generales Últimas ${data.lastSessionCount} Sesiones`
+        }
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={6} sm={3}>
@@ -92,10 +111,10 @@ const GeneralAverages: React.FC<GeneralAveragesProps> = ({
               SpO2 Promedio
             </Typography>
             <Typography variant="h6" color={COLORS.primary} fontWeight="bold">
-              {data.spo2.average}%
+              {safeDisplayValue(data.spo2.average, "%")}
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              Rango: {data.spo2.minRange}-{data.spo2.maxRange}%
+              Rango: {safeDisplayRange(data.spo2.minRange, data.spo2.maxRange, "%")}
             </Typography>
           </Box>
         </Grid>
@@ -105,10 +124,10 @@ const GeneralAverages: React.FC<GeneralAveragesProps> = ({
               FC Promedio
             </Typography>
             <Typography variant="h6" color="#ff4569" fontWeight="bold">
-              {data.heartRate.average} LPM
+              {safeDisplayValue(data.heartRate.average, " LPM")}
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              Rango: {data.heartRate.minRange}-{data.heartRate.maxRange} LPM
+              Rango: {safeDisplayRange(data.heartRate.minRange, data.heartRate.maxRange, " LPM")}
             </Typography>
           </Box>
         </Grid>
@@ -118,11 +137,10 @@ const GeneralAverages: React.FC<GeneralAveragesProps> = ({
               FR Promedio
             </Typography>
             <Typography variant="h6" color="#1fc8e3" fontWeight="bold">
-              {data.respiratoryRate.average} RPM
+              {safeDisplayValue(data.respiratoryRate.average, " RPM")}
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              Rango: {data.respiratoryRate.minRange}-
-              {data.respiratoryRate.maxRange} RPM
+              Rango: {safeDisplayRange(data.respiratoryRate.minRange, data.respiratoryRate.maxRange, " RPM")}
             </Typography>
           </Box>
         </Grid>
@@ -132,7 +150,7 @@ const GeneralAverages: React.FC<GeneralAveragesProps> = ({
               Tiempo Total
             </Typography>
             <Typography variant="h6" color={COLORS.primary} fontWeight="bold">
-              {data.totalTime.hours}h {data.totalTime.minutes}m
+              {data.lastSessionCount === 0 ? "N/A" : `${data.totalTime.hours}h ${data.totalTime.minutes}m`}
             </Typography>
             <Typography variant="caption" color="text.secondary">
               Desde: {data.totalTime.since}

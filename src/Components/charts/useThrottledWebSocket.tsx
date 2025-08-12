@@ -103,13 +103,23 @@ export default function useThrottledWebSocket(
                 // Calculate basic statistics for the data if needed
                 stats:
                   combinedData.length > 0
-                    ? {
-                        minValue: Math.min(...combinedData.map((d) => d.value)),
-                        maxValue: Math.max(...combinedData.map((d) => d.value)),
-                        avgValue:
-                          combinedData.reduce((sum, d) => sum + d.value, 0) /
-                          combinedData.length,
-                      }
+                    ? (() => {
+                        try {
+                          const values = combinedData.map((d) => d.value).filter(v => isFinite(v) && !isNaN(v));
+                          if (values.length === 0) return undefined;
+                          
+                          return {
+                            minValue: Math.min(...values),
+                            maxValue: Math.max(...values),
+                            avgValue: values.reduce((sum, v) => sum + v, 0) / values.length,
+                          };
+                        } catch (error) {
+                          if (import.meta.env.DEV) {
+                            console.error("Error calculating sensor stats:", error);
+                          }
+                          return undefined;
+                        }
+                      })()
                     : undefined,
               };
             }

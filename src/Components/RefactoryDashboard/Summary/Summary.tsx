@@ -81,6 +81,23 @@ const Summary: React.FC<SummaryProps> = ({ patientId }) => {
 
   const [historicalDataLoading, setHistoricalDataLoading] = useState(true);
 
+  // Helper function to safely round numeric values
+  const safeRound = (value: number | null | undefined): number => {
+    if (value == null || !isFinite(value) || isNaN(value)) {
+      return 0;
+    }
+    return Math.round(value);
+  };
+
+  // Helper function to check if sensor data is valid
+  const hasValidSensorData = (sensorData: SensorSummary | undefined): boolean => {
+    return !!(sensorData && 
+             sensorData.count > 0 && 
+             isFinite(sensorData.avg ?? NaN) && 
+             isFinite(sensorData.min ?? NaN) && 
+             isFinite(sensorData.max ?? NaN));
+  };
+
   // Convert API sensor summary to GeneralAveragesData format
   const averagesData: GeneralAveragesData = useMemo(() => {
     // Default data structure with placeholder values
@@ -90,7 +107,7 @@ const Summary: React.FC<SummaryProps> = ({ patientId }) => {
     const formattedDate = sevenDaysAgo.toLocaleDateString("es-CL");
 
     const defaultData: GeneralAveragesData = {
-      lastSessionCount: 9999,
+      lastSessionCount: 0,
       spo2: {
         average: 0,
         minRange: 0,
@@ -114,46 +131,47 @@ const Summary: React.FC<SummaryProps> = ({ patientId }) => {
     };
 
     // Early return if data isn't loaded yet
-    if (Object.keys(sensorSummary).length === 0) {
+    if (!sensorSummary || Object.keys(sensorSummary).length === 0) {
       return defaultData;
     }
 
     // Map sensor data to the correct format
     try {
+      // Calculate total session count from available sensors
+      const sessionCounts = Object.values(sensorSummary)
+        .map(sensor => sensor?.count || 0)
+        .filter(count => count > 0);
+      
+      if (sessionCounts.length > 0) {
+        defaultData.lastSessionCount = Math.max(...sessionCounts);
+      }
+
       // SpO2 data
-      if (sensorSummary["SpO2"]) {
+      if (hasValidSensorData(sensorSummary["SpO2"])) {
         defaultData.spo2 = {
-          average: Math.round(sensorSummary["SpO2"].avg ?? 0),
-          minRange: Math.round(sensorSummary["SpO2"].min ?? 0),
-          maxRange: Math.round(sensorSummary["SpO2"].max ?? 0),
+          average: safeRound(sensorSummary["SpO2"].avg),
+          minRange: safeRound(sensorSummary["SpO2"].min),
+          maxRange: safeRound(sensorSummary["SpO2"].max),
         };
       }
 
       // Heart rate data
-      if (sensorSummary["Frecuencia Cardíaca"]) {
+      if (hasValidSensorData(sensorSummary["Frecuencia Cardíaca"])) {
         defaultData.heartRate = {
-          average: Math.round(sensorSummary["Frecuencia Cardíaca"].avg ?? 0),
-          minRange: Math.round(sensorSummary["Frecuencia Cardíaca"].min ?? 0),
-          maxRange: Math.round(sensorSummary["Frecuencia Cardíaca"].max ?? 0),
+          average: safeRound(sensorSummary["Frecuencia Cardíaca"].avg),
+          minRange: safeRound(sensorSummary["Frecuencia Cardíaca"].min),
+          maxRange: safeRound(sensorSummary["Frecuencia Cardíaca"].max),
         };
       }
 
       // Respiratory rate data
-      if (sensorSummary["Frecuencia Respiratoria"]) {
+      if (hasValidSensorData(sensorSummary["Frecuencia Respiratoria"])) {
         defaultData.respiratoryRate = {
-          average: Math.round(
-            sensorSummary["Frecuencia Respiratoria"].avg ?? 0
-          ),
-          minRange: Math.round(
-            sensorSummary["Frecuencia Respiratoria"].min ?? 0
-          ),
-          maxRange: Math.round(
-            sensorSummary["Frecuencia Respiratoria"].max ?? 0
-          ),
+          average: safeRound(sensorSummary["Frecuencia Respiratoria"].avg),
+          minRange: safeRound(sensorSummary["Frecuencia Respiratoria"].min),
+          maxRange: safeRound(sensorSummary["Frecuencia Respiratoria"].max),
         };
       }
-
-      // You might want to fetch the totalTime data separately or calculate it
 
       return defaultData;
     } catch (error) {
@@ -433,8 +451,8 @@ const Summary: React.FC<SummaryProps> = ({ patientId }) => {
                           prepareChartData(historicalData.spo2, "SpO2").values
                         }
                         currentValue={
-                          sensorSummary["SpO2"]?.avg
-                            ? Math.round(sensorSummary["SpO2"].avg).toString()
+                          hasValidSensorData(sensorSummary["SpO2"])
+                            ? safeRound(sensorSummary["SpO2"].avg).toString()
                             : "N/A"
                         }
                         valueUnit="%"
@@ -442,8 +460,8 @@ const Summary: React.FC<SummaryProps> = ({ patientId }) => {
                         generateLabels={generateLabels("spo2")}
                         hasData={!!historicalData.spo2}
                         deviceName="Sesión histórica"
-                        minValue={sensorSummary["SpO2"].min!}
-                        maxValue={sensorSummary["SpO2"].max!}
+                        minValue={safeRound(sensorSummary["SpO2"]?.min)}
+                        maxValue={safeRound(sensorSummary["SpO2"]?.max)}
                       />
                     )}
                   </Grid>
@@ -461,10 +479,8 @@ const Summary: React.FC<SummaryProps> = ({ patientId }) => {
                           ).values
                         }
                         currentValue={
-                          sensorSummary["Frecuencia Cardíaca"]?.avg
-                            ? Math.round(
-                                sensorSummary["Frecuencia Cardíaca"].avg
-                              ).toString()
+                          hasValidSensorData(sensorSummary["Frecuencia Cardíaca"])
+                            ? safeRound(sensorSummary["Frecuencia Cardíaca"].avg).toString()
                             : "N/A"
                         }
                         valueUnit="LPM"
@@ -472,8 +488,8 @@ const Summary: React.FC<SummaryProps> = ({ patientId }) => {
                         generateLabels={generateLabels("heartRate")}
                         hasData={!!historicalData.heartRate}
                         deviceName="Sesión histórica"
-                        minValue={sensorSummary["Frecuencia Cardíaca"].min!}
-                        maxValue={sensorSummary["Frecuencia Cardíaca"].max!}
+                        minValue={safeRound(sensorSummary["Frecuencia Cardíaca"]?.min)}
+                        maxValue={safeRound(sensorSummary["Frecuencia Cardíaca"]?.max)}
                       />
                     )}
                   </Grid>
@@ -491,10 +507,8 @@ const Summary: React.FC<SummaryProps> = ({ patientId }) => {
                           ).values
                         }
                         currentValue={
-                          sensorSummary["Frecuencia Respiratoria"]?.avg
-                            ? Math.round(
-                                sensorSummary["Frecuencia Respiratoria"].avg
-                              ).toString()
+                          hasValidSensorData(sensorSummary["Frecuencia Respiratoria"])
+                            ? safeRound(sensorSummary["Frecuencia Respiratoria"].avg).toString()
                             : "N/A"
                         }
                         valueUnit="RPM"
@@ -502,8 +516,8 @@ const Summary: React.FC<SummaryProps> = ({ patientId }) => {
                         generateLabels={generateLabels("respRate")}
                         hasData={!!historicalData.respRate}
                         deviceName="Sesión histórica"
-                        minValue={sensorSummary["Frecuencia Respiratoria"].min!}
-                        maxValue={sensorSummary["Frecuencia Respiratoria"].max!}
+                        minValue={safeRound(sensorSummary["Frecuencia Respiratoria"]?.min)}
+                        maxValue={safeRound(sensorSummary["Frecuencia Respiratoria"]?.max)}
                       />
                     )}
                   </Grid>
